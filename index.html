@@ -581,7 +581,7 @@
     </div>
   </div>
 
-  <div id="startRoundError" class="error-msg hidden" style="color:var(--red);font-size:20px;font-weight:700;margin-bottom:8px"></div>
+  <div id="startRoundError" class="orange-msg hidden" style="color:var(--orange);font-size:20px;font-weight:700;margin-bottom:8px"></div>
   <button class="btn-primary" id="startRoundBtn" onclick="startRound()">Nieuwe ronde</button>
 </div>
 
@@ -642,6 +642,7 @@
     <button id="clubGroupByCategoryBtn" class="btn-secondary" style="padding:8px 14px" onclick="window._clubGrouped=!window._clubGrouped;if(window._clubGrouped)window._clubSectionCollapsed={};this.style.background=window._clubGrouped?'var(--gold)':'';this.style.color=window._clubGrouped?'#1a1a1a':'';buildClubList();" title="Groepeer op categorie"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:middle"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/></svg></button>
     <button id="clubSearchBtn" class="btn-secondary" style="padding:8px 14px" onclick="var w=document.getElementById('clubSearchWrap');w.classList.toggle('hidden');this.style.background=w.classList.contains('hidden')?'':'var(--gold)';this.style.color=w.classList.contains('hidden')?'':'#1a1a1a';if(!w.classList.contains('hidden'))document.getElementById('clubSearch').focus();else{document.getElementById('clubSearch').value='';buildClubList();}" title="Zoeken"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:middle"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg></button>
   </div>
+  <div id="clubSelectHint" class="hidden" style="font-size:20px;font-weight:700;color:var(--muted);margin-bottom:8px">Selecteer een club met <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:middle"><path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"/></svg></div>
   <div class="fg hidden" id="clubSearchWrap" style="margin-bottom:14px">
     <input id="clubSearch" type="text" placeholder="Zoek op club" oninput="buildClubList()">
   </div>
@@ -1022,6 +1023,7 @@ function showPlayer2Msg(txt, lockable) {
   const el = document.getElementById('player2FavMsg');
   if (!el) return;
   el.textContent = txt;
+  el.style.color = lockable ? 'var(--muted)' : 'var(--green-light)';
   el.classList.remove('hidden');
   _p2MsgLocked = !lockable;
   clearTimeout(el._timer);
@@ -1780,9 +1782,10 @@ function startRound() {
     if (isNaN(hcp2)) { showStartError('Vul handicap in voor speler 2'); return; }
   }
 
-  // Check datum, club en baan
+  // Check datum, tijd, club en baan
   const dt = document.getElementById('iDate').value;
-  if (!dt) { showStartError('Vul datum & tijd in'); return; }
+  const tm = document.getElementById('iTime').value;
+  if (!dt || !tm) { showStartError('Vul datum & tijd in'); return; }
   const defaultClub = storage.getItem('golf_default_club');
   if (!defaultClub) { showStartError('Selecteer een club via ' + FLAG_SVG); return; }
   const course = COURSES[sel.track];
@@ -2762,7 +2765,7 @@ function importRound(input) {
         }
 
         for (const r of parsed) {
-          const sameSlot = saved.filter(s => s.date === r.date && (s.time || '') === (r.time || ''));
+          const sameSlot = saved.filter(s => (s.date || '') === (r.date || '') && (s.time || '') === (r.time || ''));
           if (sameSlot.length >= 2) {
             const formattedDate = formatFullDate(r.date);
             const formattedTime = r.time ? ` om ${r.time}` : '';
@@ -2777,7 +2780,7 @@ function importRound(input) {
         const savedReal = loadSavedRounds();
         const coupledPartners = [];
         parsed.forEach(r => {
-          const sameSlot = savedReal.filter(s => s.date === r.date && (s.time || '') === (r.time || ''));
+          const sameSlot = savedReal.filter(s => (s.date || '') === (r.date || '') && (s.time || '') === (r.time || ''));
           if (sameSlot.length === 1) coupledPartners.push(sameSlot[0].player);
           doImportRound(r, savedReal, true);
         });
@@ -2810,7 +2813,7 @@ function importRound(input) {
 
       // Max 2 rondes op dezelfde datum/tijd toegestaan
       const saved = loadSavedRounds();
-      const sameSlot = saved.filter(s => s.date === r.date && (s.time || '') === (r.time || ''));
+      const sameSlot = saved.filter(s => (s.date || '') === (r.date || '') && (s.time || '') === (r.time || ''));
       if (sameSlot.length >= 2) {
         const formattedDate = formatFullDate(r.date);
         const formattedTime = r.time ? ` om ${r.time}` : '';
@@ -3344,7 +3347,7 @@ function loadRound(i) {
   // Check op match: zelfde datum & tijd
   const match = saved.find(s =>
     s.id !== r.id &&
-    s.date === r.date &&
+    (s.date || '') === (r.date || '') &&
     (s.time || '') === (r.time || '')
   );
 
@@ -3352,9 +3355,13 @@ function loadRound(i) {
     const activeId = storage.getItem('golf_active_id');
     const matchIsActive = game.started && String(match.id) === activeId;
 
+    const msg = matchIsActive
+      ? `Er is een actieve ronde van ${match.player} gevonden op dezelfde datum en tijd. ${r.player} koppelen als tweede speler?`
+      : `Er is een ronde gevonden van ${match.player} op dezelfde datum en tijd. ${match.player} koppelen als tweede speler?`;
+
     showConfirmModal(
       'Koppelen?',
-      `Er is een ronde gevonden van ${match.player} op dezelfde datum en tijd. Koppelen als tweede speler?`,
+      msg,
       matchIsActive
         ? () => loadRoundAsSecondPlayer(i)
         : () => loadRoundAsCouple(i, match.id),
@@ -4606,7 +4613,7 @@ function confirmEditDateTime() {
   if (!round) return closeEditDateTimeModal();
 
   // Check op dubbele datum & tijd — huidige ronde uitsluiten, max 2 rondes toegestaan
-  const duplicates = saved.filter((r, i) => i !== idx && r.date === date && (r.time || '') === (time || ''));
+  const duplicates = saved.filter((r, i) => i !== idx && (r.date || '') === (date || '') && (r.time || '') === (time || ''));
   if (duplicates.length >= 2) {
     const formattedDate = formatFullDate(date);
     const formattedTime = time ? ` om ${time}` : '';
@@ -4668,15 +4675,16 @@ function applyEditDateTime(saved, round, date, time) {
   closeEditDateTimeModal();
   loadSaved();
 
-  // Als de bewerkte ronde nu matcht met de actieve ronde, koppeling aanbieden
-  if (dateTimeChanged) {
-    const match = saved.find(s => s.id !== round.id && s.date === date && (s.time || '') === (time || ''));
-    if (match && activeId && (String(round.id) === activeId || String(match.id) === activeId)) {
+  // Als de bewerkte ronde matcht met de actieve ronde, koppeling aanbieden
+  {
+    const match = saved.find(s => s.id !== round.id && (s.date || '') === (date || '') && (s.time || '') === (time || ''));
+    if (match && !game2Id && activeId && (String(round.id) === activeId || String(match.id) === activeId)) {
       const partnerId = String(round.id) === activeId ? match.id : round.id;
       const partnerPlayer = String(round.id) === activeId ? match.player : round.player;
+      const activePlayerName = String(round.id) === activeId ? round.player : match.player;
       showConfirmModal(
         'Koppelen?',
-        `Er is een ronde gevonden van ${partnerPlayer} op dezelfde datum en tijd. Koppelen als tweede speler?`,
+        `Er is een actieve ronde van ${activePlayerName} gevonden op dezelfde datum en tijd. ${partnerPlayer} koppelen als tweede speler?`,
         () => {
           game2Id = partnerId;
           activePlayer = 1;
@@ -4687,6 +4695,11 @@ function applyEditDateTime(saved, round, date, time) {
           loadSaved();
         },
         'Annuleer'
+      );
+    } else if (match && !game2Id && String(round.id) !== activeId && String(match.id) !== activeId) {
+      showInfoModal(
+        'Zelfde datum en tijd',
+        `Er is een ronde van ${match.player} op dezelfde datum en tijd. Deze worden gekoppeld zodra je er één laadt.`
       );
     }
   }
@@ -4756,6 +4769,8 @@ function buildClubList() {
 
   const favs = getFavClubs();
   const activeClub = storage.getItem('golf_default_club');
+  const hintEl = document.getElementById('clubSelectHint');
+  if (hintEl) hintEl.classList.toggle('hidden', !!activeClub || Object.keys(CLUBS).length === 0);
   let allClubNames = Object.keys(CLUBS).sort((a, b) => a.localeCompare(b, 'nl'));
 
   const filteredClubs = query ? allClubNames.filter(c => c.toLowerCase().includes(query)) : allClubNames;
@@ -5348,7 +5363,7 @@ document.addEventListener('focusin', (e) => {
 });
 
 (function init() {
-  if (storage.getItem('golf_theme') === 'light') {
+  if (storage.getItem('golf_theme') !== 'dark') {
     document.documentElement.classList.add('light-mode');
   }
   updateThemeIcon();
@@ -5382,10 +5397,11 @@ document.addEventListener('focusin', (e) => {
   try {
     if (!restoreActiveRound()) {
       resetHeader();
+      nav(storage.getItem('golf_default_club') ? 'setup' : 'club');
     }
   } catch (e) {
     console.error('Fout bij herstellen actieve ronde:', e);
-    try { resetHeader(); } catch (e2) { /* laatste redmiddel: niets meer te doen */ }
+    try { resetHeader(); nav('setup'); } catch (e2) { /* laatste redmiddel: niets meer te doen */ }
   }
 
   // Headerhoogte meten voor sticky sub-tabs positionering
