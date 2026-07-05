@@ -24,77 +24,111 @@
       --blue:        #4a9eff;
       --res-eagle:   #4a9eff;
       --res-birdie:  #1f5fa8;
-      --res-par:     #6e6e6e;
+      --res-par:     #585858;
       --res-bogey:   #ff8c00;
       --res-double:  #e03030;
       --res-worse:   #8b0000;
+      /* Scoreverdeling-kleuren (nieuw). Terugdraaien: verwijder deze vars + de light-mode-versie,
+         en laat grafiek/scoretabel de --res-* kleuren gebruiken zoals voorheen.
+         Origineel gebruikte: eagle var(--res-eagle) · birdie var(--res-birdie) · par var(--res-par)
+         · bogey var(--res-bogey) · double var(--res-double) · worse var(--res-worse). */
+      --dist-eagle:  #2e9e5b;
+      --dist-birdie: #5cc98c;
+      --dist-bogey:  #e0a458;
+      --dist-double: #d9713c;
+      --dist-worse:  #c0402f;
       --info-purple: #aaaaaa;
       --white:       #ffffff;
       --muted:       #9fb5a8;
       --radius:      12px;
       --surface:        rgba(255,255,255,.07);
       --border-strong:  rgba(255,255,255,.12);
+      /* Semantische thema-variabelen (donker = standaard) */
+      --bg:             #1a3a2a;
+      --bg-gradient-2:  #2d6a4f;
+      --text:           #ffffff;
+      --text-muted:     #9fb5a8;
+      --overlay-soft:   rgba(255,255,255,.05);
+      --overlay-softer: rgba(255,255,255,.04);
+      --hairline:       rgba(255,255,255,.1);
+      --hairline-strong:rgba(255,255,255,.2);
     }
+    /* Licht palet: overschrijft alleen de semantische variabelen */
+    html.light-mode {
+      --bg:             #f4f1ea;
+      --bg-gradient-2:  #e4ddcd;
+      --green-deep:     #f4f1ea;
+      --green-mid:      #e4ddcd;
+      --text:           #1c2a22;
+      --white:          #1c2a22;
+      --cream:          #2a3f33;
+      --muted:          #5a6b60;
+      --text-muted:     #5a6b60;
+      --info-purple:    #6a6a6a;
+      --surface:        rgba(0,0,0,.05);
+      --border-strong:  rgba(0,0,0,.14);
+      --overlay-soft:   rgba(0,0,0,.05);
+      --overlay-softer: rgba(0,0,0,.04);
+      --hairline:       rgba(0,0,0,.12);
+      --hairline-strong:rgba(0,0,0,.22);
+    }
+    /* Lichte modus: transparante witte vlakken vervangen door donkere zodat ze zichtbaar blijven */
+    html.light-mode .card,
+    html.light-mode .saved-item,
+    html.light-mode .stat-box,
+    html.light-mode .sum-tr,
+    html.light-mode .flat-chart-seg { background: rgba(0,0,0,.05); border-color: rgba(0,0,0,.12); }
+    html.light-mode .sum-tr:nth-child(even),
+    html.light-mode .sum-info-row.alt { background: rgba(0,0,0,.03); }
+    html.light-mode .sum-tr:active { background: rgba(0,0,0,.06); }
+    html.light-mode .fg input,
+    html.light-mode .chcp-adjust,
+    html.light-mode .chcp-box { background: rgba(0,0,0,.04); border-color: rgba(0,0,0,.14); color: var(--text); }
+    html.light-mode .fg input::placeholder { color: rgba(0,0,0,.4); }
+    html.light-mode #editPccBtn { background: rgba(0,0,0,.04); border-color: rgba(0,0,0,.14); color: var(--text); }
+    .field-like.compact { padding: 8px 10px; font-size: 20px; }
+    input.field-input { width: 100%; padding: 8px 10px; background: rgba(0,0,0,.25); border: 1px solid rgba(255,255,255,.15); border-radius: 8px; color: var(--white); font-size: 20px; -webkit-appearance: none; text-align: right; box-sizing: border-box; }
+    html.light-mode input.field-input { background: rgba(0,0,0,.04); border-color: rgba(0,0,0,.14); color: var(--text); }
+    html.light-mode .btn-secondary { background: rgba(0,0,0,.06); border-color: rgba(0,0,0,.16); }
+    html.light-mode .active-bg { background: rgba(0,0,0,.14) !important; border-color: rgba(0,0,0,.3) !important; }
+    html.light-mode .tab { color: rgba(0,0,0,.5); }
+    html.light-mode .tabs { border-top-color: rgba(0,0,0,.12); }
+    html.light-mode .switch .slider { background: rgba(0,0,0,.25); }
+    html.light-mode .nine-tab-bar,
+    html.light-mode .chart-half-over { border-color: rgba(0,0,0,.15); }
+    html.light-mode .track-btn,
+    html.light-mode .gender-btn { background: rgba(0,0,0,.04); border-color: rgba(0,0,0,.14); color: rgba(0,0,0,.6); }
+    html.light-mode .track-btn.active { background: rgba(154,125,46,.16); border-color: var(--gold); color: var(--gold); }
+    html.light-mode .gender-btn.active { background: rgba(154,125,46,.16); border-color: var(--gold); color: var(--gold); }
+    html.light-mode .hole-id,
+    html.light-mode .hole-si { background: rgba(0,0,0,.05) !important; color: var(--text) !important; border-color: rgba(0,0,0,.2) !important; }
+    html.light-mode .par-cycle-btn,
+    html.light-mode .par-name-field,
+    html.light-mode .tee-name-field,
+    html.light-mode .cr-name-field,
+    html.light-mode .sr-name-field,
+    html.light-mode .gender-cycle-btn { background: rgba(0,0,0,.05) !important; color: var(--text) !important; border-color: rgba(0,0,0,.2) !important; }
+    html.light-mode .share-modal-box { background: var(--bg); border-color: rgba(0,0,0,.15); }
+    html.light-mode #shareText { background: rgba(0,0,0,.05); color: var(--text); border-color: rgba(0,0,0,.15); }
+    html.light-mode .ppar-dot-red { border-color: rgba(0,0,0,.3); }
+    html.light-mode .tee-badge.tee-Blauw, html.light-mode .tee-btn.tee-Blauw,
+    html.light-mode .tee-badge.tee-Rood,  html.light-mode .tee-btn.tee-Rood,
+    html.light-mode .tee-badge.tee-Paars, html.light-mode .tee-btn.tee-Paars,
+    html.light-mode .tee-badge.tee-Groen, html.light-mode .tee-btn.tee-Groen,
+    html.light-mode .tee-badge.tee-Zwart, html.light-mode .tee-btn.tee-Zwart,
+    html.light-mode .tee-badge.tee-Bruin, html.light-mode .tee-btn.tee-Bruin { color: #ffffff; }
+    html.light-mode header { border-bottom-color: var(--gold); }
+    /* Donkerder accenten voor voldoende contrast op lichte achtergrond */
+    html.light-mode { --gold: #9a7d2e; --green-light: #2e7d54;
+      --dist-eagle: #1f7d44; --dist-birdie: #2f9e68; --dist-bogey: #b9772f; --dist-double: #b4542a; --dist-worse: #9a2f22; }
     * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
-    html.light-mode { filter: invert(1) hue-rotate(180deg); }
-    html.light-mode .orange-msg { filter: invert(1) hue-rotate(180deg); }
-    html.light-mode .info-msg { color: #444444 !important; filter: invert(1) hue-rotate(180deg); }
+    html.light-mode .info-msg { color: var(--info-purple); }
+    html, body { transition: background-color .2s ease, color .2s ease; }
 
 
 
 
 
-    /* Resultaatkleuren: filter terugdraaien zodat ze in beide modi kloppen */
-    html.light-mode .c-eagle,
-    html.light-mode .c-birdie,
-    html.light-mode .c-par,
-    html.light-mode .c-bogey,
-    html.light-mode .c-double,
-    html.light-mode .c-worse,
-    html.light-mode .bar-eagle,
-    html.light-mode .bar-birdie,
-    html.light-mode .bar-par,
-    html.light-mode .bar-bogey,
-    html.light-mode .bar-double,
-    html.light-mode .bar-worse,
-    html.light-mode .sum-tr.current-row::before,
-    html.light-mode .error-msg,
-    html.light-mode .info-msg,
-    html.light-mode .confirm-armed {
-      filter: invert(1) hue-rotate(180deg);
-    }
-    html { transition: filter .2s ease; }
-    /* Behoud oorspronkelijke kleuren (goud, tee-kleuren, emoji) in lichte modus
-       door het filter lokaal te annuleren (invert+hue-rotate is zelf-inverterend) */
-    html.light-mode .tee-badge,
-    html.light-mode .tee-btn,
-    html.light-mode .tee-btn.active,
-    html.light-mode .tee-badge.tee-Geel,
-    html.light-mode .tee-btn.tee-Geel,
-    html.light-mode .tee-badge.tee-Wit,
-    html.light-mode .tee-btn.tee-Wit,
-    html.light-mode .tee-badge.tee-Blauw,
-    html.light-mode .tee-btn.tee-Blauw,
-    html.light-mode .tee-badge.tee-Rood,
-    html.light-mode .tee-btn.tee-Rood,
-    html.light-mode .tee-badge.tee-Oranje,
-    html.light-mode .tee-btn.tee-Oranje,
-    html.light-mode .tee-badge.tee-Paars,
-    html.light-mode .tee-btn.tee-Paars,
-    html.light-mode .tee-badge.tee-Groen,
-    html.light-mode .tee-btn.tee-Groen,
-    html.light-mode .tee-badge.tee-Zwart,
-    html.light-mode .tee-btn.tee-Zwart,
-    html.light-mode .tee-badge.tee-Zilver,
-    html.light-mode .tee-btn.tee-Zilver,
-    html.light-mode .tee-badge.tee-Roze,
-    html.light-mode .tee-btn.tee-Roze,
-    html.light-mode .tee-badge.tee-Bruin,
-    html.light-mode .tee-btn.tee-Bruin,
-    html.light-mode .tee-badge.tee-Grijs,
-    html.light-mode .tee-btn.tee-Grijs { filter: invert(1) hue-rotate(180deg); }
-    html.light-mode     html.light-mode .tee-badge.tee-Geel,
-    html.light-mode .tee-btn.tee-Geel { background: #c9a84c !important; color: #1a1a1a !important; }
     body { font-family: 'Segoe UI', system-ui, sans-serif; background: var(--green-deep); color: var(--white); min-height: 100dvh; overscroll-behavior: none; -webkit-overflow-scrolling: touch; user-select: none; -webkit-user-select: none; }
 
     header {
@@ -120,12 +154,14 @@
       will-change: filter;
       background: repeating-linear-gradient(45deg, #c9a84c 0px, #c9a84c 3px, #a8863c 3px, #a8863c 6px); color: #1a1a1a;
     }
+    .tee-badge.badge-q { background: var(--gold); color: var(--green-deep); }
+    .tee-badge.badge-whs { background: var(--green-light); color: var(--green-deep); }
     .tee-badge.tee-Wit    { background: #ffffff; color: #1a1a1a; }
-    .tee-badge.tee-Geel   { background: #c9a84c; color: #1a1a1a; }
+    .tee-badge.tee-Geel   { background: #e8c800; color: #1a1a1a; }
     .tee-badge.tee-Blauw  { background: #1e64c8; color: var(--white); }
     .tee-badge.tee-Rood   { background: #b41e1e; color: var(--white); }
     .tee-badge.tee-Oranje { background: #dc7800; color: #1a1a1a; }
-    .tee-badge.tee-Paars  { background: #7800b4; color: var(--white); }
+    .tee-badge.tee-Paars  { background: #9127c8; color: var(--white); }
     .tee-badge.tee-Groen  { background: #2e7d32; color: var(--white); }
     .tee-badge.tee-Zwart  { background: #1a1a1a; color: var(--white); }
     .tee-badge.tee-Zilver { background: #9e9e9e; color: #1a1a1a; }
@@ -145,6 +181,15 @@
       transform: translateZ(0); will-change: transform;
     }
     .tab  { flex: 1; padding: 13px 0; background: none; border: none; color: rgba(255,255,255,.5); font-size:17px; font-weight: 700; cursor: pointer; border-top: 3px solid transparent; transition: transform .1s ease, color .15s ease; display: flex; align-items: center; justify-content: center; }
+    .switch { position: relative; display: inline-block; width: 52px; height: 30px; flex: 0 0 auto; }
+    .switch input { opacity: 0; width: 0; height: 0; }
+    .switch .slider { position: absolute; inset: 0; cursor: pointer; background: rgba(255,255,255,.2); border-radius: 30px; transition: background .2s; }
+    .switch .slider::before { content: ''; position: absolute; height: 24px; width: 24px; left: 3px; top: 3px; background: #fff; border-radius: 50%; transition: transform .2s; }
+    .switch input:checked + .slider { background: var(--gold); }
+    .switch input:checked + .slider::before { transform: translateX(22px); }
+    /* SLECHTWEER-MODUS (START, verwijderbaar) — alleen scorescherm */
+    body.bad-weather #screen-score .score-btn { width: 52px; height: 52px; font-size: 32px; }
+    /* SLECHTWEER-MODUS (EINDE) */
     .tab.active { color: var(--gold); border-top-color: var(--gold); }
     .tab:active { transform: scale(.93); }
 
@@ -162,10 +207,18 @@
 
     .fg { margin-bottom: 12px; }
     .fg label { font-size:17px; color: var(--green-light); text-transform: uppercase; letter-spacing: .5px; display: block; margin-bottom: 6px; font-weight: 700; }
+    #roundInfoModal .fg > label:not([style*="green-light"]), #roundInfoModal > div > label { color: var(--gold); }
     .fg input, .fg select {
       width: 100%; padding: 12px 14px;
       background: rgba(0,0,0,.25); border: 1px solid rgba(255,255,255,.15);
       border-radius: 8px; color: var(--white); font-size:20px; -webkit-appearance: none;
+    }
+    .field-like {
+      width: 100%; padding: 12px 14px;
+      background: rgba(0,0,0,.25); border: 1px solid rgba(255,255,255,.15);
+      border-radius: 8px; color: var(--white); font-size:20px;
+      font-family: inherit; line-height: normal; box-sizing: border-box;
+      cursor: pointer; display: flex; align-items: center;
     }
     .fg input::placeholder { color: rgba(255,255,255,.35); }
 
@@ -263,7 +316,6 @@
     .ppar-dot     { width: 8px; height: 8px; border-radius: 50%; background: var(--green-light); flex-shrink: 0; }
     .ppar-dot-red { width: 8px; height: 8px; border-radius: 50%; background: transparent; border: 1px solid rgba(255,255,255,.18); box-sizing: border-box; flex-shrink: 0; }
     .ppar-dot-neg { width: 8px; height: 8px; border-radius: 50%; background: var(--blue); flex-shrink: 0; }
-    html.light-mode .ppar-dot-neg { filter: invert(1) hue-rotate(180deg); }
     .hole-si-lab  {
       font-size:13px; font-weight: 900; color: var(--green-light);
     }
@@ -276,6 +328,10 @@
       touch-action: manipulation;
     }
     .score-btn:active { transform: scale(.88); }
+    /* GROTERE TIKZONE (START, verwijderbaar) — knop blijft visueel gelijk */
+    .score-btn { position: relative; }
+    .score-btn::after { content: ''; position: absolute; top: 50%; left: 50%; width: 44px; height: 44px; transform: translate(-50%, -50%); }
+    /* GROTERE TIKZONE (EINDE) */
     .score-btn.minus { background: rgba(36,113,163,.3); justify-self: end; }
     .score-btn.plus  { background: rgba(36,113,163,.3); }
     .score-btn.reset {
@@ -291,13 +347,13 @@
     .score-btn.reset.hidden { visibility: hidden; pointer-events: none; }
     .score-val { display: inline-block; min-width: 28px; text-align: center; font-size:24px; font-weight: 800; color: var(--white); -webkit-touch-callout: none; -webkit-user-select: none; user-select: none; touch-action: manipulation; justify-self: center; padding: 4px 12px 2px; border-radius: 8px; }
     .score-val.tap-armed { color: var(--gold); }
-    .c-eagle  { color: var(--res-eagle); }
-    .c-birdie { color: var(--res-birdie); }
+    /* Legenda/telling onder grafiek. Terugdraaien: zet var(--res-*) terug. Par blijft grijs. */
+    .c-eagle  { color: var(--dist-eagle); }
+    .c-birdie { color: var(--dist-birdie); }
     .c-par    { color: var(--info-purple); }
-    html.light-mode .c-par { color: #444444 !important; filter: invert(1) hue-rotate(180deg); }
-    .c-bogey  { color: var(--res-bogey); }
-    .c-double { color: var(--res-double); }
-    .c-worse  { color: var(--res-worse); }
+    .c-bogey  { color: var(--dist-bogey); }
+    .c-double { color: var(--dist-double); }
+    .c-worse  { color: var(--dist-worse); }
 
     /* score chart */
     .chart-row { display: flex; align-items: stretch; gap: 2px; }
@@ -310,12 +366,15 @@
     .chart-lbl { text-align: center; font-size:13px; font-weight: 700; color: var(--muted); margin-top: 3px; }
     .flat-chart { display: flex; gap: 3px; }
     .flat-chart-seg { flex: 1; height: 8px; border-radius: 4px; background: rgba(255,255,255,.08); }
-    .bar-eagle  { background: var(--res-eagle); }
-    .bar-birdie { background: var(--res-birdie); }
-    .bar-par    { background: #585858; }
-    .bar-bogey  { background: var(--res-bogey); }
-    .bar-double { background: var(--res-double); }
-    .bar-worse  { background: var(--res-worse); }
+    /* Scoreverdeling-kleuren toegepast op grafiek. Terugdraaien: zet var(--res-*) terug.
+       Origineel: eagle var(--res-eagle) · birdie var(--res-birdie) · bogey var(--res-bogey)
+       · double var(--res-double) · worse var(--res-worse). Par bleef altijd var(--res-par). */
+    .bar-eagle  { background: var(--dist-eagle); }
+    .bar-birdie { background: var(--dist-birdie); }
+    .bar-par    { background: var(--res-par); }
+    .bar-bogey  { background: var(--dist-bogey); }
+    .bar-double { background: var(--dist-double); }
+    .bar-worse  { background: var(--dist-worse); }
 
     .sum-sub    { font-size:20px; color: var(--muted); margin-top: 6px; font-weight: 600; text-align: center; }
     .sum-info { display: flex; flex-direction: column; }
@@ -342,18 +401,13 @@
     .sum-tr { background: rgba(255,255,255,.05); border-radius: var(--radius); border: 1px solid rgba(255,255,255,.08); cursor: pointer; user-select: none; -webkit-user-select: none; position: relative; }
     .sum-tr::after { content:''; position:absolute; right:0; top:0; bottom:0; width:8px; border-radius:0 18px 18px 0; }
     .sum-tr::before { content:''; position:absolute; left:0; top:0; bottom:0; width:8px; border-radius:18px 0 0 18px; background:transparent; }
-    .sum-tr.res-eagle::after  { background: var(--res-eagle); }
-    .sum-tr.res-birdie::after { background: var(--res-birdie); }
+    /* Scoreverdeling-kleuren toegepast op scoretabel-balkjes. Terugdraaien: zet var(--res-*) terug. */
+    .sum-tr.res-eagle::after  { background: var(--dist-eagle); }
+    .sum-tr.res-birdie::after { background: var(--dist-birdie); }
     .sum-tr.res-par::after    { background: var(--res-par); }
-    .sum-tr.res-bogey::after  { background: var(--res-bogey); }
-    .sum-tr.res-double::after { background: var(--res-double); }
-    .sum-tr.res-worse::after  { background: var(--res-worse); }
-    html.light-mode .sum-tr.res-eagle::after,
-    html.light-mode .sum-tr.res-birdie::after,
-    html.light-mode .sum-tr.res-par::after,
-    html.light-mode .sum-tr.res-bogey::after,
-    html.light-mode .sum-tr.res-double::after,
-    html.light-mode .sum-tr.res-worse::after,
+    .sum-tr.res-bogey::after  { background: var(--dist-bogey); }
+    .sum-tr.res-double::after { background: var(--dist-double); }
+    .sum-tr.res-worse::after  { background: var(--dist-worse); }
     html.light-mode .stb-ppar-double-marker { filter: invert(1) hue-rotate(180deg); }
     .sum-tr:active { background: rgba(255,255,255,.05); }
     .sum-tr:nth-child(even) { background: rgba(255,255,255,.03); }
@@ -434,7 +488,7 @@
     </div>
   </div>
   <div id="playerSwitchBar" class="hidden" style="display:flex;border-top:1px solid rgba(255,255,255,.1);margin-top:0;padding-top:3px;gap:4px">
-    <button id="playerSwitchBtn1" onclick="switchToPlayer(1)" style="flex:1;min-width:0;background:var(--gold);color:#1a1a1a;border:none;border-radius:8px;padding:4px 8px;font-size:17px;font-weight:800;cursor:pointer;overflow:hidden;text-overflow:ellipsis;white-space:nowrap"></button>
+    <button id="playerSwitchBtn1" onclick="switchToPlayer(1)" style="flex:1;min-width:0;background:var(--gold);color:var(--green-deep);border:none;border-radius:8px;padding:4px 8px;font-size:17px;font-weight:800;cursor:pointer;overflow:hidden;text-overflow:ellipsis;white-space:nowrap"></button>
     <button id="playerSwitchBtn2" onclick="switchToPlayer(2)" style="flex:1;min-width:0;background:rgba(255,255,255,.1);color:var(--white);border:none;border-radius:8px;padding:4px 8px;font-size:17px;font-weight:700;cursor:pointer;overflow:hidden;text-overflow:ellipsis;white-space:nowrap"></button>
   </div>
 </header>
@@ -445,6 +499,7 @@
   <button class="tab"        onclick="nav('score')" id="tab-score"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20h9"/><path d="M16.5 3.5a2.12 2.12 0 0 1 3 3L7 19l-4 1 1-4Z"/></svg></button>
   <button class="tab"        onclick="nav('stat')"    id="tab-stat"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg></button>
   <button class="tab"        onclick="nav('archive')" id="tab-archive"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 7v12a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V9a2 2 0 0 0-2-2h-7l-2-2H5a2 2 0 0 0-2 2Z"/></svg></button>
+  <button class="tab"        onclick="nav('settings')" id="tab-settings"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1Z"/></svg></button>
 </div>
 
 <!-- SETUP -->
@@ -464,6 +519,7 @@
       <input id="iHcp" type="text" inputmode="decimal" enterkeyhint="done" placeholder="hcp"
         oninput="onHcpInput(this)" onblur="onHcpBlur(this); savePlayerProfile()" onchange="onHcpBlur(this)"
         onkeydown="if(event.key==='Enter'){onHcpBlur(this); savePlayerProfile(); this.blur();}" />
+      <div id="computedHcpRow" style="font-size:17px;color:var(--muted);margin-top:6px">Verwachte hcp: <span id="computedHcpVal" style="color:var(--green-light);font-weight:700">—</span></div>
     </div>
   </div>
 
@@ -474,8 +530,8 @@
       <div style="display:flex;align-items:center;justify-content:space-between">
         <h2 style="margin:0">Speler 2</h2>
         <div style="display:flex;gap:6px;align-items:center">
-          <button class="btn-secondary" id="favPlayer2Btn" onpointerdown="startPlayer2LongPress(this,'fav')" onpointerup="cancelPlayer2LongPress(this,'fav')" onpointerleave="cancelPlayer2LongPress(this,'fav')" onpointercancel="cancelPlayer2LongPress(this,'fav')" style="padding:8px 14px" title="Favoriete speler 2"><svg id="favPlayer2Icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:middle"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg></button>
-          <button class="btn-secondary" id="defaultPlayer2Btn" onpointerdown="startPlayer2LongPress(this,'default')" onpointerup="cancelPlayer2LongPress(this,'default')" onpointerleave="cancelPlayer2LongPress(this,'default')" onpointercancel="cancelPlayer2LongPress(this,'default')" style="padding:8px 14px" title="Standaard speler 2"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:middle"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/><polyline points="16 11 18 13 22 9"/></svg></button>
+          <button class="btn-secondary" id="favPlayer2Btn" onclick="fillPlayer2('fav')" style="padding:8px 14px" title="Favoriete speler 2 invullen"><svg id="favPlayer2Icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:middle"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg></button>
+          <button class="btn-secondary" id="defaultPlayer2Btn" onclick="fillPlayer2('default')" style="padding:8px 14px" title="Standaard speler 2 invullen"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:middle"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/><polyline points="16 11 18 13 22 9"/></svg></button>
           <button class="btn-secondary" onclick="confirmTogglePlayer2(this)" style="padding:8px 14px" title="Speler 2 verwijderen"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:middle"><circle cx="12" cy="12" r="10"/><line x1="8" y1="12" x2="16" y2="12"/></svg></button>
         </div>
       </div>
@@ -496,6 +552,7 @@
       <h2 style="margin:0">Datum & tijd</h2>
       <button class="btn-secondary" id="btnNow" onclick="setDateTimeNow(this)" style="padding:8px 14px"><svg id="btnNowIcon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:middle"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg></button>
     </div>
+    <div id="dateFutureWarn" class="hidden orange-msg" style="color:var(--orange);font-size:20px;font-weight:700;margin-bottom:12px">Let op: de gekozen datum ligt verder dan volgende week zondag</div>
     <div style="display:flex;gap:8px">
       <div class="fg" style="flex:1;margin-bottom:0">
         <input id="iDate" type="date" onchange="onDateTimeChange()" />
@@ -512,7 +569,7 @@
   <div class="card" id="clubBaanCard">
     <h2>Club & baan</h2>
     <label style="font-size:17px;color:var(--green-light);text-transform:uppercase;letter-spacing:.5px;font-weight:700;display:block;margin-bottom:6px">Club</label>
-    <div id="setupClubTip" class="hidden" style="font-size:20px;font-weight:700;color:var(--muted);margin-bottom:6px">Selecteer een club via <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="var(--muted)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:middle"><path d="M5 3v18"/><path d="M5 4h11l-2 4 2 4H5"/></svg></div>
+    <div id="setupClubTip" class="hidden" style="font-size:20px;font-weight:700;color:var(--muted);margin-bottom:6px">Selecteer een club via <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--muted)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:middle"><path d="M5 3v18"/><path d="M5 4h11l-2 4 2 4H5"/></svg> <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--muted)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:middle"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg> <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--muted)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:middle"><path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"/></svg></div>
     <div id="setupClubShortName" onclick="showClubTip()" style="font-size:20px;font-weight:700;margin-bottom:12px;overflow-wrap:break-word;padding:10px 14px;border-radius:10px;border:1.5px solid rgba(255,255,255,.15);background:rgba(255,255,255,.05);cursor:pointer;color:var(--muted)"></div>
     <label style="font-size:17px;color:var(--green-light);text-transform:uppercase;letter-spacing:.5px;font-weight:700;display:block;margin-bottom:6px">Holes</label>
     <div class="gender-btns" id="catBtns" style="margin-bottom:12px">
@@ -535,6 +592,10 @@
     <label style="font-size:17px;color:var(--green-light);text-transform:uppercase;letter-spacing:.5px;font-weight:700;display:block;margin-bottom:6px">Tee</label>
     <div class="tee-btns" id="teeBtns"></div>
     <div id="teeAdvice" style="display:none;font-size:20px;color:var(--info-purple);font-weight:700"></div>
+    <div style="display:flex;align-items:center;justify-content:space-between;gap:12px;margin-top:12px">
+      <label style="font-size:17px;color:var(--green-light);text-transform:uppercase;letter-spacing:.5px;font-weight:700">Qualifying</label>
+      <label class="switch"><input type="checkbox" id="qualifyToggle1" onchange="toggleQualifying(1)"><span class="slider"></span></label>
+    </div>
   </div>
 
   <div class="card" id="chcpCard">
@@ -555,6 +616,10 @@
 
   <div class="card hidden" id="round2Card">
     <h2>Ronde speler 2</h2>
+    <div style="display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:12px">
+      <label style="font-size:17px;color:var(--green-light);text-transform:uppercase;letter-spacing:.5px;font-weight:700">Qualifying</label>
+      <label class="switch"><input type="checkbox" id="qualifyToggle2" onchange="toggleQualifying(2)"><span class="slider"></span></label>
+    </div>
     <label style="font-size:17px;color:var(--green-light);text-transform:uppercase;letter-spacing:.5px;font-weight:700;display:block;margin-bottom:6px">Geslacht</label>
     <div class="gender-btns" style="margin-bottom:12px">
       <button class="gender-btn" id="gb2-Heren" onclick="selectGender2('Heren')">Heren</button>
@@ -588,6 +653,7 @@
 <!-- STAT -->
 <div id="screen-stat" class="screen">
   <div id="statEmptyMsg" style="font-size:20px;color:var(--muted)"></div>
+  <div id="playerStats"></div>
   <div class="card" id="statChartCard">
     <h2>Score per hole t.o.v. par</h2>
     <div class="chart-row" id="scoreChart"></div>
@@ -601,17 +667,18 @@
 
 <!-- ARCHIEF -->
 <div id="screen-archive" class="screen">
+  <div id="backupReminder" class="hidden orange-msg" style="font-size:20px;font-weight:700;color:var(--orange);margin-bottom:10px"></div>
   <div id="exportRoundsMsg" class="hidden orange-msg" style="font-size:20px;font-weight:700;color:var(--orange);text-align:right;margin-bottom:4px">Tik nogmaals om te bevestigen</div>
   <div id="exportRoundsSuccess" class="hidden" style="font-size:20px;font-weight:700;color:var(--green-light);text-align:right;margin-bottom:4px"></div>
   <div style="display:flex;gap:8px;align-items:center;margin-bottom:8px;justify-content:flex-end">
     <button id="archiveExportBtn" class="btn-secondary" style="padding:8px 14px" onclick="confirmExportAll(this, 'rounds')" title="Exporteer alle rondes"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:middle"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg></button>
     <button class="btn-secondary" style="padding:8px 14px" onclick="document.getElementById('importRoundFile').click()" title="Importeer ronde"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:middle"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg></button>
-    <button id="groupByTrackBtn" class="btn-secondary" style="padding:8px 14px" onclick="window._groupByTrack=!window._groupByTrack;if(window._groupByTrack){window._groupByCategory=false;window._groupByPlayer=false;window._pgCollapsed={};window._trkCollapsed={};window._clubTrkCollapsed={};document.getElementById('groupByCategoryBtn').style.background='';document.getElementById('groupByCategoryBtn').style.color='';document.getElementById('groupByPlayerBtn').style.background='';document.getElementById('groupByPlayerBtn').style.color='';}this.style.background=window._groupByTrack?'var(--gold)':'';this.style.color=window._groupByTrack?'#1a1a1a':'';loadSaved();" title="Groepeer op club"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:middle"><path d="M3 12h18"/><path d="M3 6l9-3 9 3"/><path d="M3 18l9 3 9-3"/></svg></button>
+    <button id="groupByTrackBtn" class="btn-secondary" style="padding:8px 14px" onclick="window._groupByTrack=!window._groupByTrack;if(window._groupByTrack){window._groupByCategory=false;window._groupByPlayer=false;window._pgCollapsed={};window._trkCollapsed={};window._clubTrkCollapsed={};document.getElementById('groupByCategoryBtn').style.background='';document.getElementById('groupByCategoryBtn').style.color='';document.getElementById('groupByPlayerBtn').style.background='';document.getElementById('groupByPlayerBtn').style.color='';}this.style.background=window._groupByTrack?'var(--gold)':'';this.style.color=window._groupByTrack?'var(--green-deep)':'';loadSaved();" title="Groepeer op club"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:middle"><path d="M3 12h18"/><path d="M3 6l9-3 9 3"/><path d="M3 18l9 3 9-3"/></svg></button>
     <button class="btn-secondary" id="groupByPlayerBtn" style="padding:8px 14px" 
-      onclick="window._groupByPlayer=!window._groupByPlayer;if(window._groupByPlayer){window._groupByCategory=false;window._groupByTrack=false;document.getElementById('groupByCategoryBtn').style.background='';document.getElementById('groupByCategoryBtn').style.color='';document.getElementById('groupByTrackBtn').style.background='';document.getElementById('groupByTrackBtn').style.color='';const rounds=loadSavedRounds();const players=[...new Set(rounds.map(r=>r.player).filter(Boolean))];window._pgCollapsed={};players.forEach(p=>{window._pgCollapsed['pg_'+p.replace(/\W/g,'_')]=true;});}else{window._pgCollapsed={};}this.style.background=window._groupByPlayer?'var(--gold)':'';this.style.color=window._groupByPlayer?'#1a1a1a':'';loadSaved();"
+      onclick="window._groupByPlayer=!window._groupByPlayer;if(window._groupByPlayer){window._groupByCategory=false;window._groupByTrack=false;document.getElementById('groupByCategoryBtn').style.background='';document.getElementById('groupByCategoryBtn').style.color='';document.getElementById('groupByTrackBtn').style.background='';document.getElementById('groupByTrackBtn').style.color='';const rounds=loadSavedRounds();const players=[...new Set(rounds.map(r=>r.player).filter(Boolean))];window._pgCollapsed={};window._pgSubCollapsed={};players.forEach(p=>{window._pgCollapsed['pg_'+p.replace(/\W/g,'_')]=true;});}else{window._pgCollapsed={};window._pgSubCollapsed={};}this.style.background=window._groupByPlayer?'var(--gold)':'';this.style.color=window._groupByPlayer?'var(--green-deep)':'';loadSaved();"
       title="Groepeer op speler"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:middle"><circle cx="9" cy="7" r="4"/><path d="M3 21v-2a4 4 0 0 1 4-4h4a4 4 0 0 1 4 4v2"/><circle cx="19" cy="7" r="2"/><path d="M23 21v-1a3 3 0 0 0-3-3h-1"/></svg></button>
-    <button id="groupByCategoryBtn" class="btn-secondary" style="padding:8px 14px" onclick="window._groupByCategory=!window._groupByCategory;if(window._groupByCategory){window._groupByPlayer=false;window._groupByTrack=false;window._catCollapsed={};document.getElementById('groupByPlayerBtn').style.background='';document.getElementById('groupByPlayerBtn').style.color='';document.getElementById('groupByTrackBtn').style.background='';document.getElementById('groupByTrackBtn').style.color='';}this.style.background=window._groupByCategory?'var(--gold)':'';this.style.color=window._groupByCategory?'#1a1a1a':'';loadSaved();" title="Groepeer op categorie"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:middle"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/></svg></button>
-    <button id="archiveSearchBtn" class="btn-secondary" style="padding:8px 14px" onclick="var w=document.getElementById('archiveSearchWrap');w.classList.toggle('hidden');this.style.background=w.classList.contains('hidden')?'':'var(--gold)';this.style.color=w.classList.contains('hidden')?'':'#1a1a1a';if(!w.classList.contains('hidden'))document.getElementById('archiveSearch').focus();else{document.getElementById('archiveSearch').value='';loadSaved();}" title="Zoeken"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:middle"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg></button>
+    <button id="groupByCategoryBtn" class="btn-secondary" style="padding:8px 14px" onclick="window._groupByCategory=!window._groupByCategory;if(window._groupByCategory){window._groupByPlayer=false;window._groupByTrack=false;window._catCollapsed={};document.getElementById('groupByPlayerBtn').style.background='';document.getElementById('groupByPlayerBtn').style.color='';document.getElementById('groupByTrackBtn').style.background='';document.getElementById('groupByTrackBtn').style.color='';}this.style.background=window._groupByCategory?'var(--gold)':'';this.style.color=window._groupByCategory?'var(--green-deep)':'';loadSaved();" title="Groepeer op categorie"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:middle"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/></svg></button>
+    <button id="archiveSearchBtn" class="btn-secondary" style="padding:8px 14px" onclick="var w=document.getElementById('archiveSearchWrap');w.classList.toggle('hidden');this.style.background=w.classList.contains('hidden')?'':'var(--gold)';this.style.color=w.classList.contains('hidden')?'':'var(--green-deep)';if(!w.classList.contains('hidden'))document.getElementById('archiveSearch').focus();else{document.getElementById('archiveSearch').value='';loadSaved();}" title="Zoeken"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:middle"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg></button>
   </div>
   <div class="fg hidden" id="archiveSearchWrap" style="margin-bottom:8px">
     <input id="archiveSearch" type="text" placeholder="Zoek op club, baan of speler" oninput="loadSaved()">
@@ -631,7 +698,6 @@
   <div id="exportClubsMsg" class="hidden orange-msg" style="font-size:20px;font-weight:700;color:var(--orange);text-align:right;margin-bottom:4px">Tik nogmaals om te bevestigen</div>
   <div id="exportClubsSuccess" class="hidden" style="font-size:20px;font-weight:700;color:var(--green-light);text-align:right;margin-bottom:4px"></div>
   <div style="display:flex;gap:8px;align-items:center;margin-bottom:8px">
-    <button class="btn-secondary" id="themeToggleBtn" onclick="toggleTheme()" style="padding:8px 14px" title="Thema"><svg id="themeToggleIcon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:middle"></svg></button>
     <div style="flex:1"></div>
     <button id="clubExportBtn" class="btn-secondary" style="padding:8px 14px" onclick="confirmExportAll(this, 'clubs')" title="Exporteer alle clubs"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg></button>
     <label class="btn-secondary" style="padding:8px 14px;cursor:pointer" title="Importeer club">
@@ -639,8 +705,8 @@
       <input type="file" accept=".json" onchange="importCourseData(this)" style="display:none">
     </label>
     <button class="btn-secondary" style="padding:8px 14px" onclick="createNewClub()" title="Nieuwe club"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:middle"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="16"/><line x1="8" y1="12" x2="16" y2="12"/></svg></button>
-    <button id="clubGroupByCategoryBtn" class="btn-secondary" style="padding:8px 14px" onclick="window._clubGrouped=!window._clubGrouped;if(window._clubGrouped)window._clubSectionCollapsed={};this.style.background=window._clubGrouped?'var(--gold)':'';this.style.color=window._clubGrouped?'#1a1a1a':'';buildClubList();" title="Groepeer op categorie"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:middle"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/></svg></button>
-    <button id="clubSearchBtn" class="btn-secondary" style="padding:8px 14px" onclick="var w=document.getElementById('clubSearchWrap');w.classList.toggle('hidden');this.style.background=w.classList.contains('hidden')?'':'var(--gold)';this.style.color=w.classList.contains('hidden')?'':'#1a1a1a';if(!w.classList.contains('hidden'))document.getElementById('clubSearch').focus();else{document.getElementById('clubSearch').value='';buildClubList();}" title="Zoeken"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:middle"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg></button>
+    <button id="clubGroupByCategoryBtn" class="btn-secondary" style="padding:8px 14px" onclick="window._clubGrouped=!window._clubGrouped;if(window._clubGrouped)window._clubSectionCollapsed={};this.style.background=window._clubGrouped?'var(--gold)':'';this.style.color=window._clubGrouped?'var(--green-deep)':'';buildClubList();" title="Groepeer op categorie"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:middle"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/></svg></button>
+    <button id="clubSearchBtn" class="btn-secondary" style="padding:8px 14px" onclick="var w=document.getElementById('clubSearchWrap');w.classList.toggle('hidden');this.style.background=w.classList.contains('hidden')?'':'var(--gold)';this.style.color=w.classList.contains('hidden')?'':'var(--green-deep)';if(!w.classList.contains('hidden'))document.getElementById('clubSearch').focus();else{document.getElementById('clubSearch').value='';buildClubList();}" title="Zoeken"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:middle"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg></button>
   </div>
   <div id="clubSelectHint" class="hidden" style="font-size:20px;font-weight:700;color:var(--muted);margin-bottom:8px">Selecteer een club met <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:middle"><path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"/></svg></div>
   <div class="fg hidden" id="clubSearchWrap" style="margin-bottom:14px">
@@ -660,6 +726,81 @@
   </div>
   <div class="sum-table" id="sumTable">
     <div id="sumRows"></div>
+  </div>
+  <!-- OP-KOERS-INDICATOR (START, makkelijk te verwijderen) -->
+  <div id="onScheduleIndicator" class="hidden" style="font-size:20px;font-weight:700;color:var(--muted);text-align:center;margin:8px 0"></div>
+  <!-- OP-KOERS-INDICATOR (EINDE) -->
+</div>
+
+<div id="screen-settings" class="screen">
+  <h2 style="margin:0 0 16px">Instellingen</h2>
+  <div class="card" style="margin-bottom:12px">
+    <div style="display:flex;align-items:center;justify-content:space-between;gap:12px">
+      <div>
+        <div style="font-size:20px;font-weight:700;color:var(--white)">Donkere modus</div>
+        <div style="font-size:17px;color:var(--muted)">Kies tussen lichte en donkere weergave</div>
+      </div>
+      <label class="switch"><input type="checkbox" id="themeToggle" onchange="toggleTheme()"><span class="slider"></span></label>
+    </div>
+  </div>
+  <div class="card">
+    <div style="display:flex;align-items:center;justify-content:space-between;gap:12px">
+      <div>
+        <div style="font-size:20px;font-weight:700;color:var(--white)">Voortgangsindicator</div>
+        <div style="font-size:17px;color:var(--muted)">Toon tijdens de ronde of je voor of achter op schema ligt</div>
+      </div>
+      <label class="switch"><input type="checkbox" id="progressToggle" onchange="toggleProgressIndicator()"><span class="slider"></span></label>
+    </div>
+  </div>
+  <div class="card">
+    <div style="display:flex;align-items:center;justify-content:space-between;gap:12px">
+      <div>
+        <div style="font-size:20px;font-weight:700;color:var(--white)">Slechtweer-modus</div>
+        <div style="font-size:17px;color:var(--muted)">Grotere scoreknoppen op het scorescherm</div>
+      </div>
+      <label class="switch"><input type="checkbox" id="badWeatherToggle" onchange="toggleBadWeather()"><span class="slider"></span></label>
+    </div>
+  </div>
+  <div class="card">
+    <div style="display:flex;align-items:center;justify-content:space-between;gap:12px">
+      <div>
+        <div style="font-size:20px;font-weight:700;color:var(--white)">Snel naar laatste 20</div>
+        <div style="font-size:17px;color:var(--muted)">Lang indrukken van "groepeer op speler" in het archief (<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:-2px"><path d="M3 7v12a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V9a2 2 0 0 0-2-2h-7l-2-2H5a2 2 0 0 0-2 2Z"/></svg> <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:-1px"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg> <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:-2px"><circle cx="9" cy="7" r="4"/><path d="M3 21v-2a4 4 0 0 1 4-4h4a4 4 0 0 1 4 4v2"/><circle cx="19" cy="7" r="2"/><path d="M23 21v-1a3 3 0 0 0-3-3h-1"/></svg>) gaat direct naar de laatste 20 qualifying rondes</div>
+      </div>
+      <label class="switch"><input type="checkbox" id="quickLast20Toggle" onchange="toggleQuickLast20()"><span class="slider"></span></label>
+    </div>
+  </div>
+  <div class="card">
+    <div style="margin-bottom:8px">
+      <div style="font-size:20px;font-weight:700;color:var(--white)">Laagste handicap (365 dagen)</div>
+      <div style="font-size:17px;color:var(--muted)">Het World Handicap System begrenst hoe snel je handicap mag stijgen ten opzichte van je laagste index van de afgelopen 365 dagen. Vul die hier in voor een exacte berekening. Laat je het leeg, dan leidt de app de waarde af uit je opgeslagen rondes (kan afwijken als je historie onvolledig is).</div>
+    </div>
+    <div class="fg" style="margin-bottom:0">
+      <input id="lowHiInput" type="text" inputmode="decimal" placeholder="bijv. 12.4" oninput="this.value=this.value.replace(/[^0-9.,-]/g,'')" onblur="saveLowHi(this)">
+    </div>
+  </div>
+  <div class="card" style="margin-bottom:12px">
+    <div style="display:flex;align-items:center;justify-content:space-between;gap:12px">
+      <div>
+        <div style="font-size:20px;font-weight:700;color:var(--white)">Favoriete speler 2</div>
+        <div id="favPlayer2Summary" style="font-size:17px;color:var(--muted)"></div>
+      </div>
+      <button class="btn-secondary" onclick="openPlayer2Modal('fav')" style="padding:8px 18px;font-weight:700">Instellen</button>
+    </div>
+  </div>
+  <div class="card" style="margin-bottom:12px">
+    <div style="display:flex;align-items:center;justify-content:space-between;gap:12px">
+      <div>
+        <div style="font-size:20px;font-weight:700;color:var(--white)">Standaard speler 2</div>
+        <div id="defaultPlayer2Summary" style="font-size:17px;color:var(--muted)"></div>
+      </div>
+      <button class="btn-secondary" onclick="openPlayer2Modal('default')" style="padding:8px 18px;font-weight:700">Instellen</button>
+    </div>
+  </div>
+  <div style="margin-top:24px;padding-top:16px;border-top:1px solid rgba(255,255,255,.1);text-align:center">
+    <div id="resetAllMsg" class="hidden error-msg" style="font-size:15px;font-weight:700;color:var(--red);margin-bottom:8px">Tik nogmaals om te bevestigen</div>
+    <button id="resetAllBtn" class="btn-secondary" style="padding:6px 12px;font-size:15px;color:var(--muted)" onclick="confirmResetAll(this)">Alles wissen</button>
+    <div style="font-size:13px;color:var(--muted);margin-top:14px;opacity:.7">versie 1.0</div>
   </div>
 </div>
 
@@ -805,6 +946,202 @@ function agsFor(h) {
   return Math.min(h.score, h.par + h.phcp + 2);
 }
 
+// ══ DAGRESULTAAT (Score Differential) ═════════════════════════════════════
+// Verwachte 9-holes SD op basis van Handicap Index (B2, gekalibreerd op WHS-ijkpunt
+// HI 14,0 -> SD18 15,7 bij SD9 7,2). Benadering, niet de officiële tabel.
+function expectedSD9(hi) {
+  return 0.5214 * hi + 1.2;
+}
+
+// Berekent het dagresultaat. Retourneert { value, approx } of null als niet berekenbaar.
+// approx=true betekent 9-holes benadering (tilde tonen).
+function computeSD(round) {
+  if (!round) return null;
+  const holes = round.holes || [];
+  const played = holes.filter(h => h.score !== null);
+  const done = holes.length > 0 && played.length === holes.length;
+  if (!done) return null;
+  const cr = parseFloat(round.CR);
+  const sr = parseFloat(round.SR);
+  const hi = parseFloat(round.hcp);
+  if (!isFinite(cr) || !isFinite(sr) || sr <= 0) return null;
+  const pcc = isFinite(parseFloat(round.pcc)) ? parseFloat(round.pcc) : 0;
+  const ags = holes.reduce((s, h) => s + agsFor(h), 0);
+
+  if (holes.length === 18) {
+    const sd = (113 / sr) * (ags - cr - pcc);
+    return { value: Math.round(sd * 10) / 10, approx: false };
+  }
+  if (holes.length === 9) {
+    if (!isFinite(hi)) return null;
+    const sd9 = (113 / sr) * (ags - cr - pcc);
+    const sd18 = sd9 + expectedSD9(hi);
+    return { value: Math.round(sd18 * 10) / 10, approx: true };
+  }
+  return null;
+}
+
+// Effectieve SD: handmatig vastgesteld heeft voorrang, anders berekend.
+// Retourneert { value, approx, manual } of null.
+function effectiveSD(round) {
+  if (round && round.sdManual != null && round.sdManual !== '' && isFinite(parseFloat(round.sdManual))) {
+    return { value: parseFloat(round.sdManual), approx: false, manual: true };
+  }
+  const c = computeSD(round);
+  return c ? { ...c, manual: false } : null;
+}
+
+// WHS-staffel: bij n rondes → aantal meetellende laagste SD's + aanpassing
+// Gebaseerd op de World Handicap System-tabel.
+// Officiële WHS-afronding: kap af (truncate) naar 1 decimaal, niet rekenkundig afronden.
+// Truncatie richting nul, zodat plus-handicaps (negatief) correct worden behandeld.
+function whsTrunc(v) {
+  return Math.trunc(v * 10) / 10;
+}
+
+function whsStaffel(n) {
+  const t = [
+    [1, 1, 0], [2, 1, 0], [3, 1, -2.0], [4, 1, -1.0], [5, 1, 0], [6, 2, -1.0],
+    [7, 2, 0], [8, 2, 0], [9, 3, 0], [10, 3, 0], [11, 3, 0],
+    [12, 4, 0], [13, 4, 0], [14, 4, 0], [15, 5, 0], [16, 5, 0],
+    [17, 6, 0], [18, 6, 0], [19, 7, 0], [20, 8, 0],
+  ];
+  if (n < 1) return null;
+  if (n >= 20) return { count: 8, adj: 0 };
+  const row = t.find(r => r[0] === n);
+  return row ? { count: row[1], adj: row[2] } : { count: 8, adj: 0 };
+}
+
+// Soft cap (+3.0 halveert) en hard cap (+5.0 max) t.o.v. de laagste index (Low HI).
+// Caps werken alleen omhoog; dalen is onbeperkt.
+function applyHandicapCaps(rawValue, lowHi) {
+  if (lowHi == null || !isFinite(lowHi)) return rawValue;
+  const increase = rawValue - lowHi;
+  if (increase <= 3.0) return rawValue;
+  // Soft cap: deel boven 3.0 telt half
+  let capped = lowHi + 3.0 + (increase - 3.0) * 0.5;
+  // Hard cap: nooit meer dan 5.0 boven low HI
+  capped = Math.min(capped, lowHi + 5.0);
+  return whsTrunc(capped);
+}
+
+// Bepaalt WHS-handicap uit een set qualifying rondes.
+// mode 'fixed' = alleen vastgestelde SD's; 'effective' = alle (voorlopig meegerekend).
+// lowHi (optioneel) past soft/hard cap toe.
+// Retourneert { value, rawValue, capped, usedIds:Set } of null.
+// Index vóór de nieuwste ronde (voor ESR): WHS over de set zonder de nieuwste ronde,
+// zonder ESR/caps. Retourneert getal of null.
+function priorHiFor(rounds, mode) {
+  if (!rounds || rounds.length < 2) return null;
+  const older = rounds.slice(1); // rounds is nieuwste-eerst
+  const withSd = older.map(r => {
+    let sd = null;
+    if (mode === 'fixed') {
+      if (r.sdManual != null && r.sdManual !== '' && isFinite(parseFloat(r.sdManual))) sd = parseFloat(r.sdManual);
+    } else {
+      const e = effectiveSD(r);
+      if (e) sd = e.value;
+    }
+    return sd == null ? null : { sd, t: new Date(`${r.date || '1970-01-01'}T${r.time || '00:00'}`).getTime() };
+  }).filter(v => v != null);
+  const staffel = whsStaffel(withSd.length);
+  if (!staffel) return null;
+  const sorted = [...withSd].sort((a, b) => (a.sd - b.sd) || (a.t - b.t)).slice(0, staffel.count);
+  const avg = sorted.reduce((s, x) => s + x.sd, 0) / sorted.length;
+  return whsTrunc(avg + staffel.adj);
+}
+
+function whsHandicap(rounds, mode, lowHi = null, priorHi = null) {
+  const withSd = rounds
+    .map(r => {
+      let sd = null;
+      if (mode === 'fixed') {
+        if (r.sdManual != null && r.sdManual !== '' && isFinite(parseFloat(r.sdManual))) sd = parseFloat(r.sdManual);
+      } else {
+        const e = effectiveSD(r);
+        if (e) sd = e.value;
+      }
+      return sd == null ? null : { id: r.id, sd, t: new Date(`${r.date || '1970-01-01'}T${r.time || '00:00'}`).getTime() };
+    })
+    .filter(Boolean);
+  const staffel = whsStaffel(withSd.length);
+  if (!staffel) return null;
+  // Laagste 'count' SD's; bij gelijke SD's telt de oudste ronde eerst (WHS-conform)
+  const sorted = [...withSd].sort((a, b) => (a.sd - b.sd) || (a.t - b.t));
+  const used = sorted.slice(0, staffel.count);
+  const avg = used.reduce((s, x) => s + x.sd, 0) / used.length;
+  let rawValue = whsTrunc(avg + staffel.adj);
+  // Exceptional Score Reduction: vergelijk nieuwste dagresultaat met index vóór die ronde
+  let esr = 0;
+  if (priorHi != null && isFinite(priorHi) && withSd.length) {
+    const newestSd = withSd[0].sd; // rounds is nieuwste-eerst
+    const diff = priorHi - newestSd;
+    if (diff >= 10.0) esr = 2.0;
+    else if (diff >= 7.0) esr = 1.0;
+  }
+  rawValue = Math.round((rawValue - esr) * 10) / 10;
+  const value = applyHandicapCaps(rawValue, lowHi);
+  return { value, rawValue, esr, capped: value !== rawValue, usedIds: new Set(used.map(x => x.id)) };
+}
+
+// Verzamelt de laatste 20 afgeronde qualifying rondes van een speler (nieuwste eerst).
+function last20Qualifying(player, allRounds, activeId, game2Id_) {
+  const isDone = r => (r.playedCount ?? r.holes.filter(h => h.score !== null).length) >= (r.holesCount ?? r.holes.length);
+  return allRounds
+    .filter(r => r.player === player && r.qualifying && isDone(r)
+      && !(game2Id_ && r.id === game2Id_))
+    .sort((a, b) => {
+      const da = new Date(`${a.date || '1970-01-01'}T${a.time || '00:00'}`);
+      const db = new Date(`${b.date || '1970-01-01'}T${b.time || '00:00'}`);
+      return db - da;
+    })
+    .slice(0, 20);
+}
+
+// Leidt de laagste index van de afgelopen 365 dagen af uit de rondehistorie.
+// Voor elke qualifying ronde in dat venster: de index zoals die na die ronde gold
+// (staffel-gemiddelde, zonder ESR/caps). Retourneert de laagste, of null.
+function derivedLowHi(player, allRounds, mode) {
+  const isDone = r => (r.playedCount ?? r.holes.filter(h => h.score !== null).length) >= (r.holesCount ?? r.holes.length);
+  const qual = allRounds
+    .filter(r => r.player === player && r.qualifying && isDone(r))
+    .sort((a, b) => {
+      const da = new Date(`${a.date || '1970-01-01'}T${a.time || '00:00'}`);
+      const db = new Date(`${b.date || '1970-01-01'}T${b.time || '00:00'}`);
+      return da - db; // oudste eerst
+    });
+  if (!qual.length) return null;
+  const cutoff = Date.now() - 365 * 24 * 60 * 60 * 1000;
+  let low = null;
+  qual.forEach((r, idx) => {
+    const t = new Date(`${r.date || '1970-01-01'}T${r.time || '00:00'}`).getTime();
+    if (t < cutoff) return;
+    // Laatste 20 t/m deze ronde (nieuwste eerst)
+    const window20 = qual.slice(0, idx + 1).slice(-20).reverse();
+    const sds = window20.map(x => {
+      if (mode === 'fixed') {
+        return (x.sdManual != null && x.sdManual !== '' && isFinite(parseFloat(x.sdManual))) ? parseFloat(x.sdManual) : null;
+      }
+      const e = effectiveSD(x);
+      return e ? e.value : null;
+    }).filter(v => v != null);
+    const staffel = whsStaffel(sds.length);
+    if (!staffel) return;
+    const avg = [...sds].sort((a, b) => a - b).slice(0, staffel.count).reduce((s, x) => s + x, 0) / staffel.count;
+    const hi = whsTrunc(avg + staffel.adj);
+    if (low == null || hi < low) low = hi;
+  });
+  return low;
+}
+
+// Low HI: handmatig indien ingevuld, anders afgeleid uit de historie.
+function effectiveLowHi(player, allRounds, mode) {
+  const manual = getManualLowHi();
+  if (manual != null) return manual;
+  return derivedLowHi(player, allRounds, mode);
+}
+
+
 // ══ STATE ════════════════════════════════════════════════════════════════
 let sel = {
   gender: 'Heren',
@@ -816,8 +1153,9 @@ let sel = {
   date: null,
   time: null,
   dateTimeEdited: false,
+  qualifying: false,
 };
-let sel2 = { chcpOverride: null, gender: 'Heren', tee: 'Geel' };
+let sel2 = { chcpOverride: null, gender: 'Heren', tee: 'Geel', qualifying: false };
 let currentHole = 0;
 let game = { started: false, holes: [] };
 let game2Id = null;       // id van ronde speler 2
@@ -846,7 +1184,7 @@ const storage = (() => {
             el.textContent = 'Opslaan mislukt — geheugen vol';
             el.style.cssText = 'position:fixed;bottom:80px;left:50%;transform:translateX(-50%);background:#b41e1e;color:#fff;font-size:18px;font-weight:700;padding:10px 20px;border-radius:10px;z-index:9999';
             document.body.appendChild(el);
-            setTimeout(() => { el.remove(); storage._fullWarned = false; }, 3000);
+            setTimeout(() => { el.remove(); storage._fullWarned = false; }, 2000);
           }
         }
       }
@@ -955,60 +1293,80 @@ function trackMatchesFilters(name) {
 }
 
 
-let _p2LongPressTimer = null;
-let _p2LongPressFired = false;
-let _p2MsgLocked = false;
+let _setupDateInitDay = null; // Dag waarop datum/tijd op Start voor het laatst op 'nu' is gezet
 
-function startPlayer2LongPress(btn, type) {
-  _p2LongPressFired = false;
-  clearTimeout(_p2LongPressTimer);
-  _p2LongPressTimer = setTimeout(() => {
-    _p2LongPressFired = true;
-    if (navigator.vibrate) navigator.vibrate(20);
-    const name = document.getElementById('iName2')?.value.trim() || '';
-    const hcp  = document.getElementById('iHcp2')?.value.trim() || '';
-    if (type === 'fav') {
-      storage.setItem('golf_fav_player2_name', name);
-      storage.setItem('golf_fav_player2_hcp', hcp);
-      showPlayer2Msg('Favoriete speler opgeslagen', false);
-      updateFavPlayer2Star();
-    } else {
-      storage.setItem('golf_default_player2_name', name);
-      storage.setItem('golf_default_player2_hcp', hcp);
-      showPlayer2Msg('Standaard speler opgeslagen', false);
-    }
-    btn.style.background = '';
-    btn.style.borderColor = '';
-  }, 600);
+let _p2ModalType = null;
+
+// Opent de modal om favoriete of standaard speler 2 in te stellen
+function openPlayer2Modal(type) {
+  _p2ModalType = type;
+  const isFav = type === 'fav';
+  document.getElementById('player2ModalTitle').textContent = isFav ? 'Favoriete speler 2' : 'Standaard speler 2';
+  const nameKey = isFav ? 'golf_fav_player2_name' : 'golf_default_player2_name';
+  const hcpKey  = isFav ? 'golf_fav_player2_hcp'  : 'golf_default_player2_hcp';
+  document.getElementById('player2ModalName').value = storage.getItem(nameKey) || '';
+  document.getElementById('player2ModalHcp').value  = storage.getItem(hcpKey)  || '';
+  document.getElementById('player2SettingsModal').classList.remove('hidden');
 }
 
-function cancelPlayer2LongPress(btn, type) {
-  clearTimeout(_p2LongPressTimer);
-  if (_p2LongPressFired) { _p2LongPressFired = false; return; }
-  // Kort drukken: vul in
+function closePlayer2Modal() {
+  document.getElementById('player2SettingsModal').classList.add('hidden');
+  _p2ModalType = null;
+}
+
+function savePlayer2Modal() {
+  const isFav = _p2ModalType === 'fav';
+  const nameKey = isFav ? 'golf_fav_player2_name' : 'golf_default_player2_name';
+  const hcpKey  = isFav ? 'golf_fav_player2_hcp'  : 'golf_default_player2_hcp';
+  const name = document.getElementById('player2ModalName').value.trim();
+  const hcp  = document.getElementById('player2ModalHcp').value.trim();
+  // Alleen hcp ingevuld: naam wordt 'Speler 2'. Alleen naam: hcp blijft leeg.
+  const finalName = name || (hcp ? 'Speler 2' : '');
+  if (finalName) storage.setItem(nameKey, finalName); else storage.removeItem(nameKey);
+  if (hcp)  storage.setItem(hcpKey, hcp);   else storage.removeItem(hcpKey);
+  updatePlayer2Summaries();
+  updateFavPlayer2Star();
+  closePlayer2Modal();
+}
+
+// Werkt de samenvattingsregels onder de knoppen in Instellingen bij
+function updatePlayer2Summaries() {
+  const favEl = document.getElementById('favPlayer2Summary');
+  const defEl = document.getElementById('defaultPlayer2Summary');
+  const fmt = (nameKey, hcpKey) => {
+    const n = storage.getItem(nameKey);
+    const h = storage.getItem(hcpKey);
+    if (!n && !h) return 'Nog niet ingesteld';
+    return `${n || 'Speler 2'}${h ? ' · hcp ' + h : ''}`;
+  };
+  if (favEl) favEl.textContent = fmt('golf_fav_player2_name', 'golf_fav_player2_hcp');
+  if (defEl) defEl.textContent = fmt('golf_default_player2_name', 'golf_default_player2_hcp');
+}
+
+// Vult speler 2 in met de opgeslagen favoriete of standaard speler
+function fillPlayer2(type) {
   const isFav = type === 'fav';
   const nameKey = isFav ? 'golf_fav_player2_name' : 'golf_default_player2_name';
   const hcpKey  = isFav ? 'golf_fav_player2_hcp'  : 'golf_default_player2_hcp';
   const savedName = storage.getItem(nameKey);
   const savedHcp  = storage.getItem(hcpKey);
+  if (!savedName && !savedHcp) {
+    showPlayer2Msg(isFav ? 'Geen favoriete speler 2 ingesteld' : 'Geen standaard speler 2 ingesteld', 'error');
+    return;
+  }
+  if (savedName && isPlayer2NameConflict(savedName)) {
+    showPlayer2Msg('Speler 2 kan niet dezelfde zijn als speler 1', 'error');
+    return;
+  }
   const name2El = document.getElementById('iName2');
   const hcp2El  = document.getElementById('iHcp2');
   if (name2El) name2El.value = savedName || 'Speler 2';
-  if (hcp2El)  hcp2El.value  = savedHcp  || '36';
+  if (hcp2El)  hcp2El.value  = savedHcp  || '';
   onHcpBlur(hcp2El);
   savePlayer2Profile();
   updateChcp2();
   updateFavPlayer2Star();
-  btn.style.background = 'var(--green-light)';
-  btn.style.borderColor = 'var(--green-light)';
-  btn.style.color = '#1a1a1a';
-  showPlayer2Msg('Lang indrukken voor opslaan', true);
-  clearTimeout(btn._resetTimer);
-  btn._resetTimer = setTimeout(() => {
-    btn.style.background = '';
-    btn.style.borderColor = '';
-    btn.style.color = '';
-  }, 2500);
+  showPlayer2Msg(isFav ? 'Favoriete speler ingevuld' : 'Standaard speler ingevuld', 'success');
 }
 
 function updateFavPlayer2Star() {
@@ -1018,24 +1376,40 @@ function updateFavPlayer2Star() {
   if (icon) icon.setAttribute('fill', (favName && favName === currName) ? 'currentColor' : 'none');
 }
 
-function showPlayer2Msg(txt, lockable) {
-  if (_p2MsgLocked && lockable) return; // Niet overschrijven tijdens vastgelegd melding
+function showPlayer2Msg(txt, type) {
+  // type: 'success' (groen), 'error' (oranje)
   const el = document.getElementById('player2FavMsg');
   if (!el) return;
   el.textContent = txt;
-  el.style.color = lockable ? 'var(--muted)' : 'var(--green-light)';
+  el.style.color = type === 'error' ? 'var(--orange)' : 'var(--green-light)';
   el.classList.remove('hidden');
-  _p2MsgLocked = !lockable;
   clearTimeout(el._timer);
   el._timer = setTimeout(() => {
     el.classList.add('hidden');
-    _p2MsgLocked = false;
   }, 2500);
+}
+
+// Model A: de speler bovenaan Start is de handicaphouder; speler 2 is altijd een gast.
+// Speler 2 mag daarom niet dezelfde naam hebben als de Start-speler.
+function startPlayerName() {
+  const el = document.getElementById('iName');
+  return el ? el.value.trim() : '';
+}
+function isPlayer2NameConflict(name) {
+  const p1 = startPlayerName();
+  return !!p1 && !!name && p1.toLowerCase() === name.toLowerCase();
 }
 
 function savePlayer2Profile() {
   const name = document.getElementById('iName2')?.value.trim();
   const hcp  = parseFloat(document.getElementById('iHcp2')?.value.replace(',', '.'));
+  if (name && isPlayer2NameConflict(name)) {
+    showPlayer2Msg('Speler 2 kan niet dezelfde zijn als speler 1', 'error');
+    const el = document.getElementById('iName2');
+    if (el) el.value = '';
+    storage.removeItem('golf_profile_name2');
+    return;
+  }
   if (name) storage.setItem('golf_profile_name2', name);
   if (!isNaN(hcp)) storage.setItem('golf_profile_hcp2', hcp.toString());
 }
@@ -1223,9 +1597,10 @@ function updatePlayerSwitchBar() {
     btn2.style.opacity = game2Id ? '1' : '.3';
     btn2.style.cursor = game2Id ? 'pointer' : 'default';
   }
+  const inactiveBg = document.documentElement.classList.contains('light-mode') ? 'rgba(0,0,0,.1)' : 'rgba(255,255,255,.1)';
   const isP1Active = activePlayer === 1;
-  if (btn1) { btn1.style.background = isP1Active ? 'var(--gold)' : 'rgba(255,255,255,.1)'; btn1.style.color = isP1Active ? '#1a1a1a' : 'var(--white)'; btn1.style.fontWeight = isP1Active ? '800' : '700'; }
-  if (btn2) { btn2.style.background = !isP1Active ? 'var(--gold)' : 'rgba(255,255,255,.1)'; btn2.style.color = !isP1Active ? '#1a1a1a' : 'var(--white)'; btn2.style.fontWeight = !isP1Active ? '800' : '700'; }
+  if (btn1) { btn1.style.background = isP1Active ? 'var(--gold)' : inactiveBg; btn1.style.color = isP1Active ? 'var(--green-deep)' : 'var(--white)'; btn1.style.fontWeight = isP1Active ? '800' : '700'; }
+  if (btn2) { btn2.style.background = !isP1Active ? 'var(--gold)' : inactiveBg; btn2.style.color = !isP1Active ? 'var(--green-deep)' : 'var(--white)'; btn2.style.fontWeight = !isP1Active ? '800' : '700'; }
 }
 
 function switchToPlayer(n) {
@@ -1273,6 +1648,7 @@ function buildRoundEntry() {
     totalStb: game.holes.reduce((s, h) => s + stbFor(h), 0),
     playedCount: played.length, holesCount: game.holes.length,
     currentHole, started: true,
+    pcc: game.pcc ?? 0, sdManual: game.sdManual ?? null, qualifying: !!game.qualifying,
     holes: game.holes.map(h => ({ ...h })),
   };
 }
@@ -1293,6 +1669,11 @@ function rebuildStartScreen() {
     updateChcp2();
   }
   updatePlayer2Titles();
+  const q1 = document.getElementById('qualifyToggle1');
+  const q2 = document.getElementById('qualifyToggle2');
+  if (q1) q1.checked = !!sel.qualifying;
+  if (q2) q2.checked = !!sel2.qualifying;
+  updateComputedHcp();
 }
 
 function rebuildAll() {
@@ -1633,6 +2014,19 @@ function todayISO() {
   return d.getFullYear() + '-' + String(d.getMonth()+1).padStart(2,'0') + '-' + String(d.getDate()).padStart(2,'0');
 }
 
+// Waarschuwingsdrempel: na 'volgende week zondag' (de zondag na de eerstvolgende zondag)
+function isFarFutureDate(dateStr) {
+  if (!dateStr) return false;
+  const d = new Date(dateStr + 'T00:00');
+  const limit = new Date();
+  limit.setHours(0, 0, 0, 0);
+  // Dagen tot de eerstvolgende zondag (0 = vandaag is zondag)
+  const daysToSunday = (7 - limit.getDay()) % 7;
+  // Volgende week zondag = eerstvolgende zondag + 7 dagen
+  limit.setDate(limit.getDate() + daysToSunday + 7);
+  return d > limit;
+}
+
 // "YYYY-MM-DDTHH:mm" voor <input type="datetime-local">
 function nowDateTimeLocal() {
   const d = new Date();
@@ -1663,6 +2057,11 @@ function onDateTimeChange() {
   sel.date = date;
   sel.time = timeEl.value;
   sel.dateTimeEdited = true;
+  const warnEl = document.getElementById('dateFutureWarn');
+  if (warnEl) warnEl.classList.toggle('hidden', !isFarFutureDate(date));
+  storage.setItem('golf_setup_date_day', todayISO());
+  storage.setItem('golf_setup_date', date);
+  storage.setItem('golf_setup_time', timeEl.value || '');
 }
 
 // Zet datum/tijd direct op nu; 2e tik binnen 2s zet terug naar de vorige waarde
@@ -1747,12 +2146,20 @@ function savePlayerProfile() {
   const hcp  = getHcp();
   if (name) storage.setItem('golf_profile_name', name);
   if (!isNaN(hcp)) storage.setItem('golf_profile_hcp', hcp.toString());
+  // Model A: als speler 1 dezelfde naam krijgt als speler 2, speler 2-naam wissen
+  const name2El = document.getElementById('iName2');
+  if (name && name2El && name2El.value.trim() && name2El.value.trim().toLowerCase() === name.toLowerCase()) {
+    name2El.value = '';
+    storage.removeItem('golf_profile_name2');
+    showPlayer2Msg('Speler 2 gewist: gelijk aan speler 1', 'error');
+  }
   // Ook bijwerken in actieve ronde
   if (game.started) {
     if (name) game.player = name;
     if (!isNaN(hcp)) game.hcp = hcp;
     saveActiveRound();
   }
+  updateComputedHcp();
 }
 
 const ROUND_STORAGE_LIMIT = 300;
@@ -1763,10 +2170,10 @@ function showStartError(msg) {
   el.innerHTML = msg;
   el.classList.remove('hidden');
   clearTimeout(el._hideTimer);
-  el._hideTimer = setTimeout(() => el.classList.add('hidden'), 3000);
+  el._hideTimer = setTimeout(() => el.classList.add('hidden'), 2000);
 }
 
-const FLAG_SVG = '<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:middle;margin-left:4px"><path d="M5 3v18"/><path d="M5 4h11l-2 4 2 4H5"/></svg>';
+const FLAG_SVG = '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:middle;margin-left:4px"><path d="M5 3v18"/><path d="M5 4h11l-2 4 2 4H5"/></svg> <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:middle"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg> <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:middle"><path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"/></svg>';
 
 function startRound() {
   const name = document.getElementById('iName').value.trim();
@@ -1792,6 +2199,18 @@ function startRound() {
   if (!course) { showStartError('Selecteer een baan'); return; }
 
   const saved = loadSavedRounds();
+
+  // Eerst controleren op een bestaande ronde op dezelfde datum en tijd
+  const dupDt = document.getElementById('iDate').value;
+  const dupTime = document.getElementById('iTime').value;
+  const duplicate = saved.find(r => (r.date || '') === (dupDt || '') && (r.time || '') === (dupTime || ''));
+  if (duplicate) {
+    const formattedDate = formatFullDate(dupDt);
+    const formattedTime = dupTime ? ` om ${dupTime}` : '';
+    showInfoModal('Dubbele datum & tijd', `Er bestaat al een ronde op ${formattedDate}${formattedTime}. Kies een andere datum of tijd.`);
+    return;
+  }
+
   const roundsToAdd = player2Visible ? 2 : 1;
   if (saved.length + roundsToAdd > ROUND_STORAGE_LIMIT) {
     document.getElementById('roundLimitMessage').textContent =
@@ -1817,25 +2236,11 @@ function startRound() {
     }
     document.getElementById('confirmModalTitle').textContent = 'Actieve ronde aanwezig';
     document.getElementById('confirmModalMessage').textContent = msg;
-    document.getElementById('confirmModalBtn').onclick = () => { closeConfirmModal(); checkDuplicateThenStart(); };
+    document.getElementById('confirmModalBtn').onclick = () => { closeConfirmModal(); startRoundConfirmed(); };
     document.getElementById('confirmModal').classList.remove('hidden');
     return;
   }
 
-  checkDuplicateThenStart();
-}
-
-function checkDuplicateThenStart() {
-  const saved = loadSavedRounds();
-  const dt = document.getElementById('iDate').value;
-  const time = document.getElementById('iTime').value;
-  const duplicate = saved.find(r => r.date === dt && (r.time || '') === (time || ''));
-  if (duplicate) {
-    const formattedDate = formatFullDate(dt);
-    const formattedTime = time ? ` om ${time}` : '';
-    showInfoModal('Dubbele datum & tijd', `Er bestaat al een ronde op ${formattedDate}${formattedTime}. Kies een andere datum of tijd.`);
-    return;
-  }
   startRoundConfirmed();
 }
 
@@ -1852,11 +2257,12 @@ function closeConfirmModal() {
   }
 }
 
-function showConfirmModal(title, msg, onConfirm, cancelText = 'Sluiten', onCancel = null) {
+function showConfirmModal(title, msg, onConfirm, cancelText = 'Sluiten', onCancel = null, confirmText = null) {
   document.getElementById('confirmModalTitle').textContent = title;
   document.getElementById('confirmModalMessage').textContent = msg;
   const btn = document.getElementById('confirmModalBtn');
   btn.style.display = onConfirm ? '' : 'none';
+  if (confirmText) btn.textContent = confirmText; else btn.textContent = 'OK';
   btn.onclick = onConfirm ? () => { closeConfirmModal(); onConfirm(); } : null;
   const cancelBtn = document.getElementById('confirmModalCancelBtn');
   if (cancelBtn) {
@@ -1935,6 +2341,7 @@ function startRoundConfirmed() {
     gender: sel.gender, track: sel.track, tee: sel.tee,
     club: startClubName, clubShort: CLUBS[startClubName]?.shortName || startClubName,
     CR: teeData.CR, SR: teeData.SR, PAR: teeData.PAR, chcp,
+    qualifying: !!sel.qualifying,
     started: true,
     holes: course.holes.map((h, i) => ({
       id: h.id, par: h.par, si: h.si,
@@ -1971,6 +2378,7 @@ function startRoundConfirmed() {
         gender: sel2.gender, track: sel.track, tee: sel2.tee,
         club: startClubName, clubShort: CLUBS[startClubName]?.shortName || startClubName,
         CR: teeData2.CR, SR: teeData2.SR, PAR: teeData2.PAR, chcp: chcp2,
+        qualifying: !!sel2.qualifying,
         total: 0, totalStb: 0, playedCount: 0, holesCount: n,
         currentHole: 0, started: true,
         holes: course.holes.map((h, i) => ({
@@ -2186,7 +2594,7 @@ function stepScore(i, d) {
     h.score = d > 0 ? h.par + 1 : h.par;
   } else {
     const next = was + d;
-    h.score = next < 1 ? 1 : Math.min(h.par + 20, next);
+    h.score = next < 1 ? 1 : Math.min(19, next);
   }
   pulseScore(i);
   if (navigator.vibrate) navigator.vibrate(20);
@@ -2244,7 +2652,6 @@ function emptyStateHTML() {
 
 function renderScoreEmpty() {
   const empty = emptyStateHTML();
-  document.getElementById('statEmptyMsg').innerHTML = empty;
   document.getElementById('scoreEmptyMsg').innerHTML = empty;
   document.getElementById('sumInfo').innerHTML = '';
   document.getElementById('sumEmpty').textContent = '';
@@ -2256,6 +2663,8 @@ function renderScoreEmpty() {
   document.getElementById('sumRows').innerHTML = '';
   const nineTabBar = document.getElementById('nineTabBar');
   if (nineTabBar) { nineTabBar.classList.add('hidden'); nineTabBar.style.display = 'none'; }
+  // Meervoudige statistieken voor de hoofdspeler (geen actieve ronde)
+  renderPlayerStats();
 }
 
 function renderScoreInfo(played, total, totalAgs, totalStb, rawFmt, rparPlayed, phcpPlayed) {
@@ -2273,6 +2682,21 @@ function renderScoreInfo(played, total, totalAgs, totalStb, rawFmt, rparPlayed, 
     ['Speler', [
       ['Speler',   game.player],
       ['Hcp',      game.hcp != null ? game.hcp : '—'],
+      ...(() => {
+        // WHS alleen voor de speler bovenin Start (nooit speler 2 of een andere speler)
+        const nameEl = document.getElementById('iName');
+        const startPlayer = nameEl ? nameEl.value.trim() : '';
+        if (!startPlayer || game.player !== startPlayer) return [];
+        const all = loadSavedRounds();
+        const isDone = r => (r.playedCount ?? r.holes.filter(h => h.score !== null).length) >= (r.holesCount ?? r.holes.length);
+        const others = all.filter(r => r.player === game.player && String(r.id) !== String(game.id) && r.qualifying && isDone(r));
+        const includeGame = game.qualifying && game.holes.length > 0 && played.length === game.holes.length;
+        const pool = [...(includeGame ? [{ ...game }] : []), ...others]
+          .sort((a, b) => new Date(`${b.date||'1970-01-01'}T${b.time||'00:00'}`) - new Date(`${a.date||'1970-01-01'}T${a.time||'00:00'}`))
+          .slice(0, 20);
+        const whs = whsHandicap(pool, 'effective', effectiveLowHi(game.player, all, 'effective'), priorHiFor(pool, 'effective'));
+        return [['Verwachte hcp', whs ? whs.value.toFixed(1) : '—']];
+      })(),
     ]],
     ['Club & Baan', [
       ['Club',     clubName],
@@ -2288,11 +2712,38 @@ function renderScoreInfo(played, total, totalAgs, totalStb, rawFmt, rparPlayed, 
     ['Resultaat', [
       ['Holes',    played.length + ' / ' + game.holes.length + ' gespeeld'],
       ['Chcp',     game.chcp],
-      ['Score',    played.length ? total : '—'],
-      ['AGS',      played.length ? totalAgs : '—'],
       ['STB',      played.length ? totalStb : '—'],
       ['Bruto',    total + ' (' + rawFmt(dRaw) + ' vs par)'],
       ['Netto',    netto + ' (' + rawFmt(dNetto) + ' vs ppar)'],
+      ['Score',    played.length ? total : '—'],
+      ['AGS',      played.length ? totalAgs : '—'],
+      ['PCC',      formatPcc(game.pcc ?? 0)],
+      ['Sd<span style="font-weight:900;margin:0 3px">≈</span>(voorlopig)', (() => {
+        const done = game.holes.length > 0 && played.length === game.holes.length;
+        if (!done) return '—';
+        const c = computeSD({ holes: game.holes, CR: game.CR, SR: game.SR, hcp: game.hcp, pcc: game.pcc });
+        return c ? `${c.value.toFixed(1)}` : '—';
+      })()],
+      ['Sd<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="4" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:middle;margin:0 3px"><polyline points="20 6 9 17 4 12"/></svg>(vastgesteld)', (game.sdManual != null && game.sdManual !== '' && isFinite(parseFloat(game.sdManual))) ? parseFloat(game.sdManual).toFixed(1) : '—'],
+      ...(() => {
+        const done = game.holes.length > 0 && played.length === game.holes.length;
+        if (!done || !game.qualifying) return [];
+        // WHS alleen voor de speler bovenin Start (nooit speler 2)
+        const nameEl = document.getElementById('iName');
+        const startPlayer = nameEl ? nameEl.value.trim() : '';
+        if (!startPlayer || game.player !== startPlayer) return [];
+        const sdFixed = game.sdManual != null && game.sdManual !== '' && isFinite(parseFloat(game.sdManual));
+        // Laatste 20 qualifying van deze speler, inclusief de huidige ronde
+        const all = loadSavedRounds();
+        const others = all.filter(r => r.player === game.player && String(r.id) !== String(game.id));
+        const isDone = r => (r.playedCount ?? r.holes.filter(h => h.score !== null).length) >= (r.holesCount ?? r.holes.length);
+        const pool = [{ ...game }, ...others.filter(r => r.qualifying && isDone(r))]
+          .sort((a, b) => new Date(`${b.date||'1970-01-01'}T${b.time||'00:00'}`) - new Date(`${a.date||'1970-01-01'}T${a.time||'00:00'}`))
+          .slice(0, 20);
+        const whs = whsHandicap(pool, sdFixed ? 'fixed' : 'effective', effectiveLowHi(game.player, all, sdFixed ? 'fixed' : 'effective'), priorHiFor(pool, sdFixed ? 'fixed' : 'effective'));
+        const label = sdFixed ? 'Nieuwe hcp' : 'Verwachte nieuwe hcp';
+        return [[label, whs ? whs.value.toFixed(1) : '—']];
+      })(),
     ]],
   ];
 
@@ -2393,6 +2844,9 @@ function renderScoreTable() {
   // Bereken maximaal aantal bolletjes dynamisch
   const maxDots = Math.max(1, ...holeSubset.map(({ h }) => Math.abs(h.phcp || 0)));
 
+  // Toon transparante voorloop-1 alleen als een getoonde hole een score van 10+ heeft
+  const anyDoubleDigit = holeSubset.some(({ h }) => h.score != null && h.score >= 10);
+
   holeSubset.forEach(({ h, i }) => {
     const s = h.score;
     const d = s !== null ? s - h.par : null;
@@ -2408,7 +2862,7 @@ function renderScoreTable() {
     const armed = scoreTapHole === i;
     const scoreVal = `<div class="sum-tr-btn-cell score-cell"><span class="score-val${armed ? ' tap-armed' : ''}" style="font-size:24px;font-weight:900"${i === currentHole
         ? ` onpointerdown="decreaseScore(${i})" onpointerup="increaseScore(${i})" onpointerleave="cancelScore()" onpointercancel="cancelScore()" oncontextmenu="return false" onclick="event.stopPropagation()"`
-        : ` onclick="event.stopPropagation(); selectScoreRow(${i})"`}>${s ?? '—'}</span></div>`;
+        : ` onclick="event.stopPropagation(); selectScoreRow(${i})"`}>${s == null ? '—' : (anyDoubleDigit && s < 10 ? '<span style="color:transparent">1</span>' + s : s)}</span></div>`;
     const showBtns = i === currentHole && scoreButtonsRow === i;
     const isHiddenPparDouble = s !== null && d !== 2 && (s - h.ppar) === 2;
     const stbColor = 'var(--blue)';
@@ -2461,12 +2915,249 @@ function renderScoreTable() {
   scrollToCurrentRow();
 }
 
+// Meervoudige statistieken voor de hoofdspeler (naam in iName), op basis van
+// qualifying rondes — consistent met de WHS-logica. Alleen zichtbaar zonder actieve ronde.
+function renderPlayerStats() {
+  const el = document.getElementById('playerStats');
+  if (!el) return;
+  const player = startPlayerName();
+  if (!player) { el.innerHTML = ''; return; }
+
+  const all = loadSavedRounds();
+  const isDone = r => (r.playedCount ?? r.holes.filter(h => h.score !== null).length) >= (r.holesCount ?? r.holes.length);
+  const showAll = window._statsShowAll === true;
+  const rounds = all
+    .filter(r => r.player === player && isDone(r) && (showAll || r.qualifying))
+    .sort((a, b) => new Date(`${a.date||'1970-01-01'}T${a.time||'00:00'}`) - new Date(`${b.date||'1970-01-01'}T${b.time||'00:00'}`));
+
+  const toggleBar = `<div style="display:flex;gap:8px;margin-bottom:12px">`
+    + `<button class="btn-secondary" style="flex:1;padding:10px;font-size:17px${!showAll ? ';background:var(--gold);color:var(--green-deep)' : ''}" onclick="window._statsShowAll=false;renderPlayerStats()">Alleen qualifying</button>`
+    + `<button class="btn-secondary" style="flex:1;padding:10px;font-size:17px${showAll ? ';background:var(--gold);color:var(--green-deep)' : ''}" onclick="window._statsShowAll=true;renderPlayerStats()">Alle rondes</button>`
+    + `</div>`;
+
+  if (!rounds.length) {
+    el.innerHTML = toggleBar + `<div class="card"><h2>${escapeHtml(player)}</h2><div style="font-size:20px;color:var(--muted)">${showAll ? 'Nog geen afgeronde rondes.' : 'Nog geen qualifying rondes.'}</div></div>`;
+    return;
+  }
+
+  // Dagresultaten (effectief) per ronde, in chronologische volgorde
+  const sdSeries = rounds.map(r => { const e = effectiveSD(r); return e ? e.value : null; });
+  const validSd = sdSeries.filter(v => v != null);
+
+  // Handicapverloop: index zoals die na elke ronde gold (staffel-gemiddelde, zonder ESR/caps)
+  const hiSeries = rounds.map((r, idx) => {
+    const window20 = rounds.slice(0, idx + 1).slice(-20);
+    const sds = window20.map(x => { const e = effectiveSD(x); return e ? e.value : null; }).filter(v => v != null);
+    const staffel = whsStaffel(sds.length);
+    if (!staffel) return null;
+    const avg = [...sds].sort((a, b) => a - b).slice(0, staffel.count).reduce((s, x) => s + x, 0) / staffel.count;
+    return whsTrunc(avg + staffel.adj);
+  });
+
+  // Kerngetallen
+  const last20 = last20Qualifying(player, all, storage.getItem('golf_active_id'), game2Id);
+  const whs = whsHandicap(last20, 'effective', effectiveLowHi(player, all, 'effective'), priorHiFor(last20, 'effective'));
+  const bestSd = validSd.length ? Math.min(...validSd) : null;
+  const avgSd  = validSd.length ? validSd.reduce((s, x) => s + x, 0) / validSd.length : null;
+  const stbVals = rounds.map(r => r.totalStb).filter(v => v != null && isFinite(v));
+  const avgStb = stbVals.length ? stbVals.reduce((s, x) => s + x, 0) / stbVals.length : null;
+
+  // Trend: gemiddelde dagresultaat laatste 5 vs. de 5 daarvoor
+  const trend = (() => {
+    if (validSd.length < 6) return null;
+    const last5 = validSd.slice(-5);
+    const prev5 = validSd.slice(-10, -5);
+    if (!prev5.length) return null;
+    const a = last5.reduce((s, x) => s + x, 0) / last5.length;
+    const b = prev5.reduce((s, x) => s + x, 0) / prev5.length;
+    return { diff: a - b, last: a };
+  })();
+
+  // Spreiding (consistentie): standaarddeviatie van de dagresultaten
+  const spread = (() => {
+    if (validSd.length < 3) return null;
+    const m = validSd.reduce((s, x) => s + x, 0) / validSd.length;
+    const varc = validSd.reduce((s, x) => s + (x - m) ** 2, 0) / validSd.length;
+    return Math.sqrt(varc);
+  })();
+
+  // Scoregemiddelde t.o.v. par per 9 (heen = holes 1-9, terug = 10-18)
+  const nine = (which) => {
+    let sum = 0, cnt = 0;
+    rounds.forEach(r => {
+      if ((r.holes?.length ?? 0) !== 18) return;
+      const slice = which === 'out' ? r.holes.slice(0, 9) : r.holes.slice(9, 18);
+      slice.forEach(h => { if (h.score != null) { sum += h.score - h.par; cnt++; } });
+    });
+    return cnt ? sum / (cnt / 9) : null; // gemiddelde afwijking per 9 holes
+  };
+  const outAvg = nine('out'), inAvg = nine('in');
+
+  const kpi = (label, val) => `<div style="flex:1;min-width:90px;text-align:center"><div style="font-size:26px;font-weight:800;color:var(--green-light)">${val}</div><div style="font-size:15px;color:var(--muted);text-transform:uppercase;letter-spacing:.5px">${label}</div></div>`;
+  const kpiRow = `<div class="card"><h2>${escapeHtml(player)}</h2>`
+    + `<div style="display:flex;flex-wrap:wrap;gap:12px 8px">`
+    + kpi('Verwachte hcp', whs ? whs.value.toFixed(1) : '—')
+    + kpi('Rondes', rounds.length)
+    + kpi('Beste Sd', bestSd != null ? bestSd.toFixed(1) : '—')
+    + kpi('Gem. Sd', avgSd != null ? avgSd.toFixed(1) : '—')
+    + kpi('Gem. Stb', avgStb != null ? avgStb.toFixed(1) : '—')
+    + `</div>`
+    + (showAll ? `<div style="font-size:15px;color:var(--muted);margin-top:8px">Verwachte hcp blijft op basis van qualifying rondes; overige cijfers tellen alle afgeronde rondes.</div>` : '')
+    + `</div>`;
+
+  // Scoreverdeling over alle qualifying holes
+  let eagle=0, birdie=0, par=0, bogey=0, dbl=0, worse=0, holesTot=0;
+  rounds.forEach(r => r.holes.forEach(h => {
+    if (h.score == null) return;
+    holesTot++;
+    const d = h.score - h.par;
+    if (d <= -2) eagle++;
+    else if (d === -1) birdie++;
+    else if (d === 0) par++;
+    else if (d === 1) bogey++;
+    else if (d === 2) dbl++;
+    else worse++;
+  }));
+  const distRow = (label, n, color) => {
+    const pct = holesTot ? Math.round(n / holesTot * 100) : 0;
+    return `<div style="display:flex;align-items:center;gap:8px;margin-bottom:4px">`
+      + `<span style="width:88px;flex:none;font-size:17px;color:var(--muted);white-space:nowrap">${label}</span>`
+      + `<div style="flex:1;min-width:0;background:var(--overlay-soft);border-radius:6px;overflow:hidden;height:18px"><div style="width:${pct}%;height:100%;background:${color}"></div></div>`
+      + `<span style="width:88px;flex:none;text-align:right;font-size:17px;font-weight:700;white-space:nowrap">${n} · ${pct}%</span></div>`;
+  };
+  // Scoreverdeling-kleuren via CSS-vars (licht/donker). Par gebruikt het app-grijs --res-par.
+  const distCard = `<div class="card"><h2>Scoreverdeling</h2>`
+    + distRow('Eagle+', eagle, 'var(--dist-eagle)')
+    + distRow('Birdie', birdie, 'var(--dist-birdie)')
+    + distRow('Par', par, 'var(--res-par)')
+    + distRow('Bogey', bogey, 'var(--dist-bogey)')
+    + distRow('Dubbel', dbl, 'var(--dist-double)')
+    + distRow('Slechter', worse, 'var(--dist-worse)')
+    + `<div style="font-size:15px;color:var(--muted);margin-top:6px">${holesTot} holes over ${rounds.length} rondes</div></div>`;
+
+  // Gemiddelde score t.o.v. par per par-type (3/4/5)
+  const parBuckets = { 3: [], 4: [], 5: [] };
+  rounds.forEach(r => r.holes.forEach(h => {
+    if (h.score == null) return;
+    if (parBuckets[h.par]) parBuckets[h.par].push(h.score - h.par);
+  }));
+  const parRow = (p) => {
+    const arr = parBuckets[p];
+    if (!arr.length) return '';
+    const avg = arr.reduce((s, x) => s + x, 0) / arr.length;
+    const sign = avg > 0 ? '+' : '';
+    return `<div style="display:flex;align-items:center;gap:8px;margin-bottom:4px">`
+      + `<span style="width:96px;font-size:17px;color:var(--muted)">Par ${p}</span>`
+      + `<span style="flex:1;font-size:17px;font-weight:700">${sign}${avg.toFixed(2)} <span style="color:var(--muted);font-weight:400">t.o.v. par</span></span>`
+      + `<span style="width:56px;text-align:right;font-size:15px;color:var(--muted)">${arr.length}×</span></div>`;
+  };
+  const parCardBody = [3,4,5].map(parRow).join('');
+  const parCard = parCardBody
+    ? `<div class="card"><h2>Gemiddelde per par</h2>${parCardBody}</div>`
+    : '';
+
+  // Uitsplitsing per club → banen (inklapbaar, standaard ingeklapt)
+  const byClub = {};
+  rounds.forEach(r => {
+    const club = r.club ? (r.clubShort || r.club) : 'Onbekende club';
+    const track = r.track || 'Onbekend';
+    byClub[club] = byClub[club] || {};
+    (byClub[club][track] = byClub[club][track] || []).push(r);
+  });
+  const avgSdOf = rs => {
+    const sds = rs.map(x => { const e = effectiveSD(x); return e ? e.value : null; }).filter(v => v != null);
+    return sds.length ? sds.reduce((s, x) => s + x, 0) / sds.length : null;
+  };
+  window._statClubCollapsed = window._statClubCollapsed || {};
+  const clubNames = Object.keys(byClub).sort((a, b) => {
+    const ca = Object.values(byClub[a]).reduce((s, x) => s + x.length, 0);
+    const cb = Object.values(byClub[b]).reduce((s, x) => s + x.length, 0);
+    return cb - ca;
+  });
+  const clubBlocks = clubNames.map(club => {
+    const tracks = byClub[club];
+    const total = Object.values(tracks).reduce((s, x) => s + x.length, 0);
+    const ck = club.replace(/\W/g, '_');
+    const collapsed = window._statClubCollapsed[ck] !== false; // standaard ingeklapt
+    const trackRows = Object.keys(tracks).sort((a, b) => tracks[b].length - tracks[a].length).map(track => {
+      const rs = tracks[track];
+      const avg = avgSdOf(rs);
+      return `<div style="display:flex;align-items:center;gap:8px;margin:4px 0 4px 12px">`
+        + `<span style="flex:1;font-size:17px">${escapeHtml(track)}</span>`
+        + `<span style="width:44px;text-align:right;font-size:15px;color:var(--muted)">${rs.length}×</span>`
+        + `<span style="width:64px;text-align:right;font-size:17px;font-weight:700">${avg != null ? 'Sd ' + avg.toFixed(1) : '—'}</span></div>`;
+    }).join('');
+    const header = `<div onclick="window._statClubCollapsed['${ck}']=window._statClubCollapsed['${ck}']===false?true:false;renderPlayerStats()" style="display:flex;align-items:center;gap:8px;cursor:pointer;padding:6px 0">`
+      + `<span style="flex:1;font-size:17px;font-weight:700">${escapeHtml(club)}</span>`
+      + `<span style="width:44px;text-align:right;font-size:15px;color:var(--muted)">${total}×</span>`
+      + `<span style="display:inline-block;transform:rotate(${collapsed ? 0 : 90}deg);transition:transform .15s">▶</span></div>`;
+    return header + (collapsed ? '' : `<div>${trackRows}</div>`);
+  }).join('');
+  const trackCard = clubBlocks
+    ? `<div class="card"><h2>Per club &amp; baan</h2>${clubBlocks}</div>`
+    : '';
+
+  // Vorm & consistentie
+  const fmtSigned = v => (v > 0 ? '+' : '') + v.toFixed(1);
+  const trendRow = trend
+    ? (() => {
+        const better = trend.diff < 0; // lager dagresultaat = beter
+        const arrow = Math.abs(trend.diff) < 0.05 ? '→' : (better ? '▼' : '▲');
+        const col = Math.abs(trend.diff) < 0.05 ? 'var(--muted)' : (better ? 'var(--green-light)' : '#d9713c');
+        return `<div style="display:flex;align-items:center;gap:8px;margin-bottom:4px"><span style="flex:1;font-size:17px;color:var(--muted)">Trend (laatste 5)</span><span style="font-size:17px;font-weight:700;color:${col}">${arrow} ${fmtSigned(trend.diff)}</span></div>`;
+      })()
+    : '';
+  const spreadRow = spread != null
+    ? `<div style="display:flex;align-items:center;gap:8px;margin-bottom:4px"><span style="flex:1;font-size:17px;color:var(--muted)">Consistentie (spreiding)</span><span style="font-size:17px;font-weight:700">± ${spread.toFixed(1)}</span></div>`
+    : '';
+  const nineRow = (outAvg != null || inAvg != null)
+    ? `<div style="display:flex;align-items:center;gap:8px;margin-bottom:4px"><span style="flex:1;font-size:17px;color:var(--muted)">Gem. vs par (1e 9 / 2e 9)</span><span style="font-size:17px;font-weight:700">${outAvg != null ? fmtSigned(outAvg) : '—'} / ${inAvg != null ? fmtSigned(inAvg) : '—'}</span></div>`
+    : '';
+  const formBody = trendRow + spreadRow + nineRow;
+  const formCard = formBody ? `<div class="card"><h2>Vorm &amp; consistentie</h2>${formBody}</div>` : '';
+
+  el.innerHTML = toggleBar + kpiRow + `<div class="card" id="sdChartCard"><h2>Dagresultaat en handicapverloop</h2><div id="sdChart"></div><div style="display:flex;gap:16px;margin-top:8px;font-size:15px;color:var(--muted)"><span style="display:flex;align-items:center;gap:6px"><span style="width:14px;height:3px;background:var(--green-light);display:inline-block;border-radius:2px"></span>Dagresultaat</span><span style="display:flex;align-items:center;gap:6px"><span style="width:14px;height:3px;background:var(--gold);display:inline-block;border-radius:2px"></span>Handicap</span></div></div>` + formCard + parCard + distCard + trackCard;
+
+  // Grafiek tekenen (na invoegen in DOM)
+  renderSdChart(sdSeries, hiSeries);
+}
+
+// SD-lijngrafiek (SVG) met tweede lijn voor het handicapverloop
+function renderSdChart(sdSeries, hiSeries) {
+  const host = document.getElementById('sdChart');
+  if (!host) return;
+  const sdPts = sdSeries.map((v, i) => ({ i, v })).filter(p => p.v != null);
+  if (sdPts.length < 2) { host.innerHTML = '<div style="font-size:17px;color:var(--muted)">Te weinig rondes voor een grafiek.</div>'; return; }
+  const hiPts = (hiSeries || []).map((v, i) => ({ i, v })).filter(p => p.v != null);
+  const w = 320, h = 140, padL = 28, padR = 8, padT = 10, padB = 18;
+  const allY = [...sdPts.map(p => p.v), ...hiPts.map(p => p.v)];
+  const minY = Math.floor(Math.min(...allY)) - 1, maxY = Math.ceil(Math.max(...allY)) + 1;
+  const n = sdSeries.length;
+  const xOf = i => padL + (n <= 1 ? 0 : (i / (n - 1)) * (w - padL - padR));
+  const yOf = v => padT + (1 - (v - minY) / (maxY - minY)) * (h - padT - padB);
+  const lineOf = pts => pts.map((p, k) => `${k ? 'L' : 'M'}${xOf(p.i).toFixed(1)} ${yOf(p.v).toFixed(1)}`).join(' ');
+  const dotsOf = (pts, color) => pts.map(p => `<circle cx="${xOf(p.i).toFixed(1)}" cy="${yOf(p.v).toFixed(1)}" r="2.5" fill="${color}"/>`).join('');
+  const yTicks = [minY, Math.round((minY+maxY)/2), maxY].map(v =>
+    `<text x="2" y="${(yOf(v)+4).toFixed(1)}" font-size="10" fill="var(--muted)">${v}</text>`).join('');
+  const hiLine = hiPts.length >= 2
+    ? `<path d="${lineOf(hiPts)}" fill="none" stroke="var(--gold)" stroke-width="2"/>` + dotsOf(hiPts, 'var(--gold)')
+    : '';
+  host.innerHTML = `<svg viewBox="0 0 ${w} ${h}" style="width:100%;height:auto">`
+    + yTicks
+    + `<path d="${lineOf(sdPts)}" fill="none" stroke="var(--green-light)" stroke-width="2"/>`
+    + dotsOf(sdPts, 'var(--green-light)')
+    + hiLine
+    + `</svg>`;
+}
+
 function renderScore() {
   if (!game.started) { renderScoreEmpty(); return; }
 
   document.getElementById('statEmptyMsg').innerHTML = '';
   document.getElementById('scoreEmptyMsg').innerHTML = '';
   document.getElementById('sumEmpty').textContent = '';
+  const psEl = document.getElementById('playerStats');
+  if (psEl) psEl.innerHTML = '';
   document.getElementById('statChartCard').classList.remove('hidden');
   document.getElementById('sumHero').classList.remove('hidden');
   document.getElementById('sumTable').classList.remove('hidden');
@@ -2480,11 +3171,36 @@ function renderScore() {
   const phcpPlayed = played.reduce((s, h) => s + h.phcp, 0);
 
   renderScoreInfo(played, total, totalAgs, totalStb, rawFmt, rparPlayed, phcpPlayed);
+  updateOnScheduleIndicator(played.length, totalStb); // OP-KOERS-INDICATOR (verwijderbaar)
   renderScoreStats();
   renderScoreChart();
   renderScoreNineTabs();
   renderScoreTable();
 }
+
+// ══════════════════════════════════════════════════════════════════════════
+// OP-KOERS-INDICATOR (START van verwijderbaar blok)
+// Toont neutraal hoeveel Stableford-punten je voor/achter ligt op de WHS-norm
+// (36 bij 18 holes, 19 bij 9 holes), evenredig per gespeelde hole.
+// Verwijderen: dit blok + het element in screen-score + de aanroep in renderScore.
+function updateOnScheduleIndicator(playedCount, totalStb) {
+  const el = document.getElementById('onScheduleIndicator');
+  if (!el) return;
+  if (!progressIndicatorEnabled()) { el.classList.add('hidden'); return; }
+  const holes = game.holes.length;
+  if (!playedCount || (holes !== 9 && holes !== 18)) { el.classList.add('hidden'); return; }
+  const norm = holes === 9 ? 19 : 36;
+  const expected = (norm / holes) * playedCount;
+  const rounded = Math.round(totalStb - expected);
+  let txt;
+  if (rounded === 0) txt = 'Op schema';
+  else if (rounded > 0) txt = `${rounded} punt${rounded !== 1 ? 'en' : ''} voor op schema`;
+  else txt = `${Math.abs(rounded)} punt${Math.abs(rounded) !== 1 ? 'en' : ''} achter op schema`;
+  el.textContent = txt;
+  el.classList.remove('hidden');
+}
+// OP-KOERS-INDICATOR (EINDE van verwijderbaar blok)
+// ══════════════════════════════════════════════════════════════════════════
 
 function scrollToCurrentRow() {
   document.querySelector('.sum-tr.current-row')
@@ -2516,10 +3232,15 @@ function buildScoreText(round) {
   lines.push('Holes: ' + round.holes.length);
   lines.push('Geslacht: ' + round.gender);
   lines.push('Tee: ' + round.tee);
+  lines.push('Qualifying: ' + (round.qualifying ? 'ja' : 'nee'));
   lines.push('');
+  lines.push('Chcp: ' + (round.chcp ?? '—'));
+  lines.push('STB: ' + (played.length ? totalStb : '—'));
   lines.push('Score: ' + (played.length ? total : '—'));
   lines.push('AGS: ' + (played.length ? totalAgs : '—'));
-  lines.push('STB: ' + (played.length ? totalStb : '—'));
+  lines.push('PCC: ' + formatPcc(round.pcc ?? 0));
+  { const c = computeSD({ holes: round.holes, CR: round.CR, SR: round.SR, hcp: round.hcp, pcc: round.pcc }); lines.push('SD voorlopig: ' + (c ? (c.approx ? '~' : '') + c.value.toFixed(1) : '—')); }
+  lines.push('SD vastgesteld: ' + ((round.sdManual != null && round.sdManual !== '' && isFinite(parseFloat(round.sdManual))) ? parseFloat(round.sdManual).toFixed(1) : '—'));
   lines.push('');
   round.holes.forEach((h) => {
     const s = h.score;
@@ -2751,7 +3472,9 @@ function importRound(input) {
   const reader = new FileReader();
   reader.onload = e => {
     try {
-      let parsed = JSON.parse(e.target.result);
+      const raw = (e.target.result || '').trim();
+      if (!raw) return showStatus('Leeg bestand — geen gegevens gevonden', true);
+      let parsed = JSON.parse(raw);
 
       // Array van meerdere rondes (backup)
       if (Array.isArray(parsed) && parsed.length > 1) {
@@ -2861,6 +3584,7 @@ function importRound(input) {
       showStatus('Ongeldig JSON-bestand', true);
     }
   };
+  reader.onerror = () => showStatus('Kon het bestand niet lezen', true);
   reader.readAsText(file);
 }
 
@@ -2872,6 +3596,14 @@ function doImportRound(r, saved, skipImportFlag = false) {
   const entry = {
     ...r,
     id: newId,
+    pcc: (() => {
+      const v = parseFloat(String(r.pcc).replace(',', '.'));
+      if (r.pcc == null || !isFinite(v)) return 0;
+      const is9 = (r.holes?.length ?? 18) === 9;
+      return Math.max(is9 ? -0.5 : -1, Math.min(is9 ? 1.5 : 3, v));
+    })(),
+    sdManual: (r.sdManual == null || r.sdManual === '' || isNaN(parseFloat(r.sdManual))) ? null : Math.round(parseFloat(r.sdManual) * 10) / 10,
+    qualifying: r.qualifying === true,
     _justImported: skipImportFlag ? undefined : true,
     total:       played.reduce((s, h) => s + h.score, 0),
     totalStb:    r.holes.reduce((s, h) => s + stbFor(h), 0),
@@ -2880,6 +3612,7 @@ function doImportRound(r, saved, skipImportFlag = false) {
     currentHole: r.holes.findIndex(h => h.score === null),
     started:     true,
   };
+  delete entry.sd; // informatief in bestand; altijd opnieuw afgeleid
   if (skipImportFlag) delete entry._justImported;
 
   // Boven aan archief, maar onder de actieve ronde
@@ -2928,11 +3661,15 @@ function exportBackup(idx, btn) {
   if (!round) return;
   try {
     const { id, total, totalStb, playedCount, holesCount, currentHole, started, _justImported,
-            club, clubShort, track, date, time, player, hcp, gender, tee, CR, SR, PAR, chcp,
+            club, clubShort, track, date, time, player, hcp, gender, tee, CR, SR, PAR, chcp, sd: _oldSd,
+            pcc: _pcc, sdManual: _sdManual, qualifying: _qual,
             ...rest } = round;
     const clean = {
       club, clubShort, track,
       date, time, player, hcp, gender, tee, CR, SR, PAR, chcp,
+      pcc: _pcc ?? 0,
+      sdManual: _sdManual ?? null,
+      qualifying: _qual === true,
       ...rest,
       holes: round.holes.map(({ _initScore, ...h }) => h),
     };
@@ -2977,14 +3714,18 @@ function exportJson(round) {
     holes:    round.holes.length,
     geslacht: round.gender,
     tee:      round.tee,
+    qualifying: round.qualifying === true,
     CR:       round.CR ?? '—',
     SR:       round.SR ?? '—',
     chcp:     round.chcp,
-    score:    total,
-    AGS:      totalAgs,
     STB:      totalStb,
     bruto:    { score: total, verschil: rawFmt(total - rpar) + ' vs par' },
     netto:    { score: netto, verschil: rawFmt(netto - rpar) + ' vs ppar' },
+    score:    total,
+    AGS:      totalAgs,
+    PCC:      round.pcc ?? 0,
+    SD_voorlopig: (() => { const c = computeSD({ holes: round.holes, CR: round.CR, SR: round.SR, hcp: round.hcp, pcc: round.pcc }); return c ? { waarde: c.value, benadering: c.approx } : null; })(),
+    SD_vastgesteld: (round.sdManual != null && round.sdManual !== '' && isFinite(parseFloat(round.sdManual))) ? parseFloat(round.sdManual) : null,
     holes_detail: round.holes.map(h => {
       const s = h.score;
       const d = s !== null ? s - h.par : null;
@@ -3035,13 +3776,20 @@ function exportCsv(round, btn) {
   lines.push(['Holes', round.holes.length].map(esc).join(','));
   lines.push(['Geslacht', round.gender].map(esc).join(','));
   lines.push(['Tee', round.tee].map(esc).join(','));
+  lines.push(['Qualifying', round.qualifying ? 'ja' : 'nee'].map(esc).join(','));
   lines.push([esc('CR'), esc(round.CR ?? '—')].join(','));
   lines.push([esc('SR'), esc(round.SR ?? '—')].join(','));
   lines.push(['Chcp', round.chcp].map(esc).join(','));
   lines.push([]);
-  lines.push(['Score', total, 'AGS', totalAgs, 'STB', totalStb].map(esc).join(','));
+  lines.push(['STB', totalStb].map(esc).join(','));
   lines.push(['Bruto', total, rawFmt(total - rpar) + ' vs par'].map(esc).join(','));
   lines.push(['Netto', netto, rawFmt(netto - rpar) + ' vs ppar'].map(esc).join(','));
+  lines.push(['Score', total, 'AGS', totalAgs].map(esc).join(','));
+  lines.push((() => {
+    const c = computeSD({ holes: round.holes, CR: round.CR, SR: round.SR, hcp: round.hcp, pcc: round.pcc });
+    const man = (round.sdManual != null && round.sdManual !== '' && isFinite(parseFloat(round.sdManual))) ? parseFloat(round.sdManual).toFixed(1) : '—';
+    return ['PCC', formatPcc(round.pcc ?? 0), 'SD voorlopig', c ? (c.approx ? '~' : '') + c.value.toFixed(1) : '—', 'SD vastgesteld', man].map(esc).join(',');
+  })());
   lines.push([]);
   // Header
   lines.push(['Hole','Si','Par','PPar','Score','Stb','Ags','Resultaat'].map(esc).join(','));
@@ -3086,6 +3834,7 @@ function saveActiveRound(skipLoadSaved = false) {
     club: game.club, clubShort: game.clubShort,
     total, totalStb, playedCount: played.length, holesCount: game.holes.length,
     currentHole,
+    pcc: game.pcc ?? 0, sdManual: game.sdManual ?? null, qualifying: !!game.qualifying,
     holes: game.holes.map(h => ({ ...h })),
   };
 
@@ -3128,6 +3877,7 @@ function restoreActiveRound() {
     player: r.player, hcp: r.hcp, gender: r.gender,
     track: r.track, tee: r.tee, CR: r.CR, SR: r.SR, PAR: r.PAR, chcp: r.chcp ?? 0,
     club: r.club, clubShort: r.clubShort,
+    pcc: r.pcc ?? 0, sdManual: r.sdManual ?? null, qualifying: !!r.qualifying,
     started: true,
     holes: r.holes.map(h => ({ ...h })),
   };
@@ -3175,11 +3925,93 @@ function flatChartHtml(holes) {
 
 
 
+function openQuickLast20() {
+  // Groepeer op speler activeren
+  window._groupByPlayer = true;
+  window._groupByCategory = false;
+  window._groupByTrack = false;
+  const gb = document.getElementById('groupByPlayerBtn');
+  if (gb) { gb.style.background = 'var(--gold)'; gb.style.color = 'var(--green-deep)'; }
+  ['groupByCategoryBtn', 'groupByTrackBtn'].forEach(id => { const b = document.getElementById(id); if (b) { b.style.background = ''; b.style.color = ''; } });
+
+  // Alle spelergroepen inklappen; subcategorie-state volledig resetten
+  const players = [...new Set(loadSavedRounds().map(r => r.player).filter(Boolean))];
+  window._pgCollapsed = {};
+  window._pgSubCollapsed = {};
+  players.forEach(p => { window._pgCollapsed['pg_' + p.replace(/\W/g, '_')] = true; });
+
+  // Speler 1: alleen de laatste 20 openklappen, alle andere categorieën dicht
+  const p1El = document.getElementById('iName');
+  const player1 = p1El ? p1El.value.trim() : '';
+  if (!player1) { loadSaved(); return; }
+  const key = player1.replace(/\W/g, '_');
+  window._pgCollapsed['pg_' + key] = false;    // spelergroep speler 1 open
+  window._pgSubCollapsed['pgq_' + key] = false; // laatste 20 open
+  window._pgSubCollapsed['pga_' + key] = true;  // alle rondes dicht
+  loadSaved();
+  setTimeout(() => {
+    // Scroll naar de eerste (nieuwste) kaart in de laatste 20: eerste compacte kaart
+    const firstCompact = document.querySelector('#screen-archive .saved-item [onclick^="jumpToFullRound"]');
+    const target = firstCompact ? firstCompact.closest('.saved-item') : null;
+    if (target) target.scrollIntoView({ behavior: 'smooth', block: 'center' });
+  }, 100);
+}
+
+// Toont de berekende WHS-hcp (vastgestelde SD's) van speler 1 onder het hcp-veld
+function updateComputedHcp() {
+  const el = document.getElementById('computedHcpVal');
+  if (!el) return;
+  const nameEl = document.getElementById('iName');
+  const player1 = nameEl ? nameEl.value.trim() : '';
+  if (!player1) { el.textContent = '—'; return; }
+  const actId = storage.getItem('golf_active_id');
+  const last20 = last20Qualifying(player1, loadSavedRounds(), actId, game2Id);
+  const whs = whsHandicap(last20, 'effective', effectiveLowHi(player1, loadSavedRounds(), 'effective'), priorHiFor(last20, 'effective'));
+  el.textContent = whs ? whs.value.toFixed(1) : '—';
+}
+
+function jumpToFullRound(roundId) {
+  // Klap 'Alle rondes' van speler 1 uit indien nodig, render en scroll naar het volledige blokje
+  const saved = loadSavedRounds();
+  const r = saved.find(x => x.id === roundId);
+  if (!r) return;
+  const key = (r.player || '').replace(/\W/g, '_');
+  window._pgSubCollapsed = window._pgSubCollapsed || {};
+  window._pgSubCollapsed['pga_' + key] = false;
+  loadSaved();
+  setTimeout(() => {
+    const el = document.getElementById('round-full-' + roundId);
+    if (el) {
+      // Bij een grote afstand direct springen, anders soepel scrollen
+      const dist = Math.abs(el.getBoundingClientRect().top - window.innerHeight / 2);
+      const behavior = dist > window.innerHeight * 1.5 ? 'auto' : 'smooth';
+      el.scrollIntoView({ behavior, block: 'center' });
+      el.style.transition = 'background-color .3s';
+      const orig = el.style.backgroundColor;
+      el.style.backgroundColor = 'rgba(201,168,76,.25)';
+      setTimeout(() => { el.style.backgroundColor = orig; }, 1200);
+    }
+  }, 80);
+}
+
 function loadSaved() {
   const saved = loadSavedRounds();
   const el = document.getElementById('savedList');
   const searchInput = document.getElementById('archiveSearch');
   const query = (searchInput?.value || '').trim().toLowerCase();
+
+  // WHS-set: alleen voor de speler bovenin Start (nooit speler 2 of andere spelers)
+  window._whsUsedIds = new Set();
+  {
+    const actId = storage.getItem('golf_active_id');
+    const nameEl = document.getElementById('iName');
+    const startPlayer = nameEl ? nameEl.value.trim() : '';
+    if (startPlayer) {
+      const last20 = last20Qualifying(startPlayer, saved, actId, game2Id);
+      const whs = whsHandicap(last20, 'effective', effectiveLowHi(startPlayer, saved, 'effective'), priorHiFor(last20, 'effective'));
+      if (whs) whs.usedIds.forEach(id => window._whsUsedIds.add(id));
+    }
+  }
 
   const searchWrap = document.getElementById('archiveSearchWrap');
   const emptyMsg   = document.getElementById('archiveEmptyMsg');
@@ -3216,7 +4048,7 @@ function loadSaved() {
     return;
   }
 
-  const makeCard = (r, i) => {
+  const makeCard = (r, i, compact = false) => {
     const club = escapeHtml(r.club || 'Onbekende club');
     const playerSafe = escapeHtml(r.player || '—');
     const trackSafe = escapeHtml(r.track || '');
@@ -3233,27 +4065,50 @@ function loadSaved() {
     const importedLabel = r._justImported ? `<div class="saved-meta" style="color:var(--gold)">Geïmporteerd</div>` : '';
     const player2Label = (game2Id && isActive) ? ` · <span style="color:var(--gold)">${isPlayer2Active ? 'speler 2' : 'speler 1'}</span>` : '';
     const isCurrentPlayer = (isPlayer2Active && activePlayer===2) || (!isPlayer2Active && isActive && activePlayer===1);
-    const playerNumLabel = (game2Id && isActive) ? ` · <span style="display:inline-flex;align-items:center;justify-content:center;width:20px;height:20px;border-radius:50%;background:var(--gold);color:#1a1a1a;font-size:13px;font-weight:800;vertical-align:middle;margin-left:2px">${isPlayer2Active ? '2' : '1'}</span>` : '';
+    const playerNumLabel = (game2Id && isActive) ? ` · <span class="round-num-dot" style="display:inline-flex;align-items:center;justify-content:center;width:20px;height:20px;border-radius:50%;background:var(--gold);color:var(--green-deep);font-size:13px;font-weight:800;vertical-align:middle;margin-left:2px">${isPlayer2Active ? '2' : '1'}</span>` : '';
+    // PCC/SD-fragment voor de laatste regel (alleen bij afgeronde ronde)
+    let sdFrag = '';
+    if (done) {
+      const asterisk = '<span style="font-weight:900">≈</span>';
+      const check = '<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="var(--gold)" stroke-width="4" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:0px;margin-left:1px"><polyline points="20 6 9 17 4 12"/></svg>';
+      const _fromGame = isCurrentPlayer;
+      const _sdMan = _fromGame ? (game.sdManual ?? r.sdManual) : r.sdManual;
+      const _pcc = _fromGame ? (game.pcc ?? r.pcc) : r.pcc;
+      const manVal = (_sdMan != null && _sdMan !== '' && isFinite(parseFloat(_sdMan))) ? parseFloat(_sdMan) : null;
+      if (manVal != null) {
+        sdFrag = ` · Pcc ${formatPcc(_pcc ?? 0)} · Sd${check} ${manVal.toFixed(1)}`;
+      } else {
+        const c = computeSD({ holes: r.holes, CR: r.CR, SR: r.SR, hcp: r.hcp, pcc: _pcc });
+        sdFrag = c ? ` · Pcc ${formatPcc(_pcc ?? 0)} · Sd${asterisk} ${c.value.toFixed(1)}` : '';
+      }
+    }
     const statusLine = done
       ? `${!done ? `${playedCount}/${holesCount} · ` : ''}Score ${total}${totalStb != null ? ` · Stb ${totalStb}` : ''}`
       : `${playedCount}/${holesCount} · ${(r.gender || '').charAt(0)} · ${r.tee || '—'} · Chcp ${chcp ?? '—'} · Score ${total}${totalStb != null ? ` · Stb ${totalStb}` : ''}`;
     return `
-    <div class="saved-item"${isActive ? ' style="border-left:3px solid var(--gold);padding-left:10px"' : ''}>
+    <div class="saved-item"${compact ? '' : ` id="round-full-${r.id}"`}${isActive ? ' style="border-left:3px solid var(--gold);padding-left:10px"' : ''}>
+      ${compact ? `<div onclick="jumpToFullRound(${r.id})" style="cursor:pointer">` : ''}
       ${importedLabel}
-      <div class="saved-name">${formatRoundDate(r.date)}${r.time ? ' · ' + r.time : ''}${bezigLabel}</div>
-      <div class="saved-meta" style="${isActive ? 'color:var(--gold)' : ''}">${playerSafe}${playerNumLabel}${r.hcp != null ? ` · Hcp ${r.hcp}` : ''}</div>
-      <div class="saved-meta">${club}</div>
-      <div class="saved-meta">${trackSafe}${par != null ? ` · Par ${par}` : ''} · ${holesCount} holes</div>
-      <div class="saved-meta">${done
-        ? `${(r.gender || '').charAt(0)} · ${r.tee || '—'} · Chcp ${chcp ?? '—'}`
-        : `${(r.gender || '').charAt(0)} · ${r.tee || '—'} · Chcp ${chcp ?? '—'}`
-      }</div>
-      <div class="saved-meta">${done ? '' : `${playedCount}/${holesCount} · `}Score ${total}${totalStb != null ? ` · Stb ${totalStb}` : ''}</div>
-      <div style="margin-top:8px">${flatChartHtml(r.holes)}</div>
+      <div class="saved-name" style="display:flex;align-items:center;justify-content:space-between;gap:8px">
+        <span>${formatRoundDate(r.date)}${r.time ? ' · ' + r.time : ''}${bezigLabel}</span>
+        <span style="display:flex;align-items:center;gap:6px">
+          ${(window._whsUsedIds && window._whsUsedIds.has(r.id)) ? '<span class="tee-badge badge-whs">WHS</span>' : ''}
+          ${(isCurrentPlayer ? (game.qualifying ?? r.qualifying) : r.qualifying) && !(() => { const sd = isCurrentPlayer ? (game.sdManual ?? r.sdManual) : r.sdManual; return sd != null && sd !== '' && isFinite(parseFloat(sd)); })() ? '<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="var(--orange)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M10.29 3.86 1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>' : ''}
+          ${(isCurrentPlayer ? (game.qualifying ?? r.qualifying) : r.qualifying) ? '<span class="tee-badge badge-q">Q</span>' : ''}
+        </span>
+      </div>
+      ${compact ? '' : `<div class="saved-meta" style="${isActive ? 'color:var(--gold)' : ''}">${playerSafe}${playerNumLabel}${r.hcp != null ? ` · Hcp ${r.hcp}` : ''}</div>`}
+      ${compact ? '' : `<div class="saved-meta">${club}</div>`}
+      ${compact ? '' : `<div class="saved-meta">${trackSafe}${par != null ? ` · Par ${par}` : ''} · ${holesCount} holes</div>`}
+      ${compact ? '' : `<div class="saved-meta">${(r.gender || '').charAt(0)} · ${r.tee || '—'} · Chcp ${chcp ?? '—'}${totalStb != null ? ` · Stb ${totalStb}` : ''}</div>`}
+      ${compact ? `<div class="saved-meta">${(`${totalStb != null ? `Stb ${totalStb}` : ''}${sdFrag}`).replace(/^ · /, '')}</div>` : ''}
+      ${compact ? '' : `<div class="saved-meta">${done ? '' : `${playedCount}/${holesCount} · `}Score ${total}${sdFrag}</div>`}
+      ${compact ? '' : `<div style="margin-top:8px">${flatChartHtml(r.holes)}</div>`}
       <div class="error-msg hidden" data-round-delete-msg="${r.id}" style="color:var(--red);font-size:20px;font-weight:700;text-align:right;margin-top:6px">Tik nogmaals om te bevestigen</div>
       <div class="hidden orange-msg" data-round-save-msg="${r.id}" style="color:var(--orange);font-size:20px;font-weight:700;text-align:right;margin-top:6px">Tik nogmaals om te bevestigen</div>
-      <div class="saved-actions">
-        <button class="btn-secondary" style="padding:8px 14px" onclick="openEditDateTimeModal(${saved.indexOf(r)})" title="Datum/tijd aanpassen"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:middle"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4Z"/></svg></button>
+      ${compact ? '' : `<div class="saved-actions">
+        <button class="btn-secondary" style="padding:8px 14px" onclick="openRoundInfoModal(${saved.indexOf(r)})" title="Ronde-informatie"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:middle"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4Z"/></svg></button>
+        <button class="btn-secondary" style="padding:8px 14px" onclick="openRoundResultModal(${saved.indexOf(r)})" title="Ronde-resultaat"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:middle"><polyline points="20 6 9 17 4 12"/></svg></button>
         <button class="btn-secondary" style="padding:8px 14px" onclick="openExportModal(${saved.indexOf(r)})" title="Exporteer/Deel"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:middle"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"/><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"/></svg></button>
         ${isActive
           ? isPlayer2Active
@@ -3262,7 +4117,8 @@ function loadSaved() {
           : `<button class="btn-secondary" style="padding:8px 14px" onclick="loadRound(${saved.indexOf(r)})" title="Laad"><svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" stroke="none" style="vertical-align:middle"><polygon points="6 3 20 12 6 21 6 3"/></svg></button>
              ${r._justImported ? `<button class="btn-secondary" style="padding:8px 14px" data-round-id="${r.id}" onclick="archiveImportedRound(${saved.indexOf(r)}, this)" title="Sla op"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:middle"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2Z"/><polyline points="17 21 17 13 7 13 7 21"/><polyline points="7 3 7 8 15 8"/></svg></button>` : ''}`}
         <button class="btn-secondary" style="padding:8px 14px" onclick="deleteRound(${saved.indexOf(r)}, this)"><span class="delete-icon" style="vertical-align:middle"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"></path><path d="M10 11v6"></path><path d="M14 11v6"></path><path d="M9 6V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2"></path></svg></span></button>
-      </div>
+      </div>`}
+      ${compact ? '</div>' : ''}
     </div>`;
   };
 
@@ -3325,8 +4181,45 @@ function loadSaved() {
     const all = [...actives, ...imported, ...inProgress, ...finished];
     const byPlayer = {};
     all.forEach(r => { (byPlayer[r.player] = byPlayer[r.player] || []).push(r); });
-    Object.keys(byPlayer).sort().forEach(player => {
-      html += playerGroupHeader(player, byPlayer[player].length) + byPlayer[player].map(r => makeCard(r)).join('') + '</div>';
+    // Speler 1 (naam op Start-tab) altijd bovenaan, daarna alfabetisch
+    const p1El = document.getElementById('iName');
+    const player1 = p1El ? p1El.value.trim() : '';
+    Object.keys(byPlayer).sort((a, b) => {
+      if (player1) {
+        if (a === player1) return -1;
+        if (b === player1) return 1;
+      }
+      return a.localeCompare(b, 'nl', { sensitivity: 'base' });
+    }).forEach(player => {
+      if (player === player1) {
+        // Speler 1: twee subcategorieën met inklapgedrag als bij groepeer op baan
+        const rounds = byPlayer[player];
+        const key = player.replace(/\W/g,'_');
+        const qualifying = rounds
+          .filter(r => r.qualifying && isDone(r) && !(game2Id && r.id === game2Id))
+          .sort(sortDesc)
+          .slice(0, 20);
+        const sdFixed = r => {
+          const isActiveRound = activeId && String(r.id) === activeId;
+          const sd = isActiveRound ? (game.sdManual ?? r.sdManual) : r.sdManual;
+          return sd != null && sd !== '' && isFinite(parseFloat(sd));
+        };
+        const anyUnfixed = qualifying.some(r => !sdFixed(r));
+        const warnTriangle = '<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="var(--orange)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:middle;position:relative;top:-1px;margin-left:6px"><path d="M10.29 3.86 1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>';
+        let ph = playerGroupHeader(player, rounds.length);
+        if (anyUnfixed) ph = ph.replace('</span><span style="opacity:.8">', warnTriangle + '</span><span style="opacity:.8">');
+        html += ph;
+        let qh = collapsibleHeader('Laatste 20 qualifying', qualifying.length, 'pgq_' + key, '_pgSubCollapsed').replace('color:var(--gold)', 'color:var(--green-light)');
+        if (anyUnfixed) qh = qh.replace('</span><span style="opacity:.8">', warnTriangle + '</span><span style="opacity:.8">');
+        html += `<div style="padding-left:12px">` + qh
+          + qualifying.map(r => makeCard(r, null, true)).join('') + '</div></div>';
+        html += `<div style="padding-left:12px">`
+          + collapsibleHeader('Alle rondes', rounds.length, 'pga_' + key, '_pgSubCollapsed').replace('color:var(--gold)', 'color:var(--green-light)')
+          + rounds.map(r => makeCard(r)).join('') + '</div></div>';
+        html += '</div>';
+      } else {
+        html += playerGroupHeader(player, byPlayer[player].length) + byPlayer[player].map(r => makeCard(r)).join('') + '</div>';
+      }
     });
   } else {
     // Platte lijst: actief bovenaan zonder header, rest op datum nieuw→oud
@@ -3388,6 +4281,10 @@ function clearImportedFlag(roundId) {
 function loadRoundAsSecondPlayer(i) {
   const saved = loadSavedRounds();
   const r = saved[i];
+  if (isPlayer2NameConflict(r.player)) {
+    showInfoModal('Niet mogelijk', 'Deze ronde is van speler 1 en kan niet als speler 2 worden gekoppeld.');
+    return;
+  }
   clearImportedFlag(r.id);
   game2Id = r.id;
   activePlayer = 1;
@@ -3423,6 +4320,11 @@ function loadRoundSingle(i) {
 function loadRoundAsCouple(i, matchId) {
   const saved = loadSavedRounds();
   const r = saved[i];
+  const matchRound = saved.find(x => x.id === matchId);
+  if (matchRound && isPlayer2NameConflict(matchRound.player)) {
+    showInfoModal('Niet mogelijk', 'De te koppelen ronde is van speler 1 en kan niet als speler 2 worden gekoppeld.');
+    return;
+  }
   clearImportedFlag(r.id);
   clearImportedFlag(matchId);
   gameFromRound(r);
@@ -3767,7 +4669,7 @@ function loadCourseIntoEditor(courseName) {
     const warn = document.getElementById('courseSwitchWarning');
     warn.style.display = 'block';
     warn.textContent = 'Sla eerst je wijzigingen op';
-    setTimeout(() => { warn.style.display = 'none'; }, 3000);
+    setTimeout(() => { warn.style.display = 'none'; }, 2000);
     return;
   }
   const data = CLUBS[editorClub];
@@ -4063,7 +4965,7 @@ function bindGenderLongPress(btn) {
   btn.addEventListener('pointerup', cancelGenderLongPress);
   btn.addEventListener('pointercancel', cancelGenderLongPress);
   btn.addEventListener('pointerleave', cancelGenderLongPress);
-  btn.addEventListener('click', () => cycleGenderBtn(btn));
+  btn.addEventListener('click', () => editGenderBtn(btn));
 }
 
 function bindArrowLongPress(btn) {
@@ -4187,12 +5089,12 @@ function selectTeeRow(row) {
   // Auto-annuleer na 3 seconden als de rij geselecteerd is
   clearTimeout(row._autoDeselect);
   if (!alreadySelected) {
-    row._autoDeselect = setTimeout(() => cancelTeeRowSelection(row), 3000);
+    row._autoDeselect = setTimeout(() => cancelTeeRowSelection(row), 2000);
   }
   if (navigator.vibrate) navigator.vibrate(20);
 }
 
-function cycleGenderBtn(btn) {
+function editGenderBtn(btn) {
   if (isTeeRowLocked()) return;
   if (genderLongPressFired) { genderLongPressFired = false; return; }
   openChoiceEditModal('Geslacht', ['Heren', 'Dames'], btn.dataset.gender, (choice) => {
@@ -4296,7 +5198,7 @@ function makeHoleRow(h, i) {
   tr.innerHTML = `
     <td style="padding:3px 2px;text-align:center;font-size:20px;color:var(--muted)">${i+1}</td>
     <td style="padding:3px 2px"><input value="${h.id}" placeholder="H${i+1}" class="hole-id" readonly onfocus="this.blur(); openHoleFieldModal(this, ${i+1}, 'ID')" style="width:100%;min-width:0;box-sizing:border-box;padding:5px;border-radius:6px;background:rgba(255,255,255,.08);color:var(--white);border:1px solid rgba(255,255,255,.2);font-size:17px;text-align:center"></td>
-    <td style="padding:3px 2px"><button type="button" class="par-cycle-btn" data-par="${h.par}" data-hole="${i+1}" onclick="cycleParBtn(this)" style="width:100%;min-width:0;box-sizing:border-box;padding:5px;border-radius:6px;background:rgba(255,255,255,.08);color:var(--white);border:1px solid rgba(255,255,255,.2);font-size:17px;cursor:pointer">${h.par}</button></td>
+    <td style="padding:3px 2px"><button type="button" class="par-cycle-btn" data-par="${h.par}" data-hole="${i+1}" onclick="editParBtn(this)" style="width:100%;min-width:0;box-sizing:border-box;padding:5px;border-radius:6px;background:rgba(255,255,255,.08);color:var(--white);border:1px solid rgba(255,255,255,.2);font-size:17px;cursor:pointer">${h.par}</button></td>
     <td style="padding:3px 2px"><input type="number" value="${h.si}" placeholder="${i+1}" min="1" max="18" class="hole-si" readonly onfocus="this.blur(); openHoleFieldModal(this, ${i+1}, 'SI')" style="width:100%;min-width:0;box-sizing:border-box;padding:5px;border-radius:6px;background:rgba(255,255,255,.08);color:var(--white);border:1px solid rgba(255,255,255,.2);font-size:17px;text-align:center"></td>`;
   return tr;
 }
@@ -4373,7 +5275,7 @@ function readHolesFromEditor() {
   });
 }
 
-function cycleParBtn(btn) {
+function editParBtn(btn) {
   const current = parseInt(btn.dataset.par) || 4;
   const holeNum = btn.dataset.hole;
   const row = btn.closest('tr');
@@ -4562,55 +5464,233 @@ function deleteCourseFromEditor(btn) {
 
 // ══ CLUB: EXPORT / IMPORT BAANINFORMATIE ════════════════════════════════
 // ══ CLUB SELECTIE ════════════════════════════════════════════════════════
-let _editDateTimeIdx = null;
-let _editDateTimeOrig = null;
+let _roundInfoIdx = null;
+let _roundInfoOrig = null;
 
 let _editChcpVal = 0;
+let _editPccVal = 0;
+let _editCalcSd = null;
+
+// Course Handicap: klik toont de −/+ knoppen in het veld; verbergen na 2s of nogmaals klikken
+// Qualifying-schuifje. Koppeling: aanzetten bij één speler zet ook de ander aan;
+// uitzetten raakt alleen die speler.
+function toggleQualifying(who) {
+  const t1 = document.getElementById('qualifyToggle1');
+  const t2 = document.getElementById('qualifyToggle2');
+  if (who === 1) {
+    sel.qualifying = t1.checked;
+    if (t1.checked && t2 && !t2.checked) { t2.checked = true; sel2.qualifying = true; }
+  } else {
+    sel2.qualifying = t2.checked;
+    if (t2.checked && t1 && !t1.checked) { t1.checked = true; sel.qualifying = true; }
+  }
+}
 
 function editChcpAdjust(d) {
   if (navigator.vibrate) navigator.vibrate(20);
   _editChcpVal = Math.max(-10, Math.min(54, _editChcpVal + d));
-  document.getElementById('editChcpVal').textContent = _editChcpVal > 0 ? '+' + _editChcpVal : String(_editChcpVal);
+  const disp = _editChcpVal > 0 ? '+' + _editChcpVal : String(_editChcpVal);
+  document.getElementById('editChcpVal').textContent = disp;
+  updateEditChcpOverrideRow();
+}
+
+// Toont de 'Aangepast'-melding zodra de chcp afwijkt van de oorspronkelijke waarde
+function updateEditChcpOverrideRow() {
+  const row = document.getElementById('editChcpOverrideRow');
+  if (!row) return;
+  const orig = _roundInfoOrig ? (_roundInfoOrig.chcp ?? 0) : 0;
+  row.classList.toggle('hidden', _editChcpVal === orig);
+}
+
+function resetEditChcp() {
+  _editChcpVal = _roundInfoOrig ? (_roundInfoOrig.chcp ?? 0) : 0;
+  const disp = _editChcpVal > 0 ? '+' + _editChcpVal : String(_editChcpVal);
+  document.getElementById('editChcpVal').textContent = disp;
+  updateEditChcpOverrideRow();
 }
 
 
-function openEditDateTimeModal(idx) {
+function openRoundInfoModal(idx) {
   const saved = loadSavedRounds();
   const round = saved[idx];
   if (!round) return;
-  _editDateTimeIdx = idx;
-  _editDateTimeOrig = { date: round.date, time: round.time, player: round.player, chcp: round.chcp };
+  const activeId = storage.getItem('golf_active_id');
+  const isActive = activeId && String(round.id) === activeId;
+  const isDone = (round.holes || []).length > 0 && (round.holes || []).every(h => h.score !== null);
+  if (isDone && !isActive) {
+    showConfirmModal(
+      'Ronde afgerond',
+      'Deze ronde is afgerond. Toch aanpassen?',
+      () => doOpenRoundInfoModal(idx),
+      'Annuleer'
+    );
+    return;
+  }
+  doOpenRoundInfoModal(idx);
+}
+
+function doOpenRoundInfoModal(idx) {
+  const saved = loadSavedRounds();
+  const round = saved[idx];
+  if (!round) return;
+  _roundInfoIdx = idx;
+  _roundInfoOrig = { date: round.date, time: round.time, player: round.player, chcp: round.chcp };
   document.getElementById('editDateInput').value = round.date || '';
   document.getElementById('editTimeInput').value = round.time || '';
   document.getElementById('editPlayerInput').value = round.player || '';
   const activeId = storage.getItem('golf_active_id');
   const isActive = activeId && String(round.id) === activeId;
   _editChcpVal = isActive ? (game.chcp ?? round.chcp ?? 0) : (round.chcp ?? 0);
+  _roundInfoOrig.chcp = _editChcpVal;
   const chcpDisplay = _editChcpVal > 0 ? '+' + _editChcpVal : String(_editChcpVal);
   const el = document.getElementById('editChcpVal');
   if (el) el.textContent = chcpDisplay;
-  document.getElementById('editDateTimeModal').classList.remove('hidden');
+  updateEditChcpOverrideRow();
+  const qSrc = isActive ? (game.qualifying ?? round.qualifying) : round.qualifying;
+  document.getElementById('editQualifyToggle').checked = !!qSrc;
+  document.getElementById('roundInfoModal').classList.remove('hidden');
 }
 
-function closeEditDateTimeModal() {
-  document.getElementById('editDateTimeModal').classList.add('hidden');
-  _editDateTimeIdx = null;
-  _editDateTimeOrig = null;
+// Opent de resultaat-modal (pcc, sd, qualifying)
+function openRoundResultModal(idx) {
+  const saved = loadSavedRounds();
+  const round = saved[idx];
+  if (!round) return;
+  const activeId = storage.getItem('golf_active_id');
+  const isActive = activeId && String(round.id) === activeId;
+  const isDone = (round.holes || []).length > 0 && (round.holes || []).every(h => h.score !== null);
+  const sdVal = isActive ? (game.sdManual ?? round.sdManual) : round.sdManual;
+  const hasFixedSd = sdVal != null && sdVal !== '' && isFinite(parseFloat(sdVal));
+  if (isDone && !isActive && hasFixedSd) {
+    showConfirmModal(
+      'Ronde afgerond',
+      'Deze ronde is afgerond. Toch aanpassen?',
+      () => doOpenRoundResultModal(idx),
+      'Annuleer'
+    );
+    return;
+  }
+  doOpenRoundResultModal(idx);
 }
 
-function confirmEditDateTime() {
-  const idx = _editDateTimeIdx;
+function doOpenRoundResultModal(idx) {
+  const saved = loadSavedRounds();
+  const round = saved[idx];
+  if (!round) return;
+  _roundInfoIdx = idx;
+  _roundInfoOrig = { date: round.date, time: round.time, player: round.player, chcp: round.chcp };
+  const activeId = storage.getItem('golf_active_id');
+  const isActive = activeId && String(round.id) === activeId;
+  _editPccVal = (() => {
+    const src = isActive ? (game.pcc ?? round.pcc) : round.pcc;
+    const is9 = (round.holes?.length ?? 18) === 9;
+    const lo = is9 ? -0.5 : -1, hi = is9 ? 1.5 : 3;
+    const v = parseFloat(String(src).replace(',', '.'));
+    return (src != null && src !== '' && isFinite(v)) ? Math.max(lo, Math.min(hi, v)) : 0;
+  })();
+  document.getElementById('editPccBtn').textContent = formatPcc(_editPccVal);
+  const sdSrc = isActive ? (game.sdManual ?? round.sdManual) : round.sdManual;
+  document.getElementById('editSdInput').value = (sdSrc != null && sdSrc !== '') ? String(sdSrc) : '';
+  updateEditSdHint(round);
+  document.getElementById('roundResultModal').classList.remove('hidden');
+}
+
+// Vult het (niet-aanpasbare) berekende SD-veld
+function updateEditSdHint(round) {
+  const calcEl = document.getElementById('editSdCalc');
+  if (!calcEl) return;
+  const probe = {
+    holes: round.holes, CR: round.CR, SR: round.SR, hcp: round.hcp,
+    pcc: _editPccVal
+  };
+  const c = computeSD(probe);
+  _editCalcSd = c ? c.value : null;
+  if (c) {
+    calcEl.value = `${c.approx ? '≈ ' : ''}${c.value.toFixed(1)}`;
+    calcEl.style.cursor = 'pointer';
+    calcEl.title = 'Tik om over te nemen';
+  } else {
+    calcEl.value = '—';
+    calcEl.style.cursor = 'default';
+    calcEl.title = '';
+  }
+}
+
+// Neemt de berekende SD over als vastgestelde waarde
+function useCalcSd() {
+  const el = document.getElementById('editSdInput');
+  el.value = _editCalcSd == null ? '' : _editCalcSd.toFixed(1);
+  const msg = document.getElementById('editSdCopyMsg');
+  if (msg) {
+    msg.textContent = _editCalcSd == null ? 'Geen voorlopig dagresultaat' : 'Voorlopig dagresultaat overgenomen als vastgesteld';
+    msg.style.color = _editCalcSd == null ? 'var(--orange)' : 'var(--green-light)';
+    msg.classList.remove('hidden');
+    clearTimeout(msg._timer);
+    msg._timer = setTimeout(() => msg.classList.add('hidden'), 2000);
+  }
+}
+
+// PCC kiezen via keuzemodal. Bij 18 holes −1 t/m +3; bij 9 holes gehalveerd.
+function openPccChoice() {
+  const round = loadSavedRounds()[_roundInfoIdx];
+  const holes = round ? (round.holes?.length ?? 18) : 18;
+  const is9 = holes === 9;
+  const options = is9 ? ['-0.5', '0', '0.5', '1', '1.5'] : ['-1', '0', '1', '2', '3'];
+  const lo = is9 ? -0.5 : -1;
+  const hi = is9 ? 1.5 : 3;
+  const label = `Spelcondities (PCC)<span style="display:block;font-size:15px;color:var(--muted);font-weight:400;margin-top:2px">${holes} holes</span>`;
+  openChoiceEditModal(label, options, String(_editPccVal), val => {
+    const v = parseFloat(String(val).replace(',', '.'));
+    _editPccVal = Math.max(lo, Math.min(hi, isFinite(v) ? v : 0));
+    document.getElementById('editPccBtn').textContent = formatPcc(_editPccVal);
+    const r = loadSavedRounds()[_roundInfoIdx];
+    if (r) updateEditSdHint(r);
+  });
+}
+
+// Toont PCC netjes: gehele getallen zonder decimaal, halve met .5
+function formatPcc(v) {
+  return Number.isInteger(v) ? String(v) : v.toFixed(1);
+}
+
+function onEditSdBlur() {
+  const el = document.getElementById('editSdInput');
+  const raw = el.value.trim().replace(',', '.');
+  if (raw === '') { el.value = ''; }
+  else {
+    let v = parseFloat(raw);
+    if (isNaN(v)) el.value = '';
+    else el.value = (Math.round(v * 10) / 10).toFixed(1);
+  }
+  const round = loadSavedRounds()[_roundInfoIdx];
+  if (round) updateEditSdHint(round);
+}
+
+function closeRoundInfoModal() {
+  document.getElementById('roundInfoModal').classList.add('hidden');
+  _roundInfoIdx = null;
+  _roundInfoOrig = null;
+}
+
+function closeRoundResultModal() {
+  document.getElementById('roundResultModal').classList.add('hidden');
+  _roundInfoIdx = null;
+  _roundInfoOrig = null;
+}
+
+function confirmRoundInfo() {
+  const idx = _roundInfoIdx;
   if (idx === null) return;
   const player = document.getElementById('editPlayerInput').value.trim();
   if (!player) {
     document.getElementById('editPlayerInput').focus();
     return;
   }
-  const date = document.getElementById('editDateInput').value || _editDateTimeOrig.date;
-  const time = document.getElementById('editTimeInput').value || _editDateTimeOrig.time;
+  const date = document.getElementById('editDateInput').value || _roundInfoOrig.date;
+  const time = document.getElementById('editTimeInput').value || _roundInfoOrig.time;
   const saved = loadSavedRounds();
   const round = saved[idx];
-  if (!round) return closeEditDateTimeModal();
+  if (!round) return closeRoundInfoModal();
 
   // Check op dubbele datum & tijd — huidige ronde uitsluiten, max 2 rondes toegestaan
   const duplicates = saved.filter((r, i) => i !== idx && (r.date || '') === (date || '') && (r.time || '') === (time || ''));
@@ -4620,24 +5700,10 @@ function confirmEditDateTime() {
     showInfoModal('Dubbele datum & tijd', `Er bestaan al twee rondes op ${formattedDate}${formattedTime}. Kies een andere datum of tijd.`);
     return;
   }
-  if (duplicates.length === 1) {
-    const formattedDate = formatFullDate(date);
-    const formattedTime = time ? ` om ${time}` : '';
-    document.getElementById('confirmModalTitle').textContent = 'Dubbele datum & tijd';
-    document.getElementById('confirmModalMessage').textContent =
-      `Er bestaat al een ronde op ${formattedDate}${formattedTime}. Wil je doorgaan?`;
-    document.getElementById('confirmModalBtn').style.display = '';
-    document.getElementById('confirmModalBtn').onclick = () => {
-      closeConfirmModal();
-      applyEditDateTime(saved, round, date, time);
-    };
-    document.getElementById('confirmModal').classList.remove('hidden');
-    return;
-  }
-  applyEditDateTime(saved, round, date, time);
+  applyRoundInfo(saved, round, date, time);
 }
 
-function applyEditDateTime(saved, round, date, time) {
+function applyRoundInfo(saved, round, date, time) {
   const dateTimeChanged = round.date !== date || (round.time || '') !== (time || '');
   // Verbreek koppeling alleen als datum/tijd daadwerkelijk wijzigt
   if (game2Id && dateTimeChanged) {
@@ -4647,62 +5713,77 @@ function applyEditDateTime(saved, round, date, time) {
     player2Visible = false;
     updatePlayerSwitchBar();
   }
-  const player = document.getElementById('editPlayerInput').value.trim() || _editDateTimeOrig.player || round.player;
+  const player = document.getElementById('editPlayerInput').value.trim() || _roundInfoOrig.player || round.player;
   const chcpVal = _editChcpVal;
   round.date = date;
   round.time = time;
   round.player = player;
-  storage.setItem('golf_rounds', JSON.stringify(saved));
+  round.qualifying = document.getElementById('editQualifyToggle').checked;
   const activeId = storage.getItem('golf_active_id');
+  storage.setItem('golf_rounds', JSON.stringify(saved));
   if (activeId && String(round.id) === activeId) {
     game.date = date;
     game.time = time;
     game.player = player;
+    game.qualifying = round.qualifying;
     if (chcpVal !== null && !isNaN(chcpVal)) {
       game.chcp = chcpVal;
       round.chcp = chcpVal;
       sel.chcpOverride = chcpVal;
     }
+    storage.setItem('golf_rounds', JSON.stringify(saved));
     setHeaderInfo(game.track, game.tee, game.chcp);
-    // Altijd herberekenen na wijziging
     recalcPpar();
     updateHeader();
     updateHeaderScore();
     updatePlayerSwitchBar();
     renderScore();
     saveActiveRound(false);
+  } else if (chcpVal !== null && !isNaN(chcpVal)) {
+    round.chcp = chcpVal;
+    storage.setItem('golf_rounds', JSON.stringify(saved));
   }
-  closeEditDateTimeModal();
+  closeRoundInfoModal();
   loadSaved();
 
-  // Als de bewerkte ronde matcht met de actieve ronde, koppeling aanbieden
+  // Vanuit de modal nooit direct koppelen: alleen informeren.
   {
     const match = saved.find(s => s.id !== round.id && (s.date || '') === (date || '') && (s.time || '') === (time || ''));
-    if (match && !game2Id && activeId && (String(round.id) === activeId || String(match.id) === activeId)) {
-      const partnerId = String(round.id) === activeId ? match.id : round.id;
-      const partnerPlayer = String(round.id) === activeId ? match.player : round.player;
-      const activePlayerName = String(round.id) === activeId ? round.player : match.player;
-      showConfirmModal(
-        'Koppelen?',
-        `Er is een actieve ronde van ${activePlayerName} gevonden op dezelfde datum en tijd. ${partnerPlayer} koppelen als tweede speler?`,
-        () => {
-          game2Id = partnerId;
-          activePlayer = 1;
-          player2Visible = true;
-          storage.setItem('golf_game2_id', String(partnerId));
-          updatePlayerSwitchBar();
-          saveActiveRound(false);
-          loadSaved();
-        },
-        'Annuleer'
-      );
-    } else if (match && !game2Id && String(round.id) !== activeId && String(match.id) !== activeId) {
+    if (match && !game2Id) {
+      const matchIsActive = activeId && String(match.id) === activeId;
+      const statusTekst = matchIsActive ? 'een actieve ronde' : 'een ronde';
       showInfoModal(
         'Zelfde datum en tijd',
-        `Er is een ronde van ${match.player} op dezelfde datum en tijd. Deze worden gekoppeld zodra je er één laadt.`
+        `Er is ${statusTekst} van ${match.player} op dezelfde datum en tijd. Deze kunnen gekoppeld worden zodra je er één laadt.`
       );
     }
   }
+}
+
+function confirmRoundResult() {
+  const idx = _roundInfoIdx;
+  if (idx === null) return;
+  const saved = loadSavedRounds();
+  const round = saved[idx];
+  if (!round) return closeRoundResultModal();
+  const pccRaw = String(_editPccVal);
+  const sdRaw = document.getElementById('editSdInput').value.trim().replace(',', '.');
+  const is9 = (round.holes?.length ?? 18) === 9;
+  const lo = is9 ? -0.5 : -1, hi = is9 ? 1.5 : 3;
+  const pccNum = parseFloat(pccRaw.replace(',', '.'));
+  round.pcc = pccRaw === '' || !isFinite(pccNum) ? 0 : Math.max(lo, Math.min(hi, pccNum));
+  round.sdManual = (sdRaw === '' || isNaN(parseFloat(sdRaw))) ? null : Math.round(parseFloat(sdRaw) * 10) / 10;
+  const activeId = storage.getItem('golf_active_id');
+  if (activeId && String(round.id) === activeId) {
+    game.pcc = round.pcc;
+    game.sdManual = round.sdManual;
+  }
+  storage.setItem('golf_rounds', JSON.stringify(saved));
+  if (activeId && String(round.id) === activeId) {
+    saveActiveRound(false);
+  }
+  closeRoundResultModal();
+  loadSaved();
 }
 
 function showClubTip() {
@@ -4743,6 +5824,35 @@ function selectDefaultClub(club) {
   updateHeaderClubName();
 }
 
+
+function confirmResetAll(btn) {
+  const msg = document.getElementById('resetAllMsg');
+  if (btn.dataset.confirm !== '1') {
+    btn.dataset.confirm = '1';
+    msg?.classList.remove('hidden');
+    clearTimeout(btn._confirmTimeout);
+    btn._confirmTimeout = setTimeout(() => {
+      btn.dataset.confirm = '0';
+      msg?.classList.add('hidden');
+    }, 2000);
+    return;
+  }
+  clearTimeout(btn._confirmTimeout);
+  btn.dataset.confirm = '0';
+  msg?.classList.add('hidden');
+  document.getElementById('resetAllModal').classList.remove('hidden');
+}
+
+function doResetAll() {
+  ['golf_rounds','golf_clubs','golf_active_id','golf_game2_id','golf_default_club',
+   'golf_fav_clubs','golf_player2_visible','golf_profile_name','golf_profile_hcp',
+   'golf_gender','golf_profile_name2','golf_profile_hcp2','golf_fav_player2_name',
+   'golf_fav_player2_hcp','golf_default_player2_name','golf_default_player2_hcp',
+   'golf_setup_date_day','golf_setup_date','golf_setup_time',
+   'golf_last_backup_date','golf_last_backup_count','golf_progress_indicator','golf_bad_weather','golf_quick_last20','golf_low_hi','golf_backup_reminder_shown']
+    .forEach(k => storage.removeItem(k));
+  location.reload();
+}
 
 function createNewClub() {
   const tmpName = '__nieuw__' + Date.now();
@@ -4923,7 +6033,7 @@ function exportAllRounds() {
     return;
   }
   const data = saved.map(r => {
-    const { id, total, totalStb, playedCount, holesCount, currentHole, started, _justImported, ...clean } = r;
+    const { id, total, totalStb, playedCount, holesCount, currentHole, started, _justImported, sd: _oldSd, ...clean } = r;
     return { ...clean, holes: r.holes.map(({ _initScore, ...h }) => h) };
   });
   const ts = new Date().toISOString().slice(0, 10).replace(/-/g, '');
@@ -4936,9 +6046,50 @@ function exportAllRounds() {
     if (successMsg) {
       successMsg.textContent = `${saved.length} ronde${saved.length !== 1 ? 's' : ''} geëxporteerd`;
       successMsg.classList.remove('hidden');
-      setTimeout(() => successMsg.classList.add('hidden'), 3000);
+      setTimeout(() => successMsg.classList.add('hidden'), 2000);
     }
+    // Back-upstatus vastleggen en herinnering verbergen
+    storage.setItem('golf_last_backup_date', todayISO());
+    storage.setItem('golf_last_backup_count', String(loadSavedRounds().length));
+    updateBackupReminder();
   } catch(e) { console.error('Backup rondes mislukt:', e); }
+}
+
+// Toont een herinnering als er lang niet of veel wijzigingen sinds de laatste back-up zijn
+function updateBackupReminder() {
+  const el = document.getElementById('backupReminder');
+  if (!el) return;
+  const rounds = loadSavedRounds();
+  const total = rounds.length;
+  if (total === 0) { el.classList.add('hidden'); return; }
+
+  // Alleen tonen als er minstens één afgeronde ronde is
+  const hasFinished = rounds.some(r => (r.holes || []).length > 0 && (r.holes || []).every(h => h.score !== null));
+  if (!hasFinished) { el.classList.add('hidden'); return; }
+
+  // Hooguit één keer per dag tonen
+  if (storage.getItem('golf_backup_reminder_shown') === todayISO()) { el.classList.add('hidden'); return; }
+
+  const lastDate = storage.getItem('golf_last_backup_date');
+  const lastCount = parseInt(storage.getItem('golf_last_backup_count') || '', 10);
+
+  let show = false;
+  if (!lastDate) {
+    // Nog nooit geëxporteerd: pas herinneren vanaf een paar rondes
+    show = total >= 5;
+  } else {
+    const newRounds = isNaN(lastCount) ? total : Math.max(0, total - lastCount);
+    const daysSince = Math.floor((new Date(todayISO()) - new Date(lastDate)) / 86400000);
+    show = newRounds > 10 || daysSince > 30;
+  }
+
+  if (show) {
+    el.textContent = 'Tip: maak een back-up. Exporteer je rondes zodat je ze niet verliest.';
+    el.classList.remove('hidden');
+    storage.setItem('golf_backup_reminder_shown', todayISO());
+  } else {
+    el.classList.add('hidden');
+  }
 }
 
 function exportAllClubs() {
@@ -4966,7 +6117,7 @@ function exportAllClubs() {
       if (successMsg) {
         successMsg.textContent = `${clubs.length} club${clubs.length !== 1 ? 's' : ''} geëxporteerd`;
         successMsg.classList.remove('hidden');
-        setTimeout(() => successMsg.classList.add('hidden'), 3000);
+        setTimeout(() => successMsg.classList.add('hidden'), 2000);
       }
     }
   } catch(e) { console.error('Backup clubs mislukt:', e); }
@@ -5117,7 +6268,15 @@ function importCourseData(input) {
   reader.onload = e => {
     const status = document.getElementById('clubImportStatus');
     try {
-      const parsed = JSON.parse(e.target.result);
+      const raw = (e.target.result || '').trim();
+      if (!raw) {
+        status.style.display = 'block';
+        status.style.color = 'var(--red)'; status.classList.add('error-msg');
+        status.textContent = 'Leeg bestand — geen gegevens gevonden';
+        input.value = '';
+        return;
+      }
+      const parsed = JSON.parse(raw);
 
       // Array van clubs (backup)
       if (Array.isArray(parsed)) {
@@ -5186,7 +6345,7 @@ function importCourseData(input) {
         confirmBtn.textContent = 'Overschrijven';
         confirmBtn.onclick = () => {
           closeConfirmModal();
-          confirmBtn.textContent = 'Doorgaan';
+          confirmBtn.textContent = 'OK';
           doImport();
         };
         document.getElementById('confirmModal').classList.remove('hidden');
@@ -5200,6 +6359,13 @@ function importCourseData(input) {
     }
     input.value = '';
   };
+  reader.onerror = () => {
+    const status = document.getElementById('clubImportStatus');
+    status.style.display = 'block';
+    status.style.color = 'var(--red)'; status.classList.add('error-msg');
+    status.textContent = 'Kon het bestand niet lezen';
+    input.value = '';
+  };
   reader.readAsText(file);
 }
 
@@ -5211,16 +6377,33 @@ function nav(id) {
   document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
   const screenEl = document.getElementById('screen-' + id);
   if (screenEl) screenEl.classList.add('active');
+  // OP-KOERS-INDICATOR: alleen tonen op het scorescherm
+  if (id !== 'score') document.getElementById('onScheduleIndicator')?.classList.add('hidden');
+  else if (game.started) renderScore();
   if (id === 'setup') {
     window.scrollTo(0, 0);
     rebuildStartScreen();
     restorePlayer2Visibility();
-    const dt = nowDateTimeLocal();
-    const [initDate, initTime] = dt.split('T');
-    document.getElementById('iDate').value = initDate;
-    document.getElementById('iTime').value = initTime;
-    sel.date = initDate;
-    sel.time = initTime;
+    const today = todayISO();
+    if (_setupDateInitDay !== today) {
+      // Eerste keer naar Start vandaag: zet datum en tijd op nu
+      const dt = nowDateTimeLocal();
+      const [initDate, initTime] = dt.split('T');
+      document.getElementById('iDate').value = initDate;
+      document.getElementById('iTime').value = initTime;
+      sel.date = initDate;
+      sel.time = initTime;
+      _setupDateInitDay = today;
+      storage.setItem('golf_setup_date_day', today);
+      storage.setItem('golf_setup_date', initDate);
+      storage.setItem('golf_setup_time', initTime);
+    } else {
+      // Later op dezelfde dag: laatst getoonde datum en tijd behouden
+      if (sel.date) document.getElementById('iDate').value = sel.date;
+      if (sel.time) document.getElementById('iTime').value = sel.time;
+    }
+    const warnEl = document.getElementById('dateFutureWarn');
+    if (warnEl) warnEl.classList.toggle('hidden', !isFarFutureDate(document.getElementById('iDate').value || ''));
   }
   if (id === 'score' || id === 'stat') {
     // Bij 18 holes: ga naar het subtab van de huidige hole
@@ -5239,13 +6422,23 @@ function nav(id) {
   }
   if (id === 'archive') {
     loadSaved();
+    updateBackupReminder();
+    window.scrollTo(0, 0);
+  }
+  if (id === 'settings') {
+    updateThemeIcon();
+    updateProgressToggleBtn();
+    updateBadWeatherToggle();
+    updateQuickLast20Toggle();
+    updateLowHiInput();
+    updatePlayer2Summaries();
     window.scrollTo(0, 0);
   }
   setTimeout(() => { adjustThirdHeaderRow(); updateHeaderHeight(); }, 0);
 }
 
 // ══ SWIPE NAVIGATIE ═════════════════════════════════════════════════════
-const TAB_ORDER = ['club', 'setup', 'score', 'stat', 'archive'];
+const TAB_ORDER = ['club', 'setup', 'score', 'stat', 'archive', 'settings'];
 let swipeStartX = 0, swipeStartY = 0, swipeTracking = false, swipeOnSubtab = false, swipeOnHeader = false;
 
 document.addEventListener('touchstart', e => {
@@ -5301,17 +6494,90 @@ const SUN_PATHS = '<circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y
 const MOON_PATHS = '<path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79Z"/>';
 
 function updateThemeIcon() {
-  const icon = document.getElementById('themeToggleIcon');
-  if (!icon) return;
-  const isLight = document.documentElement.classList.contains('light-mode');
-  // Toon het icoon van waar je NAARTOE schakelt: maan zichtbaar in lichte modus, zon in donkere modus
-  icon.innerHTML = isLight ? MOON_PATHS : SUN_PATHS;
+  const cb = document.getElementById('themeToggle');
+  if (cb) cb.checked = !document.documentElement.classList.contains('light-mode');
 }
 
 function toggleTheme() {
-  const isLight = document.documentElement.classList.toggle('light-mode');
-  storage.setItem('golf_theme', isLight ? 'light' : 'dark');
-  updateThemeIcon();
+  const cb = document.getElementById('themeToggle');
+  const dark = cb ? cb.checked : document.documentElement.classList.contains('light-mode');
+  document.documentElement.classList.toggle('light-mode', !dark);
+  storage.setItem('golf_theme', dark ? 'dark' : 'light');
+}
+
+// Voortgangsindicator aan/uit (standaard uit)
+function progressIndicatorEnabled() {
+  return storage.getItem('golf_progress_indicator') === 'on';
+}
+
+function updateProgressToggleBtn() {
+  const cb = document.getElementById('progressToggle');
+  if (cb) cb.checked = progressIndicatorEnabled();
+}
+
+function toggleProgressIndicator() {
+  const cb = document.getElementById('progressToggle');
+  const on = cb ? cb.checked : !progressIndicatorEnabled();
+  storage.setItem('golf_progress_indicator', on ? 'on' : 'off');
+  if (game.started) renderScore();
+}
+
+// Slechtweer-modus (standaard uit)
+function badWeatherEnabled() {
+  return storage.getItem('golf_bad_weather') === 'on';
+}
+function applyBadWeather() {
+  document.body.classList.toggle('bad-weather', badWeatherEnabled());
+}
+function updateBadWeatherToggle() {
+  const cb = document.getElementById('badWeatherToggle');
+  if (cb) cb.checked = badWeatherEnabled();
+}
+function toggleBadWeather() {
+  const cb = document.getElementById('badWeatherToggle');
+  const on = cb ? cb.checked : !badWeatherEnabled();
+  storage.setItem('golf_bad_weather', on ? 'on' : 'off');
+  applyBadWeather();
+}
+
+function quickLast20Enabled() {
+  return storage.getItem('golf_quick_last20') === 'on';
+}
+function updateQuickLast20Toggle() {
+  const cb = document.getElementById('quickLast20Toggle');
+  if (cb) cb.checked = quickLast20Enabled();
+}
+function toggleQuickLast20() {
+  const cb = document.getElementById('quickLast20Toggle');
+  const on = cb ? cb.checked : !quickLast20Enabled();
+  storage.setItem('golf_quick_last20', on ? 'on' : 'off');
+}
+
+// Laagste handicap-index van de afgelopen 365 dagen (WHS soft/hard cap).
+// Handmatig via instellingen; leeg = later afleiden uit rondes.
+function getManualLowHi() {
+  const v = storage.getItem('golf_low_hi');
+  if (v == null || v === '') return null;
+  const n = parseFloat(v.replace(',', '.'));
+  return isFinite(n) ? n : null;
+}
+function saveLowHi(el) {
+  const raw = el.value.trim().replace(',', '.');
+  if (raw === '' || !isFinite(parseFloat(raw))) {
+    storage.removeItem('golf_low_hi');
+    el.value = '';
+  } else {
+    const n = Math.round(parseFloat(raw) * 10) / 10;
+    storage.setItem('golf_low_hi', String(n));
+    el.value = n.toFixed(1);
+  }
+  updateComputedHcp();
+}
+function updateLowHiInput() {
+  const el = document.getElementById('lowHiInput');
+  if (!el) return;
+  const v = getManualLowHi();
+  el.value = v == null ? '' : v.toFixed(1);
 }
 
 // ══ INIT ══════════════════════════════════════════════════════════════════
@@ -5363,10 +6629,39 @@ document.addEventListener('focusin', (e) => {
 });
 
 (function init() {
+  // Waarschuw als een ander tabblad de rondes wijzigt (voorkomt onbedoeld overschrijven)
+  window.addEventListener('storage', e => {
+    if (e.key === 'golf_rounds' && e.newValue !== e.oldValue) {
+      showInfoModal('Bijgewerkt in ander tabblad',
+        'De rondes zijn in een ander tabblad gewijzigd. Ververs deze pagina om de laatste versie te zien; anders kun je wijzigingen overschrijven.');
+    }
+  });
+
   if (storage.getItem('golf_theme') !== 'dark') {
     document.documentElement.classList.add('light-mode');
   }
   updateThemeIcon();
+  updateProgressToggleBtn();
+  applyBadWeather();
+
+  // Long-press op 'groepeer op speler' (optioneel): laatste 20 uitklappen + naar nieuwste scrollen
+  (function bindQuickLast20() {
+    const btn = document.getElementById('groupByPlayerBtn');
+    if (!btn) return;
+    let timer = null, fired = false;
+    const start = () => {
+      if (!quickLast20Enabled()) return;
+      fired = false;
+      timer = setTimeout(() => { fired = true; openQuickLast20(); }, 550);
+    };
+    const cancel = () => { clearTimeout(timer); };
+    btn.addEventListener('pointerdown', start);
+    btn.addEventListener('pointerup', cancel);
+    btn.addEventListener('pointerleave', cancel);
+    btn.addEventListener('pointercancel', cancel);
+    // Voorkom dat de gewone klik volgt op een geslaagde long-press
+    btn.addEventListener('click', e => { if (fired) { e.stopImmediatePropagation(); e.preventDefault(); fired = false; } }, true);
+  })();
 
   const savedName   = storage.getItem('golf_profile_name');
   const savedHcp    = storage.getItem('golf_profile_hcp');
@@ -5376,13 +6671,32 @@ document.addEventListener('focusin', (e) => {
   if (sel.holeCount) document.getElementById('cat-' + sel.holeCount)?.classList.add('active');
   document.getElementById('cat-par3')?.classList.toggle('active', sel.showPar3);
 
-  const dt = nowDateTimeLocal();
-  const [initDate, initTime] = dt.split('T');
-  document.getElementById('iDate').value = initDate;
-  document.getElementById('iTime').value = initTime;
-  document.getElementById('iDateTime').value = dt;
-  sel.date = initDate;
-  sel.time = initTime;
+  const today = todayISO();
+  const storedDay = storage.getItem('golf_setup_date_day');
+  if (storedDay === today && storage.getItem('golf_setup_date')) {
+    // Zelfde dag: onthouden datum en tijd hergebruiken
+    const savedDate = storage.getItem('golf_setup_date');
+    const savedTime = storage.getItem('golf_setup_time') || '00:00';
+    document.getElementById('iDate').value = savedDate;
+    document.getElementById('iTime').value = savedTime;
+    document.getElementById('iDateTime').value = savedDate + 'T' + savedTime;
+    sel.date = savedDate;
+    sel.time = savedTime;
+    _setupDateInitDay = today;
+  } else {
+    // Nieuwe dag of eerste gebruik: op nu zetten
+    const dt = nowDateTimeLocal();
+    const [initDate, initTime] = dt.split('T');
+    document.getElementById('iDate').value = initDate;
+    document.getElementById('iTime').value = initTime;
+    document.getElementById('iDateTime').value = dt;
+    sel.date = initDate;
+    sel.time = initTime;
+    _setupDateInitDay = today;
+    storage.setItem('golf_setup_date_day', today);
+    storage.setItem('golf_setup_date', initDate);
+    storage.setItem('golf_setup_time', initTime);
+  }
 
   if (savedGender === 'Heren' || savedGender === 'Dames') selectGender(savedGender);
   else                                                     selectGender('Heren');
@@ -5411,9 +6725,15 @@ document.addEventListener('focusin', (e) => {
   // ── PWA: registreer service worker voor offline gebruik ──
   if ('serviceWorker' in navigator) {
     const swCode = `
-const CACHE = 'golf-score-v5';
+const CACHE = 'golf-score-v6';
+const APP_URL = '${location.href.split('#')[0]}';
 self.addEventListener('install', e => {
-  e.waitUntil(self.skipWaiting());
+  e.waitUntil(
+    caches.open(CACHE)
+      .then(c => c.add(APP_URL))
+      .catch(() => {})
+      .then(() => self.skipWaiting())
+  );
 });
 self.addEventListener('activate', e => {
   e.waitUntil(
@@ -5428,6 +6748,10 @@ self.addEventListener('fetch', e => {
       const network = fetch(e.request).then(res => {
         caches.open(CACHE).then(c => c.put(e.request, res.clone()));
         return res;
+      }).catch(() => {
+        // Offline: val voor paginanavigatie terug op het gecachte hoofdbestand
+        if (e.request.mode === 'navigate') return caches.match(APP_URL);
+        return cached;
       });
       return cached || network;
     })
@@ -5459,7 +6783,7 @@ self.addEventListener('fetch', e => {
 </div>
 
 <!-- Keuze-modal voor vaste waarden (geslacht, par) -->
-<div id="choiceEditModal" class="hidden" style="position:fixed;inset:0;background:rgba(0,0,0,.75);z-index:600;display:flex;align-items:center;justify-content:center;padding:20px">
+<div id="choiceEditModal" class="hidden" style="position:fixed;inset:0;background:rgba(0,0,0,.75);z-index:650;display:flex;align-items:center;justify-content:center;padding:20px">
   <div style="background:var(--green-deep);border:2px solid var(--gold);border-radius:16px;padding:20px;width:100%;max-width:320px">
     <div id="choiceEditLabel" style="font-size:20px;color:var(--gold);font-weight:800;text-transform:uppercase;letter-spacing:.7px;margin-bottom:16px;text-align:center;overflow-wrap:break-word"></div>
     <div id="choiceEditOptions" style="display:flex;flex-direction:column;gap:8px"></div>
@@ -5491,11 +6815,22 @@ self.addEventListener('fetch', e => {
     <div id="confirmModalMessage" style="font-size:20px;color:var(--white);text-align:center;margin-bottom:16px;line-height:1.5;overflow-wrap:break-word"></div>
     <div style="display:flex;gap:8px">
       <button class="btn-secondary" id="confirmModalCancelBtn" style="flex:1;margin-top:0;padding:12px;font-size:20px" onclick="closeConfirmModal()">Sluiten</button>
-      <button class="btn-primary" style="flex:1;margin-top:0;padding:12px;font-size:20px" id="confirmModalBtn">Doorgaan</button>
+      <button class="btn-primary" style="flex:1;margin-top:0;padding:12px;font-size:20px" id="confirmModalBtn">OK</button>
     </div>
   </div>
 </div>
 
+<!-- Bevestigingsmodal voor alles wissen (rode stijl) -->
+<div id="resetAllModal" class="hidden" style="position:fixed;inset:0;background:rgba(0,0,0,.75);z-index:600;display:flex;align-items:center;justify-content:center;padding:20px">
+  <div style="background:var(--green-deep);border:2px solid var(--gold);border-radius:16px;padding:20px;width:100%;max-width:320px">
+    <div class="error-msg" style="font-size:20px;color:var(--red);font-weight:800;text-transform:uppercase;letter-spacing:.7px;margin-bottom:16px;text-align:center">Alles wissen</div>
+    <div style="font-size:20px;color:var(--white);text-align:center;margin-bottom:16px;line-height:1.5">Alle rondes, clubs en instellingen worden definitief verwijderd. Dit kan niet ongedaan worden gemaakt.</div>
+    <div style="display:flex;gap:8px">
+      <button class="btn-secondary" style="flex:1;padding:12px;font-size:20px" onclick="document.getElementById('resetAllModal').classList.add('hidden')">Annuleer</button>
+      <button class="btn-secondary confirm-armed" style="flex:1;padding:12px;font-size:20px;background:var(--red);border-color:var(--red);color:#fff" onclick="doResetAll()">Wissen</button>
+    </div>
+  </div>
+</div>
 <!-- Bevestigingsmodal voor editor sluiten met onopgeslagen wijzigingen -->
 <div id="closeEditorWarningModal" class="hidden" style="position:fixed;inset:0;background:rgba(0,0,0,.75);z-index:600;display:flex;align-items:center;justify-content:center;padding:20px">
   <div style="background:var(--green-deep);border:2px solid var(--gold);border-radius:16px;padding:20px;width:100%;max-width:320px">
@@ -5561,7 +6896,7 @@ self.addEventListener('fetch', e => {
         <button class="btn-secondary" id="removeTeeBtn" style="padding:8px 14px" onclick="removeLastTeeRow(this)" title="Verwijder"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" style="vertical-align:middle"><line x1="5" y1="12" x2="19" y2="12"/></svg></button>
         <span id="teeRowMoveMsg" class="error-msg hidden" style="color:var(--red);font-size:20px;font-weight:700">Kan laatste tee niet verplaatsen</span>
         <span id="teeRowDeleteMsg" class="error-msg hidden" style="color:var(--red);font-size:20px;font-weight:700">Tik nogmaals om te bevestigen</span>
-        <span id="teeRowMoveHint" style="color:var(--muted);font-size:20px">H of D lang indrukken voor verplaatsen</span>
+        <span id="teeRowMoveHint" style="color:var(--muted);font-size:17px">H of D lang indrukken voor verplaatsen</span>
       </div>
     </div>
 
@@ -5583,34 +6918,96 @@ self.addEventListener('fetch', e => {
   </div>
 </div>
 <!-- Datum/tijd bewerken modal -->
-<div id="editDateTimeModal" class="hidden" style="position:fixed;inset:0;background:rgba(0,0,0,.75);z-index:600;display:flex;align-items:center;justify-content:center;padding:16px">
+<div id="roundInfoModal" class="hidden" style="position:fixed;inset:0;background:rgba(0,0,0,.75);z-index:600;display:flex;align-items:center;justify-content:center;padding:16px">
   <div style="background:var(--green-deep);border:2px solid var(--gold);border-radius:16px;padding:20px;width:100%;max-width:380px">
-    <h2 style="margin:0 0 16px;font-size:20px;font-weight:800;color:var(--white)">Ronde informatie</h2>
+    <h2 style="margin:0 0 16px;font-size:20px;font-weight:800;color:var(--white)">Ronde-informatie</h2>
     <div class="fg" style="margin-bottom:14px">
       <label>Speler</label>
-      <input id="editPlayerInput" type="text" maxlength="50" placeholder="Naam speler" oninput="this.value=this.value.replace(/[^a-zA-Z0-9 \-_()\[\]+.,!'&]/g,'')" onblur="this.value=this.value.trim()" onchange="if(!this.value && _editDateTimeOrig) this.value=_editDateTimeOrig.player||''">
-    </div>
-    <div class="fg" style="margin-bottom:14px">
-      <label>Datum</label>
-      <input id="editDateInput" type="date" onchange="if(!this.value && _editDateTimeOrig) this.value=_editDateTimeOrig.date||''">
+      <input id="editPlayerInput" type="text" maxlength="50" placeholder="Naam speler" oninput="this.value=this.value.replace(/[^a-zA-Z0-9 \-_()\[\]+.,!'&]/g,'')" onblur="this.value=this.value.trim()" onchange="if(!this.value && _roundInfoOrig) this.value=_roundInfoOrig.player||''">
     </div>
     <div class="fg" style="margin-bottom:20px">
-      <label>Tijd</label>
-      <input id="editTimeInput" type="time" onchange="if(!this.value && _editDateTimeOrig) this.value=_editDateTimeOrig.time||''">
-    </div>
-    <div id="editChcpWrap" style="margin-bottom:14px">
-      <label style="font-size:17px;color:var(--green-light);text-transform:uppercase;letter-spacing:.5px;display:block;margin-bottom:6px;font-weight:700">Course Handicap</label>
-      <div class="chcp-box">
-        <div class="chcp-adjust">
-          <button class="score-btn minus" onclick="editChcpAdjust(-1)">−</button>
-          <span class="chcp-val" id="editChcpVal" style="font-size:20px;font-weight:400">—</span>
-          <button class="score-btn plus"  onclick="editChcpAdjust(1)">+</button>
+      <label>Datum &amp; tijd</label>
+      <div style="display:flex;gap:8px">
+        <div class="fg" style="flex:1;margin-bottom:0">
+          <input id="editDateInput" type="date" onchange="if(!this.value && _roundInfoOrig) this.value=_roundInfoOrig.date||''">
+        </div>
+        <div class="fg" style="flex:1;margin-bottom:0">
+          <input id="editTimeInput" type="time" onchange="if(!this.value && _roundInfoOrig) this.value=_roundInfoOrig.time||''">
         </div>
       </div>
     </div>
+    <div class="fg" style="margin-bottom:20px">
+      <label>Course Handicap</label>
+      <div class="chcp-box" style="font-weight:400;justify-content:flex-start">
+        <div class="chcp-adjust" style="margin-right:auto">
+          <button class="score-btn minus" onclick="editChcpAdjust(-1)">−</button>
+          <span class="chcp-val" id="editChcpVal" style="font-weight:400;font-size:20px">—</span>
+          <button class="score-btn plus" onclick="editChcpAdjust(1)">+</button>
+        </div>
+      </div>
+      <div class="chcp-override-row hidden" id="editChcpOverrideRow" style="margin-top:8px">
+        <span class="info-msg" style="color:var(--info-purple)">Aangepast</span>
+        <button class="btn-secondary" style="padding:8px 14px;opacity:.6" onclick="resetEditChcp()"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:middle"><path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/><path d="M3 3v5h5"/></svg></button>
+      </div>
+    </div>
+    <div style="display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:20px">
+      <label style="font-size:17px;color:var(--gold);text-transform:uppercase;letter-spacing:.5px;font-weight:700">Qualifying</label>
+      <label class="switch"><input type="checkbox" id="editQualifyToggle"><span class="slider"></span></label>
+    </div>
     <div style="display:flex;gap:8px">
-      <button class="btn-secondary" style="flex:1;padding:12px;font-size:20px" onclick="closeEditDateTimeModal()">Annuleer</button>
-      <button class="btn-primary" style="flex:1;padding:12px;margin-top:0;font-size:20px" onclick="confirmEditDateTime()">Opslaan</button>
+      <button class="btn-secondary" style="flex:1;padding:12px;font-size:20px" onclick="closeRoundInfoModal()">Annuleer</button>
+      <button class="btn-primary" style="flex:1;padding:12px;margin-top:0;font-size:20px" onclick="confirmRoundInfo()">Opslaan</button>
+    </div>
+  </div>
+</div>
+
+<div id="roundResultModal" class="hidden" style="position:fixed;inset:0;background:rgba(0,0,0,.75);z-index:600;display:flex;align-items:center;justify-content:center;padding:16px">
+  <div style="background:var(--green-deep);border:2px solid var(--gold);border-radius:16px;padding:20px;width:100%;max-width:380px">
+    <h2 style="margin:0 0 16px;font-size:20px;font-weight:800;color:var(--white)">Ronde-resultaat</h2>
+    <table style="width:100%;border-collapse:collapse;margin-bottom:16px">
+      <tr>
+        <td style="padding:0 0 10px;vertical-align:middle"><label style="font-size:17px;color:var(--gold);text-transform:uppercase;letter-spacing:.5px;font-weight:700">Spelcondities (PCC)</label></td>
+        <td style="padding:0 0 10px;width:76px">
+          <div id="editPccBtn" class="field-like compact" onclick="openPccChoice()" style="justify-content:flex-end">0</div>
+        </td>
+      </tr>
+      <tr>
+        <td colspan="2" style="padding:0"><div id="editSdCopyMsg" class="hidden" style="font-size:20px;font-weight:700;text-align:right;margin:0 0 8px"></div></td>
+      </tr>
+      <tr>
+        <td style="padding:0 0 10px;vertical-align:middle"><label style="font-size:17px;color:var(--gold);text-transform:uppercase;letter-spacing:.5px;font-weight:700"><span style="display:block;color:var(--green-light)">Voorlopig</span> dagresultaat (Sd<span style="font-weight:900;margin-left:3px">≈</span>)</label></td>
+        <td style="padding:0 0 10px;width:76px">
+          <input id="editSdCalc" class="field-input" type="text" readonly onclick="useCalcSd()" placeholder="—" style="cursor:pointer" title="Tik om over te nemen">
+        </td>
+      </tr>
+      <tr>
+        <td style="padding:0;vertical-align:middle"><label style="font-size:17px;color:var(--gold);text-transform:uppercase;letter-spacing:.5px;font-weight:700"><span style="display:block;color:var(--green-light)">Vastgesteld</span> dagresultaat (Sd<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="4" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:middle;margin-left:2px"><polyline points="20 6 9 17 4 12"/></svg>)</label></td>
+        <td style="padding:0;width:76px">
+          <input id="editSdInput" class="field-input" type="text" inputmode="decimal" placeholder="—" oninput="this.value=this.value.replace(/[^0-9.,-]/g,'')" onblur="onEditSdBlur()">
+        </td>
+      </tr>
+    </table>
+    <div style="display:flex;gap:8px">
+      <button class="btn-secondary" style="flex:1;padding:12px;font-size:20px" onclick="closeRoundResultModal()">Annuleer</button>
+      <button class="btn-primary" style="flex:1;padding:12px;margin-top:0;font-size:20px" onclick="confirmRoundResult()">Opslaan</button>
+    </div>
+  </div>
+</div>
+<!-- Speler 2 instellen modal (favoriet/standaard) -->
+<div id="player2SettingsModal" class="hidden" style="position:fixed;inset:0;background:rgba(0,0,0,.75);z-index:600;display:flex;align-items:center;justify-content:center;padding:16px">
+  <div style="background:var(--green-deep);border:2px solid var(--gold);border-radius:16px;padding:20px;width:100%;max-width:380px">
+    <h2 id="player2ModalTitle" style="margin:0 0 16px;font-size:20px;font-weight:800;color:var(--white)"></h2>
+    <div class="fg" style="margin-bottom:14px">
+      <label>Naam</label>
+      <input id="player2ModalName" type="text" maxlength="50" placeholder="Naam speler 2" oninput="this.value=this.value.replace(/[^a-zA-Z0-9 \-_()\[\]+.,!'&]/g,'')" onblur="this.value=this.value.trim()">
+    </div>
+    <div class="fg" style="margin-bottom:20px">
+      <label>Handicap</label>
+      <input id="player2ModalHcp" type="text" inputmode="decimal" placeholder="hcp" oninput="onHcpInput(this)" onblur="onHcpBlur(this)">
+    </div>
+    <div style="display:flex;gap:8px">
+      <button class="btn-secondary" style="flex:1;padding:12px;font-size:20px" onclick="closePlayer2Modal()">Annuleer</button>
+      <button class="btn-primary" style="flex:1;padding:12px;margin-top:0;font-size:20px" onclick="savePlayer2Modal()">Opslaan</button>
     </div>
   </div>
 </div>
