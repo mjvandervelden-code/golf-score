@@ -3081,6 +3081,87 @@ function renderPlayerStats() {
     ? `<div class="card"><h2>Gemiddelde per par</h2>${parCardBody}</div>`
     : '';
 
+  // Start vs. slot: gemiddelde t.o.v. par op holes 1-3 en 16-18 (alleen 18-holesrondes)
+  const startArr = [], finishArr = [];
+  rounds.forEach(r => {
+    if ((r.holes?.length ?? 0) !== 18) return;
+    r.holes.slice(0, 3).forEach(h => { if (h.score != null) startArr.push(h.score - h.par); });
+    r.holes.slice(15, 18).forEach(h => { if (h.score != null) finishArr.push(h.score - h.par); });
+  });
+  const ssRow = (label, arr) => {
+    if (!arr.length) return '';
+    const avg = arr.reduce((s, x) => s + x, 0) / arr.length;
+    const sign = avg > 0 ? '+' : '';
+    return `<div style="display:flex;align-items:center;gap:8px;margin-bottom:4px">`
+      + `<span style="width:130px;font-size:17px;color:var(--muted)">${label}</span>`
+      + `<span style="flex:1;font-size:17px;font-weight:700">${sign}${avg.toFixed(2)} <span style="color:var(--muted);font-weight:400">t.o.v. par</span></span></div>`;
+  };
+  const ssBody = ssRow('Start (1-3)', startArr) + ssRow('Slot (16-18)', finishArr);
+  const ssCard = ssBody ? `<div class="card"><h2>Start vs. slot</h2>${ssBody}<div style="font-size:15px;color:var(--muted);margin-top:6px">Alleen 18-holesrondes</div></div>` : '';
+
+  // Verdeling rond je handicap: dagresultaat per ronde t.o.v. de index die vóór die ronde gold
+  const distBuckets = { onder: 0, gelijk: 0, boven1_3: 0, boven3_5: 0, boven5: 0 };
+  let distTot = 0;
+  rounds.forEach((r, idx) => {
+    const e = effectiveSD(r);
+    if (!e) return;
+    // Index vóór deze ronde: staffel over de voorgaande rondes (max 20), zonder ESR/caps
+    const prev = rounds.slice(0, idx);
+    const sds = prev.slice(-20).map(x => { const pe = effectiveSD(x); return pe ? pe.value : null; }).filter(v => v != null);
+    const staffel = whsStaffel(sds.length);
+    if (!staffel) return;
+    const idxHi = whsTrunc([...sds].sort((a, b) => a - b).slice(0, staffel.count).reduce((s, x) => s + x, 0) / staffel.count + staffel.adj);
+    const diff = e.value - idxHi;
+    distTot++;
+    if (diff < -0.05) distBuckets.onder++;
+    else if (diff <= 0.05) distBuckets.gelijk++;
+    else if (diff <= 3) distBuckets.boven1_3++;
+    else if (diff <= 5) distBuckets.boven3_5++;
+    else distBuckets.boven5++;
+  });
+  const hdRow = (label, n) => {
+    const pct = distTot ? Math.round(n / distTot * 100) : 0;
+    return `<div style="display:flex;align-items:center;gap:8px;margin-bottom:4px">`
+      + `<span style="width:140px;font-size:17px;color:var(--muted)">${label}</span>`
+      + `<div style="flex:1;min-width:0;background:var(--overlay-soft);border-radius:6px;overflow:hidden;height:18px"><div style="width:${pct}%;height:100%;background:var(--green-light)"></div></div>`
+      + `<span style="width:56px;text-align:right;font-size:17px;font-weight:700;white-space:nowrap">${n} · ${pct}%</span></div>`;
+  };
+  const hdCard = distTot
+    ? `<div class="card"><h2>Verdeling rond je handicap</h2>`
+      + hdRow('Onder index', distBuckets.onder)
+      + hdRow('Op index', distBuckets.gelijk)
+      + hdRow('+0 tot +3', distBuckets.boven1_3)
+      + hdRow('+3 tot +5', distBuckets.boven3_5)
+      + hdRow('Meer dan +5', distBuckets.boven5)
+      + `<div style="font-size:15px;color:var(--muted);margin-top:6px">${distTot} rondes met een eerdere index</div></div>`
+    : '';
+
+  // Prestatie per par-lengte gecombineerd met tee: gemiddelde t.o.v. par per (tee, par)
+  const teeParMap = {};
+  rounds.forEach(r => {
+    const tee = r.tee || 'Onbekend';
+    r.holes.forEach(h => {
+      if (h.score == null || !(h.par >= 3 && h.par <= 5)) return;
+      const key = tee + '|' + h.par;
+      (teeParMap[key] = teeParMap[key] || []).push(h.score - h.par);
+    });
+  });
+  const teesUsed = [...new Set(Object.keys(teeParMap).map(k => k.split('|')[0]))].sort();
+  const tpBody = teesUsed.map(tee => {
+    const parRows = [3, 4, 5].map(p => {
+      const arr = teeParMap[tee + '|' + p];
+      if (!arr || !arr.length) return '';
+      const avg = arr.reduce((s, x) => s + x, 0) / arr.length;
+      const sign = avg > 0 ? '+' : '';
+      return `<div style="display:flex;align-items:center;gap:8px;margin:4px 0 4px 12px">`
+        + `<span style="width:84px;font-size:17px;color:var(--muted)">Par ${p}</span>`
+        + `<span style="flex:1;font-size:17px;font-weight:700">${sign}${avg.toFixed(2)} <span style="color:var(--muted);font-weight:400">t.o.v. par</span></span>`
+        + `<span style="width:44px;text-align:right;font-size:15px;color:var(--muted)">${arr.length}×</span></div>`;
+    }).join('');
+    return parRows ? `<div style="font-size:17px;font-weight:700;padding:6px 0 2px">${escapeHtml(tee)}</div>${parRows}` : '';
+  }).join('');
+  const tpCard = tpBody ? `<div class="card"><h2>Per par-lengte &amp; tee</h2>${tpBody}</div>` : '';
+
   // Uitsplitsing per club → banen (inklapbaar, standaard ingeklapt)
   const byClub = {};
   rounds.forEach(r => {
@@ -3141,7 +3222,7 @@ function renderPlayerStats() {
   const formBody = trendRow + spreadRow + nineRow;
   const formCard = formBody ? `<div class="card"><h2>Vorm &amp; consistentie</h2>${formBody}</div>` : '';
 
-  el.innerHTML = toggleBar + kpiRow + `<div class="card" id="sdChartCard"><h2>Dagresultaat en handicapverloop</h2><div id="sdChart"></div><div style="display:flex;gap:16px;margin-top:8px;font-size:15px;color:var(--muted)"><span style="display:flex;align-items:center;gap:6px"><span style="width:14px;height:3px;background:var(--green-light);display:inline-block;border-radius:2px"></span>Dagresultaat</span><span style="display:flex;align-items:center;gap:6px"><span style="width:14px;height:3px;background:var(--gold);display:inline-block;border-radius:2px"></span>Handicap</span></div></div>` + formCard + parCard + distCard + trackCard;
+  el.innerHTML = toggleBar + kpiRow + `<div class="card" id="sdChartCard"><h2>Dagresultaat en handicapverloop</h2><div id="sdChart"></div><div style="display:flex;gap:16px;margin-top:8px;font-size:15px;color:var(--muted)"><span style="display:flex;align-items:center;gap:6px"><span style="width:14px;height:3px;background:var(--green-light);display:inline-block;border-radius:2px"></span>Dagresultaat</span><span style="display:flex;align-items:center;gap:6px"><span style="width:14px;height:3px;background:var(--gold);display:inline-block;border-radius:2px"></span>Handicap</span></div></div>` + distCard + hdCard + formCard + ssCard + parCard + tpCard + trackCard;
 
   // Grafiek tekenen (na invoegen in DOM)
   renderSdChart(sdSeries, hiSeries);
