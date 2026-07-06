@@ -984,8 +984,8 @@ function computeSD(round) {
 // Effectieve SD: handmatig vastgesteld heeft voorrang, anders berekend.
 // Retourneert { value, approx, manual } of null.
 function effectiveSD(round) {
-  if (round && round.sdManual != null && round.sdManual !== '' && isFinite(parseFloat(round.sdManual))) {
-    return { value: parseFloat(round.sdManual), approx: false, manual: true };
+  if (round && round.sdFinal != null && round.sdFinal !== '' && isFinite(parseFloat(round.sdFinal))) {
+    return { value: parseFloat(round.sdFinal), approx: false, manual: true };
   }
   const c = computeSD(round);
   return c ? { ...c, manual: false } : null;
@@ -1037,7 +1037,7 @@ function priorHiFor(rounds, mode) {
   const withSd = older.map(r => {
     let sd = null;
     if (mode === 'fixed') {
-      if (r.sdManual != null && r.sdManual !== '' && isFinite(parseFloat(r.sdManual))) sd = parseFloat(r.sdManual);
+      if (r.sdFinal != null && r.sdFinal !== '' && isFinite(parseFloat(r.sdFinal))) sd = parseFloat(r.sdFinal);
     } else {
       const e = effectiveSD(r);
       if (e) sd = e.value;
@@ -1056,7 +1056,7 @@ function whsHandicap(rounds, mode, lowHi = null, priorHi = null) {
     .map(r => {
       let sd = null;
       if (mode === 'fixed') {
-        if (r.sdManual != null && r.sdManual !== '' && isFinite(parseFloat(r.sdManual))) sd = parseFloat(r.sdManual);
+        if (r.sdFinal != null && r.sdFinal !== '' && isFinite(parseFloat(r.sdFinal))) sd = parseFloat(r.sdFinal);
       } else {
         const e = effectiveSD(r);
         if (e) sd = e.value;
@@ -1120,7 +1120,7 @@ function derivedLowHi(player, allRounds, mode) {
     const window20 = qual.slice(0, idx + 1).slice(-20).reverse();
     const sds = window20.map(x => {
       if (mode === 'fixed') {
-        return (x.sdManual != null && x.sdManual !== '' && isFinite(parseFloat(x.sdManual))) ? parseFloat(x.sdManual) : null;
+        return (x.sdFinal != null && x.sdFinal !== '' && isFinite(parseFloat(x.sdFinal))) ? parseFloat(x.sdFinal) : null;
       }
       const e = effectiveSD(x);
       return e ? e.value : null;
@@ -1648,7 +1648,7 @@ function buildRoundEntry() {
     totalStb: game.holes.reduce((s, h) => s + stbFor(h), 0),
     playedCount: played.length, holesCount: game.holes.length,
     currentHole, started: true,
-    pcc: game.pcc ?? 0, sdManual: game.sdManual ?? null, qualifying: !!game.qualifying,
+    pcc: game.pcc ?? 0, sdFinal: game.sdFinal ?? null, qualifying: !!game.qualifying,
     holes: game.holes.map(h => ({ ...h })),
   };
 }
@@ -2724,7 +2724,7 @@ function renderScoreInfo(played, total, totalAgs, totalStb, rawFmt, rparPlayed, 
         const c = computeSD({ holes: game.holes, CR: game.CR, SR: game.SR, hcp: game.hcp, pcc: game.pcc });
         return c ? `${c.value.toFixed(1)}` : '—';
       })()],
-      ['Sd<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="4" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:middle;margin:0 3px"><polyline points="20 6 9 17 4 12"/></svg>(vastgesteld)', (game.sdManual != null && game.sdManual !== '' && isFinite(parseFloat(game.sdManual))) ? parseFloat(game.sdManual).toFixed(1) : '—'],
+      ['Sd<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="4" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:middle;margin:0 3px"><polyline points="20 6 9 17 4 12"/></svg>(vastgesteld)', (game.sdFinal != null && game.sdFinal !== '' && isFinite(parseFloat(game.sdFinal))) ? parseFloat(game.sdFinal).toFixed(1) : '—'],
       ...(() => {
         const done = game.holes.length > 0 && played.length === game.holes.length;
         if (!done || !game.qualifying) return [];
@@ -2732,7 +2732,7 @@ function renderScoreInfo(played, total, totalAgs, totalStb, rawFmt, rparPlayed, 
         const nameEl = document.getElementById('iName');
         const startPlayer = nameEl ? nameEl.value.trim() : '';
         if (!startPlayer || game.player !== startPlayer) return [];
-        const sdFixed = game.sdManual != null && game.sdManual !== '' && isFinite(parseFloat(game.sdManual));
+        const sdFixed = game.sdFinal != null && game.sdFinal !== '' && isFinite(parseFloat(game.sdFinal));
         // Laatste 20 qualifying van deze speler, inclusief de huidige ronde
         const all = loadSavedRounds();
         const others = all.filter(r => r.player === game.player && String(r.id) !== String(game.id));
@@ -2936,7 +2936,7 @@ function renderPlayerStats() {
     + `</div>`;
 
   if (!rounds.length) {
-    el.innerHTML = toggleBar + `<div class="card"><h2>${escapeHtml(player)}</h2><div style="font-size:20px;color:var(--muted)">${showAll ? 'Nog geen afgeronde rondes.' : 'Nog geen qualifying rondes.'}</div></div>`;
+    el.innerHTML = `<div class="card"><h2>${escapeHtml(player)}</h2><div style="font-size:20px;color:var(--muted)">${showAll ? 'Geen afgeronde rondes.' : 'Geen qualifying rondes.'}</div><div style="font-size:15px;color:var(--muted);margin-top:8px">Statistieken tonen rondes van de speler die is ingevuld bij Start (<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:-2px"><circle cx="12" cy="5" r="2"/><path d="M12 7v6l-3 7"/><path d="M12 13l4 6"/><path d="M9 11l6-1"/></svg>). Klopt de naam niet, pas die dan aan.</div></div>`;
     return;
   }
 
@@ -2955,8 +2955,18 @@ function renderPlayerStats() {
   });
 
   // Kerngetallen
-  const last20 = last20Qualifying(player, all, storage.getItem('golf_active_id'), game2Id);
+  const last20 = showAll
+    ? [...rounds].reverse().slice(0, 20)
+    : last20Qualifying(player, all, storage.getItem('golf_active_id'), game2Id);
   const whs = whsHandicap(last20, 'effective', effectiveLowHi(player, all, 'effective'), priorHiFor(last20, 'effective'));
+  // "Nieuwe hcp" als alle meetellende SD's vastgesteld zijn, anders "Verwachte hcp"
+  const hcpLabel = (() => {
+    if (!whs || !whs.usedIds || !whs.usedIds.size) return 'Verwachte hcp';
+    const allFixed = last20
+      .filter(r => whs.usedIds.has(r.id))
+      .every(r => r.sdFinal != null && r.sdFinal !== '' && isFinite(parseFloat(r.sdFinal)));
+    return allFixed ? 'Nieuwe hcp' : 'Verwachte hcp';
+  })();
   const bestSd = validSd.length ? Math.min(...validSd) : null;
   const avgSd  = validSd.length ? validSd.reduce((s, x) => s + x, 0) / validSd.length : null;
   const stbVals = rounds.map(r => r.totalStb).filter(v => v != null && isFinite(v));
@@ -2996,13 +3006,13 @@ function renderPlayerStats() {
   const kpi = (label, val) => `<div style="flex:1;min-width:90px;text-align:center"><div style="font-size:26px;font-weight:800;color:var(--green-light)">${val}</div><div style="font-size:15px;color:var(--muted);text-transform:uppercase;letter-spacing:.5px">${label}</div></div>`;
   const kpiRow = `<div class="card"><h2>${escapeHtml(player)}</h2>`
     + `<div style="display:flex;flex-wrap:wrap;gap:12px 8px">`
-    + kpi('Verwachte hcp', whs ? whs.value.toFixed(1) : '—')
+    + kpi(hcpLabel, whs ? whs.value.toFixed(1) : '—')
+    + (() => { const lo = effectiveLowHi(player, all, 'effective'); return kpi('Laagste hcp', lo != null ? lo.toFixed(1) : '—'); })()
     + kpi('Rondes', rounds.length)
     + kpi('Beste Sd', bestSd != null ? bestSd.toFixed(1) : '—')
     + kpi('Gem. Sd', avgSd != null ? avgSd.toFixed(1) : '—')
     + kpi('Gem. Stb', avgStb != null ? avgStb.toFixed(1) : '—')
     + `</div>`
-    + (showAll ? `<div style="font-size:15px;color:var(--muted);margin-top:8px">Verwachte hcp blijft op basis van qualifying rondes; overige cijfers tellen alle afgeronde rondes.</div>` : '')
     + `</div>`;
 
   // Scoreverdeling over alle qualifying holes
@@ -3059,7 +3069,7 @@ function renderPlayerStats() {
   // Uitsplitsing per club → banen (inklapbaar, standaard ingeklapt)
   const byClub = {};
   rounds.forEach(r => {
-    const club = r.club ? (r.clubShort || r.club) : 'Onbekende club';
+    const club = r.club ? r.club : 'Onbekende club';
     const track = r.track || 'Onbekend';
     byClub[club] = byClub[club] || {};
     (byClub[club][track] = byClub[club][track] || []).push(r);
@@ -3240,7 +3250,7 @@ function buildScoreText(round) {
   lines.push('AGS: ' + (played.length ? totalAgs : '—'));
   lines.push('PCC: ' + formatPcc(round.pcc ?? 0));
   { const c = computeSD({ holes: round.holes, CR: round.CR, SR: round.SR, hcp: round.hcp, pcc: round.pcc }); lines.push('SD voorlopig: ' + (c ? (c.approx ? '~' : '') + c.value.toFixed(1) : '—')); }
-  lines.push('SD vastgesteld: ' + ((round.sdManual != null && round.sdManual !== '' && isFinite(parseFloat(round.sdManual))) ? parseFloat(round.sdManual).toFixed(1) : '—'));
+  lines.push('SD vastgesteld: ' + ((round.sdFinal != null && round.sdFinal !== '' && isFinite(parseFloat(round.sdFinal))) ? parseFloat(round.sdFinal).toFixed(1) : '—'));
   lines.push('');
   round.holes.forEach((h) => {
     const s = h.score;
@@ -3602,7 +3612,7 @@ function doImportRound(r, saved, skipImportFlag = false) {
       const is9 = (r.holes?.length ?? 18) === 9;
       return Math.max(is9 ? -0.5 : -1, Math.min(is9 ? 1.5 : 3, v));
     })(),
-    sdManual: (r.sdManual == null || r.sdManual === '' || isNaN(parseFloat(r.sdManual))) ? null : Math.round(parseFloat(r.sdManual) * 10) / 10,
+    sdFinal: (r.sdFinal == null || r.sdFinal === '' || isNaN(parseFloat(r.sdFinal))) ? null : Math.round(parseFloat(r.sdFinal) * 10) / 10,
     qualifying: r.qualifying === true,
     _justImported: skipImportFlag ? undefined : true,
     total:       played.reduce((s, h) => s + h.score, 0),
@@ -3662,13 +3672,13 @@ function exportBackup(idx, btn) {
   try {
     const { id, total, totalStb, playedCount, holesCount, currentHole, started, _justImported,
             club, clubShort, track, date, time, player, hcp, gender, tee, CR, SR, PAR, chcp, sd: _oldSd,
-            pcc: _pcc, sdManual: _sdManual, qualifying: _qual,
+            pcc: _pcc, sdFinal: _sdFinal, qualifying: _qual,
             ...rest } = round;
     const clean = {
       club, clubShort, track,
       date, time, player, hcp, gender, tee, CR, SR, PAR, chcp,
       pcc: _pcc ?? 0,
-      sdManual: _sdManual ?? null,
+      sdFinal: _sdFinal ?? null,
       qualifying: _qual === true,
       ...rest,
       holes: round.holes.map(({ _initScore, ...h }) => h),
@@ -3725,7 +3735,7 @@ function exportJson(round) {
     AGS:      totalAgs,
     PCC:      round.pcc ?? 0,
     SD_voorlopig: (() => { const c = computeSD({ holes: round.holes, CR: round.CR, SR: round.SR, hcp: round.hcp, pcc: round.pcc }); return c ? { waarde: c.value, benadering: c.approx } : null; })(),
-    SD_vastgesteld: (round.sdManual != null && round.sdManual !== '' && isFinite(parseFloat(round.sdManual))) ? parseFloat(round.sdManual) : null,
+    SD_vastgesteld: (round.sdFinal != null && round.sdFinal !== '' && isFinite(parseFloat(round.sdFinal))) ? parseFloat(round.sdFinal) : null,
     holes_detail: round.holes.map(h => {
       const s = h.score;
       const d = s !== null ? s - h.par : null;
@@ -3787,7 +3797,7 @@ function exportCsv(round, btn) {
   lines.push(['Score', total, 'AGS', totalAgs].map(esc).join(','));
   lines.push((() => {
     const c = computeSD({ holes: round.holes, CR: round.CR, SR: round.SR, hcp: round.hcp, pcc: round.pcc });
-    const man = (round.sdManual != null && round.sdManual !== '' && isFinite(parseFloat(round.sdManual))) ? parseFloat(round.sdManual).toFixed(1) : '—';
+    const man = (round.sdFinal != null && round.sdFinal !== '' && isFinite(parseFloat(round.sdFinal))) ? parseFloat(round.sdFinal).toFixed(1) : '—';
     return ['PCC', formatPcc(round.pcc ?? 0), 'SD voorlopig', c ? (c.approx ? '~' : '') + c.value.toFixed(1) : '—', 'SD vastgesteld', man].map(esc).join(',');
   })());
   lines.push([]);
@@ -3834,7 +3844,7 @@ function saveActiveRound(skipLoadSaved = false) {
     club: game.club, clubShort: game.clubShort,
     total, totalStb, playedCount: played.length, holesCount: game.holes.length,
     currentHole,
-    pcc: game.pcc ?? 0, sdManual: game.sdManual ?? null, qualifying: !!game.qualifying,
+    pcc: game.pcc ?? 0, sdFinal: game.sdFinal ?? null, qualifying: !!game.qualifying,
     holes: game.holes.map(h => ({ ...h })),
   };
 
@@ -3877,7 +3887,7 @@ function restoreActiveRound() {
     player: r.player, hcp: r.hcp, gender: r.gender,
     track: r.track, tee: r.tee, CR: r.CR, SR: r.SR, PAR: r.PAR, chcp: r.chcp ?? 0,
     club: r.club, clubShort: r.clubShort,
-    pcc: r.pcc ?? 0, sdManual: r.sdManual ?? null, qualifying: !!r.qualifying,
+    pcc: r.pcc ?? 0, sdFinal: r.sdFinal ?? null, qualifying: !!r.qualifying,
     started: true,
     holes: r.holes.map(h => ({ ...h })),
   };
@@ -4072,7 +4082,7 @@ function loadSaved() {
       const asterisk = '<span style="font-weight:900">≈</span>';
       const check = '<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="var(--gold)" stroke-width="4" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:0px;margin-left:1px"><polyline points="20 6 9 17 4 12"/></svg>';
       const _fromGame = isCurrentPlayer;
-      const _sdMan = _fromGame ? (game.sdManual ?? r.sdManual) : r.sdManual;
+      const _sdMan = _fromGame ? (game.sdFinal ?? r.sdFinal) : r.sdFinal;
       const _pcc = _fromGame ? (game.pcc ?? r.pcc) : r.pcc;
       const manVal = (_sdMan != null && _sdMan !== '' && isFinite(parseFloat(_sdMan))) ? parseFloat(_sdMan) : null;
       if (manVal != null) {
@@ -4093,11 +4103,11 @@ function loadSaved() {
         <span>${formatRoundDate(r.date)}${r.time ? ' · ' + r.time : ''}${bezigLabel}</span>
         <span style="display:flex;align-items:center;gap:6px">
           ${(window._whsUsedIds && window._whsUsedIds.has(r.id)) ? '<span class="tee-badge badge-whs">WHS</span>' : ''}
-          ${(isCurrentPlayer ? (game.qualifying ?? r.qualifying) : r.qualifying) && !(() => { const sd = isCurrentPlayer ? (game.sdManual ?? r.sdManual) : r.sdManual; return sd != null && sd !== '' && isFinite(parseFloat(sd)); })() ? '<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="var(--orange)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M10.29 3.86 1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>' : ''}
+          ${(isCurrentPlayer ? (game.qualifying ?? r.qualifying) : r.qualifying) && !(() => { const sd = isCurrentPlayer ? (game.sdFinal ?? r.sdFinal) : r.sdFinal; return sd != null && sd !== '' && isFinite(parseFloat(sd)); })() ? '<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="var(--orange)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M10.29 3.86 1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>' : ''}
           ${(isCurrentPlayer ? (game.qualifying ?? r.qualifying) : r.qualifying) ? '<span class="tee-badge badge-q">Q</span>' : ''}
         </span>
       </div>
-      ${compact ? '' : `<div class="saved-meta" style="${isActive ? 'color:var(--gold)' : ''}">${playerSafe}${playerNumLabel}${r.hcp != null ? ` · Hcp ${r.hcp}` : ''}</div>`}
+      ${compact ? '' : `<div class="saved-meta" style="${isActive ? 'color:var(--gold)' : ''}">${playerSafe}${playerNumLabel}</div>`}
       ${compact ? '' : `<div class="saved-meta">${club}</div>`}
       ${compact ? '' : `<div class="saved-meta">${trackSafe}${par != null ? ` · Par ${par}` : ''} · ${holesCount} holes</div>`}
       ${compact ? '' : `<div class="saved-meta">${(r.gender || '').charAt(0)} · ${r.tee || '—'} · Chcp ${chcp ?? '—'}${totalStb != null ? ` · Stb ${totalStb}` : ''}</div>`}
@@ -4201,7 +4211,7 @@ function loadSaved() {
           .slice(0, 20);
         const sdFixed = r => {
           const isActiveRound = activeId && String(r.id) === activeId;
-          const sd = isActiveRound ? (game.sdManual ?? r.sdManual) : r.sdManual;
+          const sd = isActiveRound ? (game.sdFinal ?? r.sdFinal) : r.sdFinal;
           return sd != null && sd !== '' && isFinite(parseFloat(sd));
         };
         const anyUnfixed = qualifying.some(r => !sdFixed(r));
@@ -5559,7 +5569,7 @@ function openRoundResultModal(idx) {
   const activeId = storage.getItem('golf_active_id');
   const isActive = activeId && String(round.id) === activeId;
   const isDone = (round.holes || []).length > 0 && (round.holes || []).every(h => h.score !== null);
-  const sdVal = isActive ? (game.sdManual ?? round.sdManual) : round.sdManual;
+  const sdVal = isActive ? (game.sdFinal ?? round.sdFinal) : round.sdFinal;
   const hasFixedSd = sdVal != null && sdVal !== '' && isFinite(parseFloat(sdVal));
   if (isDone && !isActive && hasFixedSd) {
     showConfirmModal(
@@ -5589,7 +5599,7 @@ function doOpenRoundResultModal(idx) {
     return (src != null && src !== '' && isFinite(v)) ? Math.max(lo, Math.min(hi, v)) : 0;
   })();
   document.getElementById('editPccBtn').textContent = formatPcc(_editPccVal);
-  const sdSrc = isActive ? (game.sdManual ?? round.sdManual) : round.sdManual;
+  const sdSrc = isActive ? (game.sdFinal ?? round.sdFinal) : round.sdFinal;
   document.getElementById('editSdInput').value = (sdSrc != null && sdSrc !== '') ? String(sdSrc) : '';
   updateEditSdHint(round);
   document.getElementById('roundResultModal').classList.remove('hidden');
@@ -5772,11 +5782,11 @@ function confirmRoundResult() {
   const lo = is9 ? -0.5 : -1, hi = is9 ? 1.5 : 3;
   const pccNum = parseFloat(pccRaw.replace(',', '.'));
   round.pcc = pccRaw === '' || !isFinite(pccNum) ? 0 : Math.max(lo, Math.min(hi, pccNum));
-  round.sdManual = (sdRaw === '' || isNaN(parseFloat(sdRaw))) ? null : Math.round(parseFloat(sdRaw) * 10) / 10;
+  round.sdFinal = (sdRaw === '' || isNaN(parseFloat(sdRaw))) ? null : Math.round(parseFloat(sdRaw) * 10) / 10;
   const activeId = storage.getItem('golf_active_id');
   if (activeId && String(round.id) === activeId) {
     game.pcc = round.pcc;
-    game.sdManual = round.sdManual;
+    game.sdFinal = round.sdFinal;
   }
   storage.setItem('golf_rounds', JSON.stringify(saved));
   if (activeId && String(round.id) === activeId) {
