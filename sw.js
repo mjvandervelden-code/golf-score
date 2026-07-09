@@ -1,18 +1,21 @@
-// Service worker voor de Golf Scorekaart PWA.
-// Plaats dit bestand naast index.html (golf-scorecard.html) in de GitHub Pages-repo.
+// Service worker voor de Golf Score PWA.
+// Plaats dit bestand naast golf-score.html in de GitHub Pages-repo.
 // Verhoog CACHE_VERSION bij elke nieuwe release zodat de cache ververst.
-const CACHE_VERSION = 'golf-score-v7';
+const CACHE_VERSION = 'golf-score-v9';
 
-// Bestandsnaam van de app. Pas aan als je HTML anders heet (bijv. 'index.html').
+// Bestanden die offline beschikbaar moeten zijn.
 const APP_FILES = [
   './',
   './index.html',
+  './golf-score.html',
+  './manifest.json',
+  './icon.svg',
 ];
 
 self.addEventListener('install', e => {
   e.waitUntil(
     caches.open(CACHE_VERSION)
-      // addAll faalt als één bestand ontbreekt; per bestand toevoegen is robuuster.
+      // Per bestand toevoegen is robuuster dan addAll (dat faalt als één bestand ontbreekt).
       .then(c => Promise.all(APP_FILES.map(url => c.add(url).catch(() => {}))))
       .then(() => self.skipWaiting())
   );
@@ -41,9 +44,7 @@ self.addEventListener('fetch', e => {
         return res;
       }).catch(() => {
         // Offline: val voor paginanavigatie terug op de gecachte app.
-        if (req.mode === 'navigate') {
-          return caches.match('./index.html').then(m => m || caches.match('./'));
-        }
+        if (req.mode === 'navigate') return caches.match('./golf-score.html');
         return cached;
       });
       return cached || network;
