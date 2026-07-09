@@ -2705,18 +2705,21 @@ function renderScoreInfo(played, total, totalAgs, totalStb, rawFmt, rparPlayed, 
       ['Hcp',      game.hcp != null ? game.hcp : '—'],
       ...(() => {
         // WHS alleen voor de speler bovenin Start (nooit speler 2 of een andere speler)
-        const nameEl = document.getElementById('iName');
-        const startPlayer = nameEl ? nameEl.value.trim() : '';
+        const startPlayer = startPlayerName();
         if (!startPlayer || game.player !== startPlayer) return [];
+        const done = game.holes.length > 0 && played.length === game.holes.length;
+        if (!done || !game.qualifying) return [];
+        const sdFixed = game.sdFinal != null && game.sdFinal !== '' && isFinite(parseFloat(game.sdFinal));
         const all = loadSavedRounds();
         const isDone = r => (r.playedCount ?? r.holes.filter(h => h.score !== null).length) >= (r.holesCount ?? r.holes.length);
         const others = all.filter(r => r.player === game.player && String(r.id) !== String(game.id) && r.qualifying && isDone(r));
-        const includeGame = game.qualifying && game.holes.length > 0 && played.length === game.holes.length;
-        const pool = [...(includeGame ? [{ ...game }] : []), ...others]
+        const pool = [{ ...game }, ...others]
           .sort((a, b) => new Date(`${b.date||'1970-01-01'}T${b.time||'00:00'}`) - new Date(`${a.date||'1970-01-01'}T${a.time||'00:00'}`))
           .slice(0, 20);
-        const whs = whsHandicap(pool, 'effective', effectiveLowHi(game.player, all, 'effective'), priorHiFor(pool, 'effective'));
-        return [['Verwachte hcp', whs ? whs.value.toFixed(1) : '—']];
+        const mode = sdFixed ? 'fixed' : 'effective';
+        const whs = whsHandicap(pool, mode, effectiveLowHi(game.player, all, mode), priorHiFor(pool, mode));
+        const label = sdFixed ? 'Nieuwe hcp' : 'Verwachte hcp';
+        return [[label, whs ? fmt1(whs.value) : '—']];
       })(),
     ]],
     ['Club & Baan', [
@@ -2727,58 +2730,45 @@ function renderScoreInfo(played, total, totalAgs, totalStb, rawFmt, rparPlayed, 
       ['Par',      game.holes.reduce((s, h) => s + h.par, 0)],
       ['Geslacht', game.gender],
       ['Tee',      game.tee],
-      ['CR',       game.CR ?? '—'],
-      ['SR',       game.SR ?? '—'],
+      ['Course Rating (CR)', game.CR ?? '—'],
+      ['Slope Rating (SR)',  game.SR ?? '—'],
     ]],
     ['Resultaat', [
       ['Holes',    played.length + ' / ' + game.holes.length + ' gespeeld'],
-      ['Chcp',     game.chcp],
-      ['STB',      played.length ? totalStb : '—'],
-      ['Bruto',    total + ' (' + rawFmt(dRaw) + ' vs par)'],
-      ['Netto',    netto + ' (' + rawFmt(dNetto) + ' vs ppar)'],
-      ['Score',    played.length ? total : '—'],
-      ['AGS',      played.length ? totalAgs : '—'],
-      ['PCC',      formatPcc(game.pcc ?? 0)],
-      ['Sd<span style="font-weight:900;margin:0 3px">≈</span>(voorlopig)', (() => {
+      ['Baanhandicap (Chcp)', game.chcp],
+      ['Stableford (STB)',    played.length ? totalStb : '—'],
+      ['Bruto Score',         total + ' (' + rawFmt(dRaw) + ' vs par)'],
+      ['Netto Score',         netto + ' (' + rawFmt(dNetto) + ' vs ppar)'],
+      ['Aangepaste score (ABS)', played.length ? totalAgs : '—'],
+      ['Spelcondities (PCC)',    formatPcc(game.pcc ?? 0)],
+      ['Dagresultaat', null],
+      ['Voorlopig (Sd<span style="font-weight:900;margin:0 3px">≈</span>)', (() => {
         const done = game.holes.length > 0 && played.length === game.holes.length;
         if (!done) return '—';
         const c = computeSD({ holes: game.holes, CR: game.CR, SR: game.SR, hcp: game.hcp, pcc: game.pcc });
-        return c ? `${c.value.toFixed(1)}` : '—';
+        return c ? `${fmt1(c.value)}` : '—';
       })()],
-      ['Sd<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="4" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:middle;margin:0 3px"><polyline points="20 6 9 17 4 12"/></svg>(vastgesteld)', (game.sdFinal != null && game.sdFinal !== '' && isFinite(parseFloat(game.sdFinal))) ? parseFloat(game.sdFinal).toFixed(1) : '—'],
-      ...(() => {
-        const done = game.holes.length > 0 && played.length === game.holes.length;
-        if (!done || !game.qualifying) return [];
-        // WHS alleen voor de speler bovenin Start (nooit speler 2)
-        const nameEl = document.getElementById('iName');
-        const startPlayer = nameEl ? nameEl.value.trim() : '';
-        if (!startPlayer || game.player !== startPlayer) return [];
-        const sdFixed = game.sdFinal != null && game.sdFinal !== '' && isFinite(parseFloat(game.sdFinal));
-        // Laatste 20 qualifying van deze speler, inclusief de huidige ronde
-        const all = loadSavedRounds();
-        const others = all.filter(r => r.player === game.player && String(r.id) !== String(game.id));
-        const isDone = r => (r.playedCount ?? r.holes.filter(h => h.score !== null).length) >= (r.holesCount ?? r.holes.length);
-        const pool = [{ ...game }, ...others.filter(r => r.qualifying && isDone(r))]
-          .sort((a, b) => new Date(`${b.date||'1970-01-01'}T${b.time||'00:00'}`) - new Date(`${a.date||'1970-01-01'}T${a.time||'00:00'}`))
-          .slice(0, 20);
-        const whs = whsHandicap(pool, sdFixed ? 'fixed' : 'effective', effectiveLowHi(game.player, all, sdFixed ? 'fixed' : 'effective'), priorHiFor(pool, sdFixed ? 'fixed' : 'effective'));
-        const label = sdFixed ? 'Nieuwe hcp' : 'Verwachte nieuwe hcp';
-        return [[label, whs ? whs.value.toFixed(1) : '—']];
-      })(),
+      ['Vastgesteld (Sd<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="4" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:middle;margin:0 3px"><polyline points="20 6 9 17 4 12"/></svg>)', (game.sdFinal != null && game.sdFinal !== '' && isFinite(parseFloat(game.sdFinal))) ? fmt1(parseFloat(game.sdFinal)) : '—'],
     ]],
   ];
 
-  document.getElementById('sumInfo').innerHTML = sections.map(([title, rows]) =>
-    `<div class="card" style="margin-bottom:12px;padding:12px 16px">` +
+  document.getElementById('sumInfo').innerHTML = sections.map(([title, rows]) => {
+    let alt = 0; // wisselende achtergrond, subkoppen tellen niet mee
+    return `<div class="card" style="margin-bottom:12px;padding:12px 16px">` +
     `<div style="font-size:17px;font-weight:800;color:var(--gold);text-transform:uppercase;letter-spacing:.7px;margin-bottom:8px">${title}</div>` +
-    rows.map(([label, value], j) =>
-      `<div class="sum-info-row${j % 2 === 1 ? ' alt' : ''}">` +
-      `<span class="sum-info-label">${label}</span>` +
-      `<span class="sum-info-value">${value}</span>` +
-      `</div>`
-    ).join('') +
-    `</div>`
-  ).join('');
+    rows.map(([label, value]) => {
+      // value === null → groen subkopje binnen de sectie
+      if (value === null) {
+        return `<div style="font-size:15px;font-weight:800;color:var(--green-light);text-transform:uppercase;letter-spacing:.6px;margin:10px 0 4px">${label}</div>`;
+      }
+      const cls = (alt++ % 2 === 1) ? ' alt' : '';
+      return `<div class="sum-info-row${cls}">` +
+        `<span class="sum-info-label">${label}</span>` +
+        `<span class="sum-info-value">${value}</span>` +
+        `</div>`;
+    }).join('') +
+    `</div>`;
+  }).join('');
 }
 
 function renderScoreStats() {
@@ -2883,7 +2873,7 @@ function renderScoreTable() {
     const armed = scoreTapHole === i;
     const scoreVal = `<div class="sum-tr-btn-cell score-cell"><span class="score-val${armed ? ' tap-armed' : ''}" style="font-size:24px;font-weight:900"${i === currentHole
         ? ` onpointerdown="decreaseScore(${i})" onpointerup="increaseScore(${i})" onpointerleave="cancelScore()" onpointercancel="cancelScore()" oncontextmenu="return false" onclick="event.stopPropagation()"`
-        : ` onclick="event.stopPropagation(); selectScoreRow(${i})"`}>${s == null ? (anyDoubleDigit ? '<span style="color:transparent">1</span>—' : '—') : (anyDoubleDigit && s < 10 ? '<span style="color:transparent">1</span>' + s : s)}</span></div>`;
+        : ` onclick="event.stopPropagation(); selectScoreRow(${i})"`}>${s == null ? '—' : (anyDoubleDigit && s < 10 ? '<span style="color:transparent">1</span>' + s : s)}</span></div>`;
     const showBtns = i === currentHole && scoreButtonsRow === i;
     const isHiddenPparDouble = s !== null && d !== 2 && (s - h.ppar) === 2;
     const stbColor = 'var(--blue)';
@@ -3042,12 +3032,12 @@ function renderPlayerStats() {
     : '';
   const kpiRow = `<div class="card"><h2>${escapeHtml(player)}</h2>`
     + `<div style="display:flex;flex-wrap:wrap;gap:12px 8px">`
-    + kpi(hcpLabel, whs ? whs.value.toFixed(1) : '—', { color: hcpColor, suffix: hcpTriangle })
-    + (() => { const lo = effectiveLowHi(player, all, 'effective'); return kpi('Laagste hcp', lo != null ? lo.toFixed(1) : '—'); })()
+    + kpi(hcpLabel, whs ? fmt1(whs.value) : '—', { color: hcpColor, suffix: hcpTriangle })
+    + (() => { const lo = effectiveLowHi(player, all, 'effective'); return kpi('Laagste hcp', lo != null ? fmt1(lo) : '—'); })()
     + kpi('Rondes', rounds.length)
-    + kpi('Beste Sd', bestSd != null ? bestSd.toFixed(1) : '—')
-    + kpi('Gem. Sd', avgSd != null ? avgSd.toFixed(1) : '—')
-    + kpi('Gem. Stb', avgStb != null ? avgStb.toFixed(1) : '—')
+    + kpi('Beste Sd', bestSd != null ? fmt1(bestSd) : '—')
+    + kpi('Gem. Sd', avgSd != null ? fmt1(avgSd) : '—')
+    + kpi('Gem. Stb', avgStb != null ? fmt1(avgStb) : '—')
     + `</div>`
     + `</div>`;
 
@@ -3080,6 +3070,30 @@ function renderPlayerStats() {
     + distRow('Dubbel', dbl, 'var(--dist-double)')
     + distRow('Slechter', worse, 'var(--dist-worse)')
     + `<div style="font-size:15px;color:var(--muted);margin-top:6px">${holesTot} holes over ${rounds.length} rondes</div></div>`;
+
+  // Gemiddelde score t.o.v. par per tee
+  const teeBuckets = {};
+  rounds.forEach(r => {
+    const tee = r.tee || 'Onbekend';
+    r.holes.forEach(h => {
+      if (h.score == null) return;
+      (teeBuckets[tee] = teeBuckets[tee] || []).push(h.score - h.par);
+    });
+  });
+  const teeRow = (tee) => {
+    const arr = teeBuckets[tee];
+    if (!arr.length) return '';
+    const avg = arr.reduce((s, x) => s + x, 0) / arr.length;
+    const sign = avg > 0 ? '+' : '';
+    return `<div style="display:flex;align-items:center;gap:8px;margin-bottom:4px">`
+      + `<span style="width:96px;font-size:17px;color:var(--muted)">${escapeHtml(tee)}</span>`
+      + `<span style="flex:1;font-size:17px;font-weight:700">${sign}${avg.toFixed(2)} <span style="color:var(--muted);font-weight:400">t.o.v. par</span></span>`
+      + `<span style="width:56px;text-align:right;font-size:15px;color:var(--muted)">${arr.length}×</span></div>`;
+  };
+  const teeCardBody = Object.keys(teeBuckets).sort((a, b) => teeBuckets[b].length - teeBuckets[a].length).map(teeRow).join('');
+  const teeCard = teeCardBody
+    ? `<div class="card"><h2>Gemiddelde per tee</h2>${teeCardBody}</div>`
+    : '';
 
   // Gemiddelde score t.o.v. par per par-type (3/4/5)
   const parBuckets = { 3: [], 4: [], 5: [] };
@@ -3143,17 +3157,17 @@ function renderPlayerStats() {
   const hdRow = (label, n) => {
     const pct = distTot ? Math.round(n / distTot * 100) : 0;
     return `<div style="display:flex;align-items:center;gap:8px;margin-bottom:4px">`
-      + `<span style="width:140px;font-size:17px;color:var(--muted)">${label}</span>`
+      + `<span style="width:88px;flex:none;font-size:17px;color:var(--muted);white-space:nowrap">${label}</span>`
       + `<div style="flex:1;min-width:0;background:var(--overlay-soft);border-radius:6px;overflow:hidden;height:18px"><div style="width:${pct}%;height:100%;background:var(--green-light)"></div></div>`
-      + `<span style="width:56px;text-align:right;font-size:17px;font-weight:700;white-space:nowrap">${n} · ${pct}%</span></div>`;
+      + `<span style="width:88px;flex:none;text-align:right;font-size:17px;font-weight:700;white-space:nowrap">${n} · ${pct}%</span></div>`;
   };
   const hdCard = distTot
     ? `<div class="card"><h2>Verdeling rond je handicap</h2>`
-      + hdRow('Onder index', distBuckets.onder)
+      + hdRow('Lager', distBuckets.onder)
       + hdRow('Op index', distBuckets.gelijk)
       + hdRow('+0 tot +3', distBuckets.boven1_3)
       + hdRow('+3 tot +5', distBuckets.boven3_5)
-      + hdRow('Meer dan +5', distBuckets.boven5)
+      + hdRow('Hoger', distBuckets.boven5)
       + `<div style="font-size:15px;color:var(--muted);margin-top:6px">${distTot} rondes met een eerdere index</div></div>`
     : '';
 
@@ -3264,7 +3278,7 @@ function renderPlayerStats() {
   const formBody = trendRow + spreadRow + nineRow;
   const formCard = formBody ? `<div class="card"><h2>Vorm &amp; consistentie</h2>${formBody}</div>` : '';
 
-  el.innerHTML = toggleBar + kpiRow + `<div class="card" id="sdChartCard"><h2>Dagresultaat en handicapverloop</h2><div id="sdChart"></div><div style="display:flex;gap:16px;margin-top:8px;font-size:15px;color:var(--muted)"><span style="display:flex;align-items:center;gap:6px"><span style="width:14px;height:3px;background:var(--green-light);display:inline-block;border-radius:2px"></span>Dagresultaat</span><span style="display:flex;align-items:center;gap:6px"><span style="width:14px;height:3px;background:var(--gold);display:inline-block;border-radius:2px"></span>Handicap</span></div></div>` + distCard + hdCard + formCard + ssCard + parCard + tpCard + trackCard;
+  el.innerHTML = toggleBar + kpiRow + `<div class="card" id="sdChartCard"><h2>Dagresultaat en handicapverloop</h2><div id="sdChart"></div><div style="display:flex;gap:16px;margin-top:8px;font-size:15px;color:var(--muted)"><span style="display:flex;align-items:center;gap:6px"><span style="width:14px;height:3px;background:var(--green-light);display:inline-block;border-radius:2px"></span>Dagresultaat</span><span style="display:flex;align-items:center;gap:6px"><span style="width:14px;height:3px;background:var(--gold);display:inline-block;border-radius:2px"></span>Handicap</span></div></div>` + distCard + hdCard + formCard + ssCard + teeCard + parCard + tpCard + trackCard;
 
   // Grafiek tekenen (na invoegen in DOM)
   renderSdChart(sdSeries, hiSeries);
@@ -3385,10 +3399,10 @@ function buildScoreText(round) {
   lines.push('Chcp: ' + (round.chcp ?? '—'));
   lines.push('STB: ' + (played.length ? totalStb : '—'));
   lines.push('Score: ' + (played.length ? total : '—'));
-  lines.push('AGS: ' + (played.length ? totalAgs : '—'));
-  lines.push('PCC: ' + formatPcc(round.pcc ?? 0));
-  { const c = computeSD({ holes: round.holes, CR: round.CR, SR: round.SR, hcp: round.hcp, pcc: round.pcc }); lines.push('SD voorlopig: ' + (c ? (c.approx ? '~' : '') + c.value.toFixed(1) : '—')); }
-  lines.push('SD vastgesteld: ' + ((round.sdFinal != null && round.sdFinal !== '' && isFinite(parseFloat(round.sdFinal))) ? parseFloat(round.sdFinal).toFixed(1) : '—'));
+  lines.push('Aangepaste score (ABS): ' + (played.length ? totalAgs : '—'));
+  lines.push('Spelcondities (PCC): ' + formatPcc(round.pcc ?? 0));
+  { const c = computeSD({ holes: round.holes, CR: round.CR, SR: round.SR, hcp: round.hcp, pcc: round.pcc }); lines.push('Voorlopig dagresultaat: ' + (c ? (c.approx ? '~' : '') + c.value.toFixed(1) : '—')); }
+  lines.push('Vastgesteld dagresultaat: ' + ((round.sdFinal != null && round.sdFinal !== '' && isFinite(parseFloat(round.sdFinal))) ? parseFloat(round.sdFinal).toFixed(1) : '—'));
   lines.push('');
   round.holes.forEach((h) => {
     const s = h.score;
@@ -3872,7 +3886,7 @@ function exportJson(round) {
     bruto:    { score: total, verschil: rawFmt(total - rpar) + ' vs par' },
     netto:    { score: netto, verschil: rawFmt(netto - rpar) + ' vs ppar' },
     score:    total,
-    AGS:      totalAgs,
+    ABS:      totalAgs,
     PCC:      round.pcc ?? 0,
     SD_voorlopig: (() => { const c = computeSD({ holes: round.holes, CR: round.CR, SR: round.SR, hcp: round.hcp, pcc: round.pcc }); return c ? { waarde: c.value, benadering: c.approx } : null; })(),
     SD_vastgesteld: (round.sdFinal != null && round.sdFinal !== '' && isFinite(parseFloat(round.sdFinal))) ? parseFloat(round.sdFinal) : null,
@@ -3934,15 +3948,15 @@ function exportCsv(round, btn) {
   lines.push(['STB', totalStb].map(esc).join(','));
   lines.push(['Bruto', total, rawFmt(total - rpar) + ' vs par'].map(esc).join(','));
   lines.push(['Netto', netto, rawFmt(netto - rpar) + ' vs ppar'].map(esc).join(','));
-  lines.push(['Score', total, 'AGS', totalAgs].map(esc).join(','));
+  lines.push(['Score', total, 'ABS', totalAgs].map(esc).join(','));
   lines.push((() => {
     const c = computeSD({ holes: round.holes, CR: round.CR, SR: round.SR, hcp: round.hcp, pcc: round.pcc });
     const man = (round.sdFinal != null && round.sdFinal !== '' && isFinite(parseFloat(round.sdFinal))) ? parseFloat(round.sdFinal).toFixed(1) : '—';
-    return ['PCC', formatPcc(round.pcc ?? 0), 'SD voorlopig', c ? (c.approx ? '~' : '') + c.value.toFixed(1) : '—', 'SD vastgesteld', man].map(esc).join(',');
+    return ['Spelcondities (PCC)', formatPcc(round.pcc ?? 0), 'Voorlopig dagresultaat', c ? (c.approx ? '~' : '') + c.value.toFixed(1) : '—', 'Vastgesteld dagresultaat', man].map(esc).join(',');
   })());
   lines.push([]);
   // Header
-  lines.push(['Hole','Si','Par','PPar','Score','Stb','Ags','Resultaat'].map(esc).join(','));
+  lines.push(['Hole','Si','Par','PPar','Score','Stb','Abs','Resultaat'].map(esc).join(','));
   round.holes.forEach((h, i) => {
     const s = h.score;
     const d = s !== null ? s - h.par : null;
@@ -4167,7 +4181,7 @@ function updateComputedHcp() {
   const actId = storage.getItem('golf_active_id');
   const last20 = last20Qualifying(player1, loadSavedRounds(), actId, game2Id);
   const whs = whsHandicap(last20, 'effective', effectiveLowHi(player1, loadSavedRounds(), 'effective'), priorHiFor(last20, 'effective'));
-  el.textContent = whs ? whs.value.toFixed(1) : '—';
+  el.textContent = whs ? fmt1(whs.value) : '—';
   const labelEl = document.getElementById('computedHcpLabel');
   if (labelEl) {
     let label = 'Verwachte hcp';
@@ -4287,10 +4301,10 @@ function loadSaved() {
       const _pcc = _fromGame ? (game.pcc ?? r.pcc) : r.pcc;
       const manVal = (_sdMan != null && _sdMan !== '' && isFinite(parseFloat(_sdMan))) ? parseFloat(_sdMan) : null;
       if (manVal != null) {
-        sdFrag = ` · Pcc ${formatPcc(_pcc ?? 0)} · Sd${check} ${manVal.toFixed(1)}`;
+        sdFrag = ` · Pcc ${formatPcc(_pcc ?? 0)} · Sd${check} ${fmt1(manVal)}`;
       } else {
         const c = computeSD({ holes: r.holes, CR: r.CR, SR: r.SR, hcp: r.hcp, pcc: _pcc });
-        sdFrag = c ? ` · Pcc ${formatPcc(_pcc ?? 0)} · Sd${asterisk} ${c.value.toFixed(1)}` : '';
+        sdFrag = c ? ` · Pcc ${formatPcc(_pcc ?? 0)} · Sd${asterisk} ${fmt1(c.value)}` : '';
       }
     }
     const statusLine = done
@@ -5895,6 +5909,14 @@ function formatPcc(v) {
   return Number.isInteger(v) ? String(v) : v.toFixed(1);
 }
 
+// Toont hcp/SD op 1 decimaal, maar laat een decimaal 0 weg (31.0 → "31", 31.1 → "31.1").
+// Puur visueel; verandert niets aan de berekening.
+function fmt1(v) {
+  const n = Math.round(Number(v) * 10) / 10;
+  if (!isFinite(n)) return '—';
+  return Number.isInteger(n) ? String(n) : n.toFixed(1);
+}
+
 function onEditSdBlur() {
   const el = document.getElementById('editSdInput');
   const raw = el.value.trim().replace(',', '.');
@@ -6853,7 +6875,7 @@ function updateLowHiInput() {
   if (dEl) {
     const player = startPlayerName();
     const d = player ? derivedLowHi(player, loadSavedRounds(), 'effective') : null;
-    dEl.textContent = (d != null && isFinite(d)) ? d.toFixed(1) : '—';
+    dEl.textContent = (d != null && isFinite(d)) ? fmt1(d) : '—';
   }
 }
 
