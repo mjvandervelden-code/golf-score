@@ -4346,7 +4346,7 @@ function loadSaved() {
     return;
   }
 
-  const makeCard = (r, i, compact = false) => {
+  const makeCard = (r, i, compact = false, hcpInfo = null) => {
     const club = escapeHtml(r.club || 'Onbekende club');
     const playerSafe = escapeHtml(r.player || '—');
     const trackSafe = escapeHtml(r.track || '');
@@ -4400,6 +4400,20 @@ function loadSaved() {
       ${compact ? '' : `<div class="saved-meta">${trackSafe}${par != null ? ` · Par ${par}` : ''} · ${holesCount} holes</div>`}
       ${compact ? '' : `<div class="saved-meta">${(r.gender || '').charAt(0)} · ${r.tee || '—'} · Chcp ${chcp ?? '—'}${totalStb != null ? ` · Stb ${totalStb}` : ''}</div>`}
       ${compact ? `<div class="saved-meta">${(`${totalStb != null ? `Stb ${totalStb}` : ''}${sdFrag}`).replace(/^ · /, '')}</div>` : ''}
+      ${compact && hcpInfo ? (() => {
+        const arrow = '<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:-1px;margin:0 3px"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>';
+        const goldCheck = '<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="var(--gold)" stroke-width="4" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:0px;margin-left:2px"><polyline points="20 6 9 17 4 12"/></svg>';
+        const provisionalMark = '<span style="color:var(--orange);font-weight:700;margin-left:2px">?</span>';
+        const { oldHcp, newHcp, isCurrent, provisional } = hcpInfo;
+        if (newHcp == null) return '';
+        const diff = (oldHcp != null) ? Math.round((newHcp - oldHcp) * 10) / 10 : null;
+        let diffFrag = '';
+        if (diff != null && diff !== 0) {
+          const color = diff > 0 ? 'var(--red)' : 'var(--green-light)';
+          diffFrag = ` <span style="color:${color}">(${diff > 0 ? '+' : ''}${diff.toFixed(1)})</span>`;
+        }
+        return `<div class="saved-meta">Hcp ${oldHcp != null ? fmt1(oldHcp) : '—'}${arrow}${fmt1(newHcp)}${isCurrent ? goldCheck : ''}${provisional ? provisionalMark : ''}${diffFrag}</div>`;
+      })() : ''}
       ${compact ? '' : `<div class="saved-meta">${done ? '' : `${playedCount}/${holesCount} · `}Score ${total}${sdFrag}</div>`}
       ${compact ? '' : `<div style="margin-top:8px">${flatChartHtml(r.holes)}</div>`}
       <div class="error-msg hidden" data-round-delete-msg="${r.id}" style="color:var(--red);font-size:20px;font-weight:700;text-align:right;margin-top:6px">Tik nogmaals om te bevestigen</div>
@@ -4538,6 +4552,34 @@ function loadSaved() {
           const sd = isActiveRound ? (game.sdFinal ?? r.sdFinal) : r.sdFinal;
           return sd != null && sd !== '' && isFinite(parseFloat(sd));
         };
+        // Hcp-regel voor de compacte weergave: per qualifying ronde de handicap waarmee
+        // gespeeld is, de handicap die daarna gold (WHS-staffel, zonder ESR/caps — zelfde
+        // methode als het handicapverloop in de statistieken), of dat een nieuwe laagste
+        // handicap was, en of die nieuwe waarde nog voorlopig is (niet alle Sd's in het
+        // gebruikte venster zijn al handmatig vastgesteld).
+        const hcpMap = {};
+        {
+          const qualAll = rounds
+            .filter(r => r.qualifying && isDone(r))
+            .sort((a, b) => new Date(`${a.date||'1970-01-01'}T${a.time||'00:00'}`) - new Date(`${b.date||'1970-01-01'}T${b.time||'00:00'}`));
+          qualAll.forEach((r, idx) => {
+            const window20 = qualAll.slice(0, idx + 1).slice(-20);
+            const sds = window20.map(x => { const e = effectiveSD(x); return e ? e.value : null; }).filter(v => v != null);
+            const staffel = whsStaffel(sds.length);
+            if (!staffel) return;
+            const avg = [...sds].sort((a, b) => a - b).slice(0, staffel.count).reduce((s, x) => s + x, 0) / staffel.count;
+            const newHcp = whsIndexRound(avg + staffel.adj);
+            const oldHcpVal = parseFloat(r.hcp);
+            const provisional = window20.some(x => !sdFixed(x));
+            const isMostRecent = idx === qualAll.length - 1;
+            hcpMap[r.id] = {
+              oldHcp: isFinite(oldHcpVal) ? oldHcpVal : null,
+              newHcp,
+              isCurrent: isMostRecent && !provisional,
+              provisional,
+            };
+          });
+        }
         const anyUnfixed = qualifying.some(r => !sdFixed(r));
         const warnTriangle = '<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="var(--orange)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:middle;position:relative;top:-1px;margin-left:6px"><path d="M10.29 3.86 1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>';
         let ph = playerGroupHeader(player, rounds.length);
@@ -4546,7 +4588,7 @@ function loadSaved() {
         let qh = collapsibleHeader('Laatste 20 qualifying', qualifying.length, 'pgq_' + key, '_pgSubCollapsed').replace('color:var(--gold)', 'color:var(--green-light)');
         if (anyUnfixed) qh = qh.replace('</span><span style="opacity:.8">', warnTriangle + '</span><span style="opacity:.8">');
         html += `<div style="padding-left:12px">` + qh
-          + qualifying.map(r => makeCard(r, null, true)).join('') + '</div></div>';
+          + qualifying.map(r => makeCard(r, null, true, hcpMap[r.id])).join('') + '</div></div>';
         html += `<div style="padding-left:12px">`
           + collapsibleHeader('Alle rondes', rounds.length, 'pga_' + key, '_pgSubCollapsed').replace('color:var(--gold)', 'color:var(--green-light)');
         // Subcategorie 'Laatste 12 maanden' bovenaan, daarna per jaar (nieuwste eerst)
@@ -4559,7 +4601,7 @@ function loadSaved() {
           if (last12.length) {
             html += `<div style="padding-left:12px">`
               + collapsibleHeader('Laatste 12 maanden', last12.length, 'pgy_' + key + '_last12', '_pgYearCollapsed').replace('color:var(--gold)', 'color:var(--muted)')
-              + last12.map(r => makeCard(r, null, true)).join('') + '</div></div>';
+              + last12.map(r => makeCard(r, null, true, hcpMap[r.id])).join('') + '</div></div>';
           }
           const byYear = {};
           rounds.forEach(r => {
