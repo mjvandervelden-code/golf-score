@@ -346,7 +346,8 @@
       background: rgba(201,168,76,.22); color: var(--white);
     }
     .score-btn.reset.hidden { visibility: hidden; pointer-events: none; }
-    .score-val { display: inline-block; min-width: 28px; text-align: center; font-size:24px; font-weight: 800; color: var(--white); -webkit-touch-callout: none; -webkit-user-select: none; user-select: none; touch-action: manipulation; justify-self: center; padding: 4px 12px 2px; border-radius: 8px; }
+    .score-val { display: inline-block; width: calc(1ch + 24px); text-align: center; font-size:24px; font-weight: 800; color: var(--white); -webkit-touch-callout: none; -webkit-user-select: none; user-select: none; touch-action: manipulation; justify-self: center; padding: 4px 12px 2px; border-radius: 8px; }
+    .score-val.wide-score { width: calc(2ch + 24px); }
     .score-val.tap-armed { color: var(--gold); }
     /* Legenda/telling onder grafiek. Terugdraaien: zet var(--res-*) terug. Par blijft grijs. */
     .c-eagle  { color: var(--dist-eagle); }
@@ -2855,7 +2856,8 @@ function renderScoreTable() {
   // Bereken maximaal aantal bolletjes dynamisch
   const maxDots = Math.max(1, ...holeSubset.map(({ h }) => Math.abs(h.phcp || 0)));
 
-  // Toon transparante voorloop-1 alleen als een getoonde hole een score van 10+ heeft
+  // Alle scorecellen krijgen dezelfde (1 of 2 tekens brede) vaste breedte, zodat de
+  // uitlijning niet verspringt zodra ergens een score van 10+ in beeld komt.
   const anyDoubleDigit = holeSubset.some(({ h }) => h.score != null && h.score >= 10);
 
   holeSubset.forEach(({ h, i }) => {
@@ -2871,9 +2873,9 @@ function renderScoreTable() {
       else               { cls='c-worse';  lbl = '+' + d; }
     }
     const armed = scoreTapHole === i;
-    const scoreVal = `<div class="sum-tr-btn-cell score-cell"><span class="score-val${armed ? ' tap-armed' : ''}" style="font-size:24px;font-weight:900"${i === currentHole
+    const scoreVal = `<div class="sum-tr-btn-cell score-cell"><span class="score-val${armed ? ' tap-armed' : ''}${anyDoubleDigit ? ' wide-score' : ''}" style="font-size:24px;font-weight:900"${i === currentHole
         ? ` onpointerdown="decreaseScore(${i})" onpointerup="increaseScore(${i})" onpointerleave="cancelScore()" onpointercancel="cancelScore()" oncontextmenu="return false" onclick="event.stopPropagation()"`
-        : ` onclick="event.stopPropagation(); selectScoreRow(${i})"`}>${s == null ? '—' : (anyDoubleDigit && s < 10 ? '<span style="color:transparent">1</span>' + s : s)}</span></div>`;
+        : ` onclick="event.stopPropagation(); selectScoreRow(${i})"`}>${s == null ? '—' : s}</span></div>`;
     const showBtns = i === currentHole && scoreButtonsRow === i;
     const isHiddenPparDouble = s !== null && d !== 2 && (s - h.ppar) === 2;
     const stbColor = 'var(--blue)';
@@ -3169,7 +3171,7 @@ function renderPlayerStats() {
   const teeSortKey = (t) => (teeBuckets[t]?.length ?? 0) + (teeRawBuckets[t]?.length ?? 0);
   const teeCardBody = allTeeKeys.sort((a, b) => teeSortKey(b) - teeSortKey(a)).map(teeRow).join('');
   const teeCard = teeCardBody
-    ? `<div class="card"><h2>Gemiddelde per tee</h2>${teeCardBody}<div style="font-size:15px;color:var(--muted);margin-top:6px">Sd = Score Differential (WHS), gecorrigeerd voor Course/Slope Rating. Lager = beter, onafhankelijk van welke tee gespeeld is.</div></div>`
+    ? `<div class="card"><h2>Gemiddelde per tee</h2>${teeCardBody}</div>`
     : '';
 
   // Gemiddelde score t.o.v. par per par-type (3/4/5)
