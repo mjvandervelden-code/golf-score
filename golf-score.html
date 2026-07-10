@@ -2976,6 +2976,37 @@ function renderPlayerStats() {
     return whsIndexRound(avg + staffel.adj);
   });
 
+  // Officiële (gecapte) handicap na elke ronde: zelfde staffel-gemiddelde als hiSeries,
+  // maar nu wél met Exceptional Score Reduction en de soft/hard cap toegepast — dit is
+  // dus per ronde herberekend wat je echte handicap toen was (i.e. het cijfer dat ook
+  // bovenaan als KPI staat, maar dan voor elk historisch punt in plaats van alleen nu).
+  // Wordt in de grafiek als stippellijn naast de rauwe hiSeries getoond.
+  const capSeries = [];
+  rounds.forEach((r, idx) => {
+    if (hiSeries[idx] == null) { capSeries.push(null); return; }
+    const t = new Date(`${r.date || '1970-01-01'}T${r.time || '00:00'}`).getTime();
+    const cutoff = isFinite(t) ? t - 365 * 24 * 60 * 60 * 1000 : -Infinity;
+    let lowHi = null;
+    for (let j = 0; j <= idx; j++) {
+      if (hiSeries[j] == null) continue;
+      const tj = new Date(`${rounds[j].date || '1970-01-01'}T${rounds[j].time || '00:00'}`).getTime();
+      if (!isFinite(tj) || tj < cutoff) continue;
+      if (lowHi == null || hiSeries[j] < lowHi) lowHi = hiSeries[j];
+    }
+    const priorCapped = idx > 0 ? capSeries[idx - 1] : null;
+    let esr = 0;
+    if (priorCapped != null) {
+      const sd = sdSeries[idx];
+      if (sd != null) {
+        const diff = priorCapped - sd;
+        if (diff >= 10.0) esr = 2.0;
+        else if (diff >= 7.0) esr = 1.0;
+      }
+    }
+    const rawAfterEsr = Math.round((hiSeries[idx] - esr) * 10) / 10;
+    capSeries.push(applyHandicapCaps(rawAfterEsr, lowHi));
+  });
+
   // Kerngetallen
   const last20 = showAll
     ? [...rounds].reverse().slice(0, 20)
@@ -3007,6 +3038,7 @@ function renderPlayerStats() {
   const fromIdx = startIdxOf(period);
   const sdView = sdSeries.slice(fromIdx);
   const hiView = hiSeries.slice(fromIdx);
+  const capView = capSeries.slice(fromIdx);
 
   const periodBtn = (label, key) => {
     const disabled = pointsOf(key) < 2;
@@ -3017,7 +3049,7 @@ function renderPlayerStats() {
     return `<button class="btn-secondary" style="${style}" ${disabled ? 'disabled' : ''} onclick="window._statChartPeriod='${key}';renderPlayerStats()">${label}</button>`;
   };
   const periodBar = `<div style="display:flex;gap:6px;margin:8px 0 4px">`
-    + periodBtn('Laatste 20', 'l20') + periodBtn('Afgelopen jaar', 'jaar') + periodBtn('Alles', 'alles')
+    + periodBtn('Laatste 20', 'l20') + periodBtn('12 maanden', 'jaar') + periodBtn('Alles', 'alles')
     + `</div>`;
   const whs = whsHandicap(last20, 'effective', effectiveLowHi(player, all, 'effective'), priorHiFor(last20, 'effective'));
   // "Nieuwe hcp" als alle meetellende SD's vastgesteld zijn, anders "Verwachte hcp"
@@ -3232,7 +3264,7 @@ function renderPlayerStats() {
       + hdRow('+0 tot +3', distBuckets.boven1_3)
       + hdRow('+3 tot +5', distBuckets.boven3_5)
       + hdRow('Hoger', distBuckets.boven5)
-      + `<div style="font-size:15px;color:var(--muted);margin-top:6px">Gebaseerd op ${distTot} rondes (eerste ronde telt niet mee)</div></div>`
+      + `<div style="font-size:15px;color:var(--muted);margin-top:6px">${distTot} rondes t.o.v. voorgaande</div></div>`
     : '';
 
   // Inklapbare gouden kaartkoppen (standaard ingeklapt)
@@ -3335,21 +3367,22 @@ function renderPlayerStats() {
   const formBody = trendRow + spreadRow + threeRow + nineRow;
   const formCard = formBody ? `<div class="card"><h2>Vorm &amp; consistentie</h2>${formBody}</div>` : '';
 
-  el.innerHTML = toggleBar + kpiRow + `<div class="card" id="sdChartCard"><h2>Dagresultaat en handicapverloop</h2>${periodBar}<div id="sdChart"></div><div style="display:flex;gap:16px;margin-top:8px;font-size:15px;color:var(--muted)"><span style="display:flex;align-items:center;gap:6px"><span style="width:14px;height:3px;background:var(--green-light);display:inline-block;border-radius:2px"></span>Dagresultaat</span><span style="display:flex;align-items:center;gap:6px"><span style="width:14px;height:3px;background:var(--gold);display:inline-block;border-radius:2px"></span>Handicap</span></div></div>` + distCard + hdCard + formCard + teeCard + parCard + trackCard;
+  el.innerHTML = toggleBar + kpiRow + `<div class="card" id="sdChartCard"><h2>Dagresultaat en handicapverloop</h2>${periodBar}<div id="sdChart"></div><div style="display:flex;gap:16px;margin-top:8px;font-size:15px;color:var(--muted);flex-wrap:wrap"><span style="display:flex;align-items:center;gap:6px"><span style="width:14px;height:3px;background:var(--green-light);display:inline-block;border-radius:2px"></span>Dagresultaat</span><span style="display:flex;align-items:center;gap:6px"><span style="width:14px;height:3px;background:var(--gold);display:inline-block;border-radius:2px"></span>Handicap</span><span style="display:flex;align-items:center;gap:6px"><span style="width:14px;height:0;border-top:2px dashed var(--gold);display:inline-block"></span>Officieel (met cap)</span></div></div>` + distCard + hdCard + formCard + teeCard + parCard + trackCard;
 
   // Grafiek tekenen (na invoegen in DOM)
-  renderSdChart(sdView, hiView);
+  renderSdChart(sdView, hiView, capView);
 }
 
 // SD-lijngrafiek (SVG) met tweede lijn voor het handicapverloop
-function renderSdChart(sdSeries, hiSeries) {
+function renderSdChart(sdSeries, hiSeries, capSeries) {
   const host = document.getElementById('sdChart');
   if (!host) return;
   const sdPts = sdSeries.map((v, i) => ({ i, v })).filter(p => p.v != null);
   if (sdPts.length < 2) { host.innerHTML = '<div style="font-size:17px;color:var(--muted)">Te weinig rondes voor een grafiek.</div>'; return; }
   const hiPts = (hiSeries || []).map((v, i) => ({ i, v })).filter(p => p.v != null);
+  const capPts = (capSeries || []).map((v, i) => ({ i, v })).filter(p => p.v != null);
   const w = 320, h = 140, padL = 28, padR = 8, padT = 10, padB = 18;
-  const allY = [...sdPts.map(p => p.v), ...hiPts.map(p => p.v)];
+  const allY = [...sdPts.map(p => p.v), ...hiPts.map(p => p.v), ...capPts.map(p => p.v)];
   const minY = Math.floor(Math.min(...allY)) - 1, maxY = Math.ceil(Math.max(...allY)) + 1;
   const n = sdSeries.length;
   const xOf = i => padL + (n <= 1 ? 0 : (i / (n - 1)) * (w - padL - padR));
@@ -3365,11 +3398,17 @@ function renderSdChart(sdSeries, hiSeries) {
   const hiLine = hiPts.length >= 2
     ? `<path d="${lineOf(hiPts)}" fill="none" stroke="var(--gold)" stroke-width="2"/>` + dotsOf(hiPts, 'var(--gold)')
     : '';
+  // Officiële (gecapte) handicap: stippellijn, geen bolletjes (anders wordt het te druk
+  // wanneer die vrijwel samenvalt met de rauwe handicaplijn, wat in de praktijk vaak zo is).
+  const capLine = capPts.length >= 2
+    ? `<path d="${lineOf(capPts)}" fill="none" stroke="var(--gold)" stroke-width="1.5" stroke-dasharray="4 3" opacity="0.85"/>`
+    : '';
   host.innerHTML = `<svg viewBox="0 0 ${w} ${h}" style="width:100%;height:auto">`
     + yTicks
     + `<path d="${lineOf(sdPts)}" fill="none" stroke="var(--green-light)" stroke-width="2"/>`
     + dotsOf(sdPts, 'var(--green-light)')
     + hiLine
+    + capLine
     + `</svg>`;
 }
 
