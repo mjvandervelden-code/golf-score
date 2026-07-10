@@ -675,11 +675,11 @@
   <div style="display:flex;gap:8px;align-items:center;margin-bottom:8px;justify-content:flex-end">
     <button id="archiveExportBtn" class="btn-secondary" style="padding:8px 14px" onclick="confirmExportAll(this, 'rounds')" title="Exporteer alle rondes"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:middle"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg></button>
     <button class="btn-secondary" style="padding:8px 14px" onclick="document.getElementById('importRoundFile').click()" title="Importeer ronde"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:middle"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg></button>
-    <button id="groupByTrackBtn" class="btn-secondary" style="padding:8px 14px" onclick="window._forceShowPlanned=false;window._groupByTrack=!window._groupByTrack;if(window._groupByTrack){window._groupByCategory=false;window._groupByPlayer=false;window._pgCollapsed={};window._trkCollapsed={};window._clubTrkCollapsed={};document.getElementById('groupByCategoryBtn').style.background='';document.getElementById('groupByCategoryBtn').style.color='';document.getElementById('groupByPlayerBtn').style.background='';document.getElementById('groupByPlayerBtn').style.color='';}this.style.background=window._groupByTrack?'var(--gold)':'';this.style.color=window._groupByTrack?'var(--green-deep)':'';loadSaved();" title="Groepeer op club"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:middle"><path d="M3 12h18"/><path d="M3 6l9-3 9 3"/><path d="M3 18l9 3 9-3"/></svg></button>
+    <button id="groupByTrackBtn" class="btn-secondary" style="padding:8px 14px" onclick="toggleGroupByTrack()" title="Groepeer op club"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:middle"><path d="M3 12h18"/><path d="M3 6l9-3 9 3"/><path d="M3 18l9 3 9-3"/></svg></button>
     <button class="btn-secondary" id="groupByPlayerBtn" style="padding:8px 14px" 
-      onclick="window._forceShowPlanned=false;window._groupByPlayer=!window._groupByPlayer;if(window._groupByPlayer){window._groupByCategory=false;window._groupByTrack=false;document.getElementById('groupByCategoryBtn').style.background='';document.getElementById('groupByCategoryBtn').style.color='';document.getElementById('groupByTrackBtn').style.background='';document.getElementById('groupByTrackBtn').style.color='';const rounds=loadSavedRounds();const players=[...new Set(rounds.map(r=>r.player).filter(Boolean))];window._pgCollapsed={};window._pgSubCollapsed={};window._pgYearCollapsed={};players.forEach(p=>{window._pgCollapsed['pg_'+p.replace(/\W/g,'_')]=true;});}else{window._pgCollapsed={};window._pgSubCollapsed={};window._pgYearCollapsed={};}this.style.background=window._groupByPlayer?'var(--gold)':'';this.style.color=window._groupByPlayer?'var(--green-deep)':'';loadSaved();"
+      onclick="toggleGroupByPlayer()"
       title="Groepeer op speler"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:middle"><circle cx="9" cy="7" r="4"/><path d="M3 21v-2a4 4 0 0 1 4-4h4a4 4 0 0 1 4 4v2"/><circle cx="19" cy="7" r="2"/><path d="M23 21v-1a3 3 0 0 0-3-3h-1"/></svg></button>
-    <button id="groupByCategoryBtn" class="btn-secondary" style="padding:8px 14px" onclick="window._forceShowPlanned=false;window._groupByCategory=!window._groupByCategory;if(window._groupByCategory){window._groupByPlayer=false;window._groupByTrack=false;window._catCollapsed={};window._finYearCollapsed={};document.getElementById('groupByPlayerBtn').style.background='';document.getElementById('groupByPlayerBtn').style.color='';document.getElementById('groupByTrackBtn').style.background='';document.getElementById('groupByTrackBtn').style.color='';}this.style.background=window._groupByCategory?'var(--gold)':'';this.style.color=window._groupByCategory?'var(--green-deep)':'';loadSaved();" title="Groepeer op categorie"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:middle"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/></svg></button>
+    <button id="groupByCategoryBtn" class="btn-secondary" style="padding:8px 14px" onclick="toggleGroupByCategory()" title="Groepeer op categorie"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:middle"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/></svg></button>
     <button id="archiveSearchBtn" class="btn-secondary" style="padding:8px 14px" onclick="var w=document.getElementById('archiveSearchWrap');w.classList.toggle('hidden');this.style.background=w.classList.contains('hidden')?'':'var(--gold)';this.style.color=w.classList.contains('hidden')?'':'var(--green-deep)';if(!w.classList.contains('hidden'))document.getElementById('archiveSearch').focus();else{document.getElementById('archiveSearch').value='';loadSaved();}" title="Zoeken"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:middle"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg></button>
   </div>
   <div class="fg hidden" id="archiveSearchWrap" style="margin-bottom:8px">
@@ -766,8 +766,8 @@
   <div class="card">
     <div style="display:flex;align-items:center;justify-content:space-between;gap:12px">
       <div>
-        <div style="font-size:20px;font-weight:700;color:var(--white)">Snel naar geselecteerde club</div>
-        <div style="font-size:17px;color:var(--muted)">Lang indrukken van "groepeer op club" in het archief (<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:-2px"><path d="M3 7v12a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V9a2 2 0 0 0-2-2h-7l-2-2H5a2 2 0 0 0-2 2Z"/></svg> <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:-1px"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg> <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:-2px"><path d="M3 12h18"/><path d="M3 6l9-3 9 3"/><path d="M3 18l9 3 9-3"/></svg>) klapt de geselecteerde club uit</div>
+        <div style="font-size:20px;font-weight:700;color:var(--white)">Alles inklappen bij club-groepering</div>
+        <div style="font-size:17px;color:var(--muted)">Een klik op "groepeer op club" in het archief zet de geselecteerde club altijd bovenaan en uitgeklapt. Lang indrukken van "groepeer op club" (<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:-2px"><path d="M3 7v12a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V9a2 2 0 0 0-2-2h-7l-2-2H5a2 2 0 0 0-2 2Z"/></svg> <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:-1px"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg> <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:-2px"><path d="M3 12h18"/><path d="M3 6l9-3 9 3"/><path d="M3 18l9 3 9-3"/></svg>) klapt juist alles weer in</div>
       </div>
       <label class="switch"><input type="checkbox" id="quickClubToggle" onchange="toggleQuickClub()"><span class="slider"></span></label>
     </div>
@@ -775,8 +775,8 @@
   <div class="card">
     <div style="display:flex;align-items:center;justify-content:space-between;gap:12px">
       <div>
-        <div style="font-size:20px;font-weight:700;color:var(--white)">Snel naar geplande rondes</div>
-        <div style="font-size:17px;color:var(--muted)">Lang indrukken van "groepeer op categorie" in het archief (<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:-2px"><path d="M3 7v12a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V9a2 2 0 0 0-2-2h-7l-2-2H5a2 2 0 0 0-2 2Z"/></svg> <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:-1px"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg> <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:-2px"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/></svg>) gaat direct naar de geplande rondes</div>
+        <div style="font-size:20px;font-weight:700;color:var(--white)">Alles inklappen bij categorie-groepering</div>
+        <div style="font-size:17px;color:var(--muted)">Een klik op "groepeer op categorie" in het archief klapt "Actief" en "Gepland" altijd uit, de rest blijft dicht. Lang indrukken van "groepeer op categorie" (<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:-2px"><path d="M3 7v12a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V9a2 2 0 0 0-2-2h-7l-2-2H5a2 2 0 0 0-2 2Z"/></svg> <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:-1px"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg> <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:-2px"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/></svg>) klapt juist alles weer in</div>
       </div>
       <label class="switch"><input type="checkbox" id="quickPlannedToggle" onchange="toggleQuickPlanned()"><span class="slider"></span></label>
     </div>
@@ -784,8 +784,8 @@
   <div class="card">
     <div style="display:flex;align-items:center;justify-content:space-between;gap:12px">
       <div>
-        <div style="font-size:20px;font-weight:700;color:var(--white)">Snel naar laatste 20</div>
-        <div style="font-size:17px;color:var(--muted)">Lang indrukken van "groepeer op speler" in het archief (<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:-2px"><path d="M3 7v12a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V9a2 2 0 0 0-2-2h-7l-2-2H5a2 2 0 0 0-2 2Z"/></svg> <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:-1px"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg> <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:-2px"><circle cx="9" cy="7" r="4"/><path d="M3 21v-2a4 4 0 0 1 4-4h4a4 4 0 0 1 4 4v2"/><circle cx="19" cy="7" r="2"/><path d="M23 21v-1a3 3 0 0 0-3-3h-1"/></svg>) gaat direct naar de laatste 20 qualifying rondes</div>
+        <div style="font-size:20px;font-weight:700;color:var(--white)">Alles inklappen bij speler-groepering</div>
+        <div style="font-size:17px;color:var(--muted)">Een klik op "groepeer op speler" in het archief zet de hoofdspeler altijd bovenaan met de laatste 20 qualifying rondes uitgeklapt. Lang indrukken van "groepeer op speler" (<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:-2px"><path d="M3 7v12a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V9a2 2 0 0 0-2-2h-7l-2-2H5a2 2 0 0 0-2 2Z"/></svg> <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:-1px"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg> <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:-2px"><circle cx="9" cy="7" r="4"/><path d="M3 21v-2a4 4 0 0 1 4-4h4a4 4 0 0 1 4 4v2"/><circle cx="19" cy="7" r="2"/><path d="M23 21v-1a3 3 0 0 0-3-3h-1"/></svg>) klapt juist alles weer in</div>
       </div>
       <label class="switch"><input type="checkbox" id="quickLast20Toggle" onchange="toggleQuickLast20()"><span class="slider"></span></label>
     </div>
@@ -4147,6 +4147,36 @@ function flatChartHtml(holes) {
 
 
 
+// Klik op 'groepeer op club': activeert de groepering en klapt daarbij altijd
+// de in het Club-tabblad geselecteerde club uit (zie openQuickClub). Nogmaals
+// klikken (grouping was al aan) zet de groepering gewoon weer uit.
+function toggleGroupByTrack() {
+  window._forceShowPlanned = false;
+  if (window._groupByTrack) {
+    window._groupByTrack = false;
+    const gb = document.getElementById('groupByTrackBtn');
+    if (gb) { gb.style.background = ''; gb.style.color = ''; }
+    loadSaved();
+    return;
+  }
+  openQuickClub();
+}
+
+// Long-press op 'groepeer op club': alles inklappen (geen club uitgeklapt, geen scroll).
+function collapseAllClubs() {
+  window._forceShowPlanned = false;
+  window._groupByTrack = true;
+  window._groupByCategory = false;
+  window._groupByPlayer = false;
+  const gb = document.getElementById('groupByTrackBtn');
+  if (gb) { gb.style.background = 'var(--gold)'; gb.style.color = 'var(--green-deep)'; }
+  ['groupByPlayerBtn', 'groupByCategoryBtn'].forEach(id => { const b = document.getElementById(id); if (b) { b.style.background = ''; b.style.color = ''; } });
+  window._pgCollapsed = {};
+  window._trkCollapsed = {};
+  window._clubTrkCollapsed = {};
+  loadSaved();
+}
+
 function openQuickClub() {
   // Groepeer op club activeren
   window._groupByTrack = true;
@@ -4171,30 +4201,80 @@ function openQuickClub() {
   }, 100);
 }
 
-function openQuickPlanned() {
-  // Toon de categorie 'Gepland' ook als die leeg is (alleen bij deze long-press)
-  window._forceShowPlanned = true;
+// Klik op 'groepeer op categorie': activeert de groepering en klapt daarbij
+// altijd 'Actief' en 'Gepland' uit; de rest ('Geïmporteerd', 'Opgeslagen',
+// 'Afgerond') blijft ingeklapt. Nogmaals klikken zet de groepering weer uit.
+function toggleGroupByCategory() {
+  if (window._groupByCategory) {
+    window._groupByCategory = false;
+    window._forceShowPlanned = false;
+    const gb = document.getElementById('groupByCategoryBtn');
+    if (gb) { gb.style.background = ''; gb.style.color = ''; }
+    loadSaved();
+    return;
+  }
+  window._groupByCategory = true;
+  window._groupByPlayer = false;
+  window._groupByTrack = false;
+  window._forceShowPlanned = true; // toon 'Gepland' ook als die leeg is
+  const gb = document.getElementById('groupByCategoryBtn');
+  if (gb) { gb.style.background = 'var(--gold)'; gb.style.color = 'var(--green-deep)'; }
+  ['groupByPlayerBtn', 'groupByTrackBtn'].forEach(id => { const b = document.getElementById(id); if (b) { b.style.background = ''; b.style.color = ''; } });
+  window._catCollapsed = {
+    actief: false, import: true, opgeslagen: true, afgerond: true, gepland: false,
+  };
+  window._finYearCollapsed = {};
+  loadSaved();
+}
 
-  // Groepeer op categorie activeren
+// Long-press op 'groepeer op categorie': alle categorieën inklappen.
+function collapseAllCategories() {
+  window._forceShowPlanned = false;
   window._groupByCategory = true;
   window._groupByPlayer = false;
   window._groupByTrack = false;
   const gb = document.getElementById('groupByCategoryBtn');
   if (gb) { gb.style.background = 'var(--gold)'; gb.style.color = 'var(--green-deep)'; }
   ['groupByPlayerBtn', 'groupByTrackBtn'].forEach(id => { const b = document.getElementById(id); if (b) { b.style.background = ''; b.style.color = ''; } });
-
-  // Alle categorieën inklappen, alleen 'Gepland' uitklappen
-  window._catCollapsed = {
-    actief: true, import: true, opgeslagen: true, afgerond: true,
-    gepland: false,
-  };
+  window._catCollapsed = {};
+  window._finYearCollapsed = {};
   loadSaved();
-  setTimeout(() => {
-    // Scroll naar de kop van 'Gepland'
-    const headers = [...document.querySelectorAll('#screen-archive [onclick*="gepland"]')];
-    const target = headers[0];
-    if (target) target.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
-  }, 100);
+}
+
+// Klik op 'groepeer op speler': activeert de groepering en klapt daarbij altijd
+// de hoofdspeler (naam op Start-tab) uit met de laatste 20 qualifying rondes
+// (zie openQuickLast20). Nogmaals klikken zet de groepering weer uit.
+function toggleGroupByPlayer() {
+  window._forceShowPlanned = false;
+  if (window._groupByPlayer) {
+    window._groupByPlayer = false;
+    window._pgCollapsed = {};
+    window._pgSubCollapsed = {};
+    window._pgYearCollapsed = {};
+    const gb = document.getElementById('groupByPlayerBtn');
+    if (gb) { gb.style.background = ''; gb.style.color = ''; }
+    loadSaved();
+    return;
+  }
+  openQuickLast20();
+}
+
+// Long-press op 'groepeer op speler': alle spelers inklappen.
+function collapseAllPlayers() {
+  window._forceShowPlanned = false;
+  window._groupByPlayer = true;
+  window._groupByCategory = false;
+  window._groupByTrack = false;
+  const gb = document.getElementById('groupByPlayerBtn');
+  if (gb) { gb.style.background = 'var(--gold)'; gb.style.color = 'var(--green-deep)'; }
+  ['groupByCategoryBtn', 'groupByTrackBtn'].forEach(id => { const b = document.getElementById(id); if (b) { b.style.background = ''; b.style.color = ''; } });
+  const rounds = loadSavedRounds();
+  const players = [...new Set(rounds.map(r => r.player).filter(Boolean))];
+  window._pgCollapsed = {};
+  window._pgSubCollapsed = {};
+  window._pgYearCollapsed = {};
+  players.forEach(p => { window._pgCollapsed['pg_' + p.replace(/\W/g, '_')] = true; });
+  loadSaved();
 }
 
 function openQuickLast20() {
@@ -4517,7 +4597,13 @@ function loadSaved() {
       if (!byClub[club][track]) byClub[club][track] = [];
       byClub[club][track].push(r);
     });
-    Object.keys(byClub).sort().forEach(club => {
+    // Geselecteerde club (uit het Club-tabblad) altijd bovenaan; overige clubs alfabetisch.
+    const selectedClubKey = storage.getItem('golf_default_club');
+    const clubKeysAll = Object.keys(byClub).sort();
+    const clubKeys = (selectedClubKey && clubKeysAll.includes(selectedClubKey))
+      ? [selectedClubKey, ...clubKeysAll.filter(c => c !== selectedClubKey)]
+      : clubKeysAll;
+    clubKeys.forEach(club => {
       const clubTotal = Object.values(byClub[club]).reduce((s, arr) => s + arr.length, 0);
       html += collapsibleHeader(club, clubTotal, 'club_' + club.replace(/\W/g,'_'), '_clubTrkCollapsed');
       Object.keys(byClub[club]).sort().forEach(track => {
@@ -7086,7 +7172,7 @@ document.addEventListener('focusin', (e) => {
   updateProgressToggleBtn();
   applyBadWeather();
 
-  // Long-press op 'groepeer op speler' (optioneel): laatste 20 uitklappen + naar nieuwste scrollen
+  // Long-press op 'groepeer op speler' (optioneel): alle spelers inklappen
   (function bindQuickLast20() {
     const btn = document.getElementById('groupByPlayerBtn');
     if (!btn) return;
@@ -7094,7 +7180,7 @@ document.addEventListener('focusin', (e) => {
     const start = () => {
       if (!quickLast20Enabled()) return;
       fired = false;
-      timer = setTimeout(() => { fired = true; openQuickLast20(); }, 550);
+      timer = setTimeout(() => { fired = true; collapseAllPlayers(); }, 550);
     };
     const cancel = () => { clearTimeout(timer); };
     btn.addEventListener('pointerdown', start);
@@ -7105,7 +7191,7 @@ document.addEventListener('focusin', (e) => {
     btn.addEventListener('click', e => { if (fired) { e.stopImmediatePropagation(); e.preventDefault(); fired = false; } }, true);
   })();
 
-  // Long-press op 'groepeer op categorie' (optioneel): geplande rondes uitklappen
+  // Long-press op 'groepeer op categorie' (optioneel): alles inklappen
   (function bindQuickPlanned() {
     const btn = document.getElementById('groupByCategoryBtn');
     if (!btn) return;
@@ -7113,7 +7199,7 @@ document.addEventListener('focusin', (e) => {
     const start = () => {
       if (!quickPlannedEnabled()) return;
       fired = false;
-      timer = setTimeout(() => { fired = true; openQuickPlanned(); }, 550);
+      timer = setTimeout(() => { fired = true; collapseAllCategories(); }, 550);
     };
     const cancel = () => { clearTimeout(timer); };
     btn.addEventListener('pointerdown', start);
@@ -7123,7 +7209,7 @@ document.addEventListener('focusin', (e) => {
     btn.addEventListener('click', e => { if (fired) { e.stopImmediatePropagation(); e.preventDefault(); fired = false; } }, true);
   })();
 
-  // Long-press op 'groepeer op club' (optioneel): geselecteerde club uitklappen
+  // Long-press op 'groepeer op club' (optioneel): alles inklappen
   (function bindQuickClub() {
     const btn = document.getElementById('groupByTrackBtn');
     if (!btn) return;
@@ -7131,7 +7217,7 @@ document.addEventListener('focusin', (e) => {
     const start = () => {
       if (!quickClubEnabled()) return;
       fired = false;
-      timer = setTimeout(() => { fired = true; openQuickClub(); }, 550);
+      timer = setTimeout(() => { fired = true; collapseAllClubs(); }, 550);
     };
     const cancel = () => { clearTimeout(timer); };
     btn.addEventListener('pointerdown', start);
