@@ -2984,11 +2984,14 @@ function renderPlayerStats() {
   // Periodekeuze voor de grafiek: 'l20' | 'jaar' | 'alles' (standaard laatste 20).
   // De reeksen worden volledig berekend en pas bij het tekenen afgesneden,
   // zodat het handicapverloop van het eerste zichtbare punt correct blijft.
-  const thisYear = String(new Date().getFullYear());
+  const yearAgoTs = Date.now() - 365 * 24 * 60 * 60 * 1000;
   const startIdxOf = (key) => {
     if (key === 'l20') return Math.max(0, rounds.length - 20);
     if (key === 'jaar') {
-      const i = rounds.findIndex(r => (r.date || '').slice(0, 4) === thisYear);
+      const i = rounds.findIndex(r => {
+        const t = new Date(`${r.date || '1970-01-01'}T${r.time || '00:00'}`).getTime();
+        return isFinite(t) && t >= yearAgoTs;
+      });
       return i === -1 ? rounds.length : i;
     }
     return 0;
@@ -3014,7 +3017,7 @@ function renderPlayerStats() {
     return `<button class="btn-secondary" style="${style}" ${disabled ? 'disabled' : ''} onclick="window._statChartPeriod='${key}';renderPlayerStats()">${label}</button>`;
   };
   const periodBar = `<div style="display:flex;gap:6px;margin:8px 0 4px">`
-    + periodBtn('Laatste 20', 'l20') + periodBtn('Dit jaar', 'jaar') + periodBtn('Alles', 'alles')
+    + periodBtn('Laatste 20', 'l20') + periodBtn('Afgelopen jaar', 'jaar') + periodBtn('Alles', 'alles')
     + `</div>`;
   const whs = whsHandicap(last20, 'effective', effectiveLowHi(player, all, 'effective'), priorHiFor(last20, 'effective'));
   // "Nieuwe hcp" als alle meetellende SD's vastgesteld zijn, anders "Verwachte hcp"
