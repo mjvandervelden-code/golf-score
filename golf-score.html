@@ -2616,7 +2616,7 @@ function stepScore(i, d) {
     h.score = d > 0 ? h.par + 1 : h.par;
   } else {
     const next = was + d;
-    h.score = next < 1 ? 1 : Math.min(19, next);
+    h.score = next < 1 ? null : Math.min(19, next);
   }
   pulseScore(i);
   if (navigator.vibrate) navigator.vibrate(20);
@@ -6580,7 +6580,7 @@ function updateBackupReminder() {
   }
 
   if (show) {
-    el.textContent = 'Tip: maak een back-up. Exporteer je rondes zodat je ze niet verliest.';
+    el.textContent = 'Exporteer je rondes zodat je ze niet verliest';
     el.classList.remove('hidden');
     storage.setItem('golf_backup_reminder_shown', todayISO());
   } else {
