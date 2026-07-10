@@ -456,6 +456,8 @@
     .saved-name { font-size:20px; font-weight: 700; color: var(--white); overflow-wrap: break-word; }
     .saved-meta { font-size:20px; color: var(--muted); margin-top: 3px; font-weight: 600; overflow-wrap: break-word; }
     .saved-actions { display: flex; justify-content: flex-end; gap: 6px; margin-top: 8px; }
+    .saved-actions.actions-hidden { display: none; }
+    .saved-actions.actions-hidden.actions-revealed { display: flex; }
 
     .hidden { display: none !important; }
     header h1 { font-size:20px; font-weight: 800; color: var(--white); line-height: 1; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; flex: 1 1 auto; }
@@ -761,6 +763,15 @@
         <div style="font-size:17px;color:var(--muted)">Toon tijdens de ronde of je voor of achter op schema ligt</div>
       </div>
       <label class="switch"><input type="checkbox" id="progressToggle" onchange="toggleProgressIndicator()"><span class="slider"></span></label>
+    </div>
+  </div>
+  <div class="card">
+    <div style="display:flex;align-items:center;justify-content:space-between;gap:12px">
+      <div>
+        <div style="font-size:20px;font-weight:700;color:var(--white)">Actieknoppen bij rondes altijd zichtbaar</div>
+        <div style="font-size:17px;color:var(--muted)">Uit: de knoppenbalk (info, resultaat, exporteren, laden, verwijderen) onderin een rondeblok in het archief is verborgen totdat je ergens op het blok tikt. Nogmaals tikken verbergt hem weer</div>
+      </div>
+      <label class="switch"><input type="checkbox" id="actionsAlwaysVisibleToggle" onchange="toggleActionsAlwaysVisible()"><span class="slider"></span></label>
     </div>
   </div>
   <div class="card">
@@ -4241,7 +4252,12 @@ function openQuickClub() {
   loadSaved();
   setTimeout(() => {
     const header = document.querySelector(`#screen-archive [onclick*="${ck}"]`);
-    if (header) header.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+    if (header) {
+      // Bij een grote afstand direct springen, anders soepel scrollen
+      const dist = Math.abs(header.getBoundingClientRect().top - window.innerHeight / 2);
+      const behavior = dist > window.innerHeight * 1.5 ? 'auto' : 'smooth';
+      header.scrollIntoView({ behavior, block: 'nearest' });
+    }
   }, 100);
 }
 
@@ -4350,7 +4366,12 @@ function openQuickLast20() {
     // Scroll naar de eerste (nieuwste) kaart in de laatste 20: eerste compacte kaart
     const firstCompact = document.querySelector('#screen-archive .saved-item [onclick^="jumpToFullRound"]');
     const target = firstCompact ? firstCompact.closest('.saved-item') : null;
-    if (target) target.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    if (target) {
+      // Bij een grote afstand direct springen, anders soepel scrollen
+      const dist = Math.abs(target.getBoundingClientRect().top - window.innerHeight / 2);
+      const behavior = dist > window.innerHeight * 1.5 ? 'auto' : 'smooth';
+      target.scrollIntoView({ behavior, block: 'center' });
+    }
   }, 100);
 }
 
@@ -4510,7 +4531,7 @@ function loadSaved() {
       ? `${!done ? `${playedCount}/${holesCount} · ` : ''}Score ${total}${totalStb != null ? ` · Stb ${totalStb}` : ''}`
       : `${playedCount}/${holesCount} · ${(r.gender || '').charAt(0)} · ${r.tee || '—'} · Chcp ${chcp ?? '—'} · Score ${total}${totalStb != null ? ` · Stb ${totalStb}` : ''}`;
     return `
-    <div class="saved-item"${compact ? '' : ` id="round-full-${r.id}"`}${isActive ? ' style="border-left:3px solid var(--gold);padding-left:10px"' : ''}>
+    <div class="saved-item"${compact ? '' : ` id="round-full-${r.id}"`}${isActive ? ' style="border-left:3px solid var(--gold);padding-left:10px"' : ''}${!compact && !actionsAlwaysVisible() ? ' onclick="toggleRoundActions(event, this)"' : ''}>
       ${compact ? `<div onclick="jumpToFullRound(${r.id})" style="cursor:pointer">` : ''}
       ${importedLabel}
       <div class="saved-name" style="display:flex;align-items:center;justify-content:space-between;gap:8px">
@@ -4543,7 +4564,7 @@ function loadSaved() {
       ${compact ? '' : `<div style="margin-top:8px">${flatChartHtml(r.holes)}</div>`}
       <div class="error-msg hidden" data-round-delete-msg="${r.id}" style="color:var(--red);font-size:20px;font-weight:700;text-align:right;margin-top:6px">Tik nogmaals om te bevestigen</div>
       <div class="hidden orange-msg" data-round-save-msg="${r.id}" style="color:var(--orange);font-size:20px;font-weight:700;text-align:right;margin-top:6px">Tik nogmaals om te bevestigen</div>
-      ${compact ? '' : `<div class="saved-actions">
+      ${compact ? '' : `<div class="saved-actions${actionsAlwaysVisible() ? '' : ' actions-hidden'}">
         <button class="btn-secondary" style="padding:8px 14px" onclick="openRoundInfoModal(${saved.indexOf(r)})" title="Ronde-informatie"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:middle"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4Z"/></svg></button>
         <button class="btn-secondary" style="padding:8px 14px" onclick="openRoundResultModal(${saved.indexOf(r)})" title="Ronde-resultaat"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:middle"><polyline points="20 6 9 17 4 12"/></svg></button>
         <button class="btn-secondary" style="padding:8px 14px" onclick="openExportModal(${saved.indexOf(r)})" title="Exporteer/Deel"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:middle"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"/><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"/></svg></button>
@@ -4909,8 +4930,14 @@ function saveAndClearPlayer2Round(btn) {
   }
   updatePlayerSwitchBar();
   loadSaved();
-  document.getElementById('screen-archive')?.scrollTo({ top: 0, behavior: 'smooth' });
-  window.scrollTo({ top: 0, behavior: 'smooth' });
+  {
+    // Bij een grote afstand direct springen, anders soepel scrollen
+    const archiveEl = document.getElementById('screen-archive');
+    const dist = archiveEl ? archiveEl.scrollTop : window.scrollY;
+    const behavior = dist > window.innerHeight * 1.5 ? 'auto' : 'smooth';
+    archiveEl?.scrollTo({ top: 0, behavior });
+    window.scrollTo({ top: 0, behavior });
+  }
 }
 
 function saveAndClearActiveRound(btn) {
@@ -4961,8 +4988,14 @@ function saveAndClearActiveRound(btn) {
   storage.removeItem('golf_game2_id');
   updatePlayerSwitchBar();
   loadSaved();
-  document.getElementById('screen-archive')?.scrollTo({ top: 0, behavior: 'smooth' });
-  window.scrollTo({ top: 0, behavior: 'smooth' });
+  {
+    // Bij een grote afstand direct springen, anders soepel scrollen
+    const archiveEl = document.getElementById('screen-archive');
+    const dist = archiveEl ? archiveEl.scrollTop : window.scrollY;
+    const behavior = dist > window.innerHeight * 1.5 ? 'auto' : 'smooth';
+    archiveEl?.scrollTo({ top: 0, behavior });
+    window.scrollTo({ top: 0, behavior });
+  }
 }
 
 function deleteRound(i, btn) {
@@ -6969,6 +7002,7 @@ function nav(id) {
     updateQuickLast20Toggle();
     updateQuickPlannedToggle();
     updateQuickClubToggle();
+    updateActionsAlwaysVisibleToggle();
     updateLowHiInput();
     updatePlayer2Summaries();
     window.scrollTo(0, 0);
@@ -7103,6 +7137,30 @@ function toggleQuickPlanned() {
   const cb = document.getElementById('quickPlannedToggle');
   const on = cb ? cb.checked : !quickPlannedEnabled();
   storage.setItem('golf_quick_planned', on ? 'on' : 'off');
+}
+
+// Actieknoppen bij rondes in het archief: standaard altijd zichtbaar. Uitgezet
+// betekent dat de knoppenbalk pas verschijnt na een tik op het rondeblok.
+function actionsAlwaysVisible() {
+  return storage.getItem('golf_actions_always_visible') !== 'off'; // afwezig = aan
+}
+function updateActionsAlwaysVisibleToggle() {
+  const cb = document.getElementById('actionsAlwaysVisibleToggle');
+  if (cb) cb.checked = actionsAlwaysVisible();
+}
+function toggleActionsAlwaysVisible() {
+  const cb = document.getElementById('actionsAlwaysVisibleToggle');
+  const on = cb ? cb.checked : !actionsAlwaysVisible();
+  storage.setItem('golf_actions_always_visible', on ? 'on' : 'off');
+  loadSaved();
+}
+
+// Klik ergens op een rondeblok (buiten knoppen/bevestigingen) om de verborgen
+// knoppenbalk te tonen; nogmaals klikken verbergt hem weer.
+function toggleRoundActions(e, el) {
+  if (e.target.closest('.saved-actions, button, a, input, .error-msg, .orange-msg')) return;
+  const actions = el.querySelector('.saved-actions');
+  if (actions) actions.classList.toggle('actions-revealed');
 }
 
 function quickClubEnabled() {
