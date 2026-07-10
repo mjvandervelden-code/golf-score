@@ -4348,7 +4348,7 @@ function loadSaved() {
     return;
   }
 
-  const makeCard = (r, i, compact = false, hcpInfo = null) => {
+  const makeCard = (r, i, compact = false, hcpInfo = null, showPlayerName = false) => {
     const club = escapeHtml(r.club || 'Onbekende club');
     const playerSafe = escapeHtml(r.player || '—');
     const trackSafe = escapeHtml(r.track || '');
@@ -4397,6 +4397,7 @@ function loadSaved() {
           ${(isCurrentPlayer ? (game.qualifying ?? r.qualifying) : r.qualifying) ? '<span class="tee-badge badge-q">Q</span>' : ''}
         </span>
       </div>
+      ${compact && showPlayerName ? `<div class="saved-meta">${playerSafe}</div>` : ''}
       ${compact ? '' : `<div class="saved-meta" style="${isActive ? 'color:var(--gold)' : ''}">${playerSafe}${playerNumLabel}</div>`}
       ${compact ? '' : `<div class="saved-meta">${club}</div>`}
       ${compact ? '' : `<div class="saved-meta">${trackSafe}${par != null ? ` · Par ${par}` : ''} · ${holesCount} holes</div>`}
@@ -4491,7 +4492,7 @@ function loadSaved() {
       if (last12.length) {
         html += `<div style="padding-left:12px">`
           + collapsibleHeader('Laatste 12 maanden', last12.length, 'fin_last12', '_finYearCollapsed').replace('color:var(--gold)', 'color:var(--green-light)')
-          + last12.map(r => makeCard(r, null, true)).join('') + '</div></div>';
+          + last12.map(r => makeCard(r, null, true, null, true)).join('') + '</div></div>';
       }
       const byYear = {};
       finished.forEach(r => {
