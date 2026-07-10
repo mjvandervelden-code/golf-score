@@ -676,7 +676,7 @@
     <button class="btn-secondary" style="padding:8px 14px" onclick="document.getElementById('importRoundFile').click()" title="Importeer ronde"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:middle"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg></button>
     <button id="groupByTrackBtn" class="btn-secondary" style="padding:8px 14px" onclick="window._forceShowPlanned=false;window._groupByTrack=!window._groupByTrack;if(window._groupByTrack){window._groupByCategory=false;window._groupByPlayer=false;window._pgCollapsed={};window._trkCollapsed={};window._clubTrkCollapsed={};document.getElementById('groupByCategoryBtn').style.background='';document.getElementById('groupByCategoryBtn').style.color='';document.getElementById('groupByPlayerBtn').style.background='';document.getElementById('groupByPlayerBtn').style.color='';}this.style.background=window._groupByTrack?'var(--gold)':'';this.style.color=window._groupByTrack?'var(--green-deep)':'';loadSaved();" title="Groepeer op club"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:middle"><path d="M3 12h18"/><path d="M3 6l9-3 9 3"/><path d="M3 18l9 3 9-3"/></svg></button>
     <button class="btn-secondary" id="groupByPlayerBtn" style="padding:8px 14px" 
-      onclick="window._forceShowPlanned=false;window._groupByPlayer=!window._groupByPlayer;if(window._groupByPlayer){window._groupByCategory=false;window._groupByTrack=false;document.getElementById('groupByCategoryBtn').style.background='';document.getElementById('groupByCategoryBtn').style.color='';document.getElementById('groupByTrackBtn').style.background='';document.getElementById('groupByTrackBtn').style.color='';const rounds=loadSavedRounds();const players=[...new Set(rounds.map(r=>r.player).filter(Boolean))];window._pgCollapsed={};window._pgSubCollapsed={};players.forEach(p=>{window._pgCollapsed['pg_'+p.replace(/\W/g,'_')]=true;});}else{window._pgCollapsed={};window._pgSubCollapsed={};}this.style.background=window._groupByPlayer?'var(--gold)':'';this.style.color=window._groupByPlayer?'var(--green-deep)':'';loadSaved();"
+      onclick="window._forceShowPlanned=false;window._groupByPlayer=!window._groupByPlayer;if(window._groupByPlayer){window._groupByCategory=false;window._groupByTrack=false;document.getElementById('groupByCategoryBtn').style.background='';document.getElementById('groupByCategoryBtn').style.color='';document.getElementById('groupByTrackBtn').style.background='';document.getElementById('groupByTrackBtn').style.color='';const rounds=loadSavedRounds();const players=[...new Set(rounds.map(r=>r.player).filter(Boolean))];window._pgCollapsed={};window._pgSubCollapsed={};window._pgYearCollapsed={};players.forEach(p=>{window._pgCollapsed['pg_'+p.replace(/\W/g,'_')]=true;});}else{window._pgCollapsed={};window._pgSubCollapsed={};window._pgYearCollapsed={};}this.style.background=window._groupByPlayer?'var(--gold)':'';this.style.color=window._groupByPlayer?'var(--green-deep)':'';loadSaved();"
       title="Groepeer op speler"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:middle"><circle cx="9" cy="7" r="4"/><path d="M3 21v-2a4 4 0 0 1 4-4h4a4 4 0 0 1 4 4v2"/><circle cx="19" cy="7" r="2"/><path d="M23 21v-1a3 3 0 0 0-3-3h-1"/></svg></button>
     <button id="groupByCategoryBtn" class="btn-secondary" style="padding:8px 14px" onclick="window._forceShowPlanned=false;window._groupByCategory=!window._groupByCategory;if(window._groupByCategory){window._groupByPlayer=false;window._groupByTrack=false;window._catCollapsed={};window._finYearCollapsed={};document.getElementById('groupByPlayerBtn').style.background='';document.getElementById('groupByPlayerBtn').style.color='';document.getElementById('groupByTrackBtn').style.background='';document.getElementById('groupByTrackBtn').style.color='';}this.style.background=window._groupByCategory?'var(--gold)':'';this.style.color=window._groupByCategory?'var(--green-deep)':'';loadSaved();" title="Groepeer op categorie"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:middle"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/></svg></button>
     <button id="archiveSearchBtn" class="btn-secondary" style="padding:8px 14px" onclick="var w=document.getElementById('archiveSearchWrap');w.classList.toggle('hidden');this.style.background=w.classList.contains('hidden')?'':'var(--gold)';this.style.color=w.classList.contains('hidden')?'':'var(--green-deep)';if(!w.classList.contains('hidden'))document.getElementById('archiveSearch').focus();else{document.getElementById('archiveSearch').value='';loadSaved();}" title="Zoeken"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:middle"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg></button>
@@ -2956,7 +2956,7 @@ function renderPlayerStats() {
     + `</div>`;
 
   if (!rounds.length) {
-    el.innerHTML = `<div class="card"><h2>${escapeHtml(player)}</h2><div style="font-size:20px;color:var(--muted)">${showAll ? 'Geen afgeronde rondes.' : 'Geen qualifying rondes.'}</div><div style="font-size:15px;color:var(--muted);margin-top:8px">Statistieken tonen rondes van de speler die is ingevuld bij Start (<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:-2px"><circle cx="12" cy="5" r="2"/><path d="M12 7v6l-3 7"/><path d="M12 13l4 6"/><path d="M9 11l6-1"/></svg>). Klopt de naam niet, pas die dan aan.</div></div>`;
+    el.innerHTML = `<div class="card"><h2>${escapeHtml(player)}</h2><div style="font-size:20px;color:var(--muted)">${showAll ? 'Geen <b>afgeronde</b> rondes.' : 'Geen <b>afgeronde</b> qualifying rondes.'}</div><div style="font-size:15px;color:var(--muted);margin-top:8px">Statistieken tonen alleen <b>afgeronde</b> rondes${showAll ? '' : ' die als qualifying zijn gemarkeerd'}, van de speler die is ingevuld bij Start (<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:-2px"><circle cx="12" cy="5" r="2"/><path d="M12 7v6l-3 7"/><path d="M12 13l4 6"/><path d="M9 11l6-1"/></svg>). Klopt de naam niet, pas die dan aan.</div></div>`;
     return;
   }
 
@@ -2978,6 +2978,42 @@ function renderPlayerStats() {
   const last20 = showAll
     ? [...rounds].reverse().slice(0, 20)
     : last20Qualifying(player, all, storage.getItem('golf_active_id'), game2Id);
+
+  // Periodekeuze voor de grafiek: 'l20' | 'jaar' | 'alles' (standaard laatste 20).
+  // De reeksen worden volledig berekend en pas bij het tekenen afgesneden,
+  // zodat het handicapverloop van het eerste zichtbare punt correct blijft.
+  const thisYear = String(new Date().getFullYear());
+  const startIdxOf = (key) => {
+    if (key === 'l20') return Math.max(0, rounds.length - 20);
+    if (key === 'jaar') {
+      const i = rounds.findIndex(r => (r.date || '').slice(0, 4) === thisYear);
+      return i === -1 ? rounds.length : i;
+    }
+    return 0;
+  };
+  // Aantal bruikbare punten per periode (minimaal 2 voor een grafiek)
+  const pointsOf = (key) => sdSeries.slice(startIdxOf(key)).filter(v => v != null).length;
+
+  // Gekozen periode; val terug op een periode die wél genoeg punten heeft
+  let period = window._statChartPeriod || 'l20';
+  if (pointsOf(period) < 2) {
+    period = ['l20', 'jaar', 'alles'].find(k => pointsOf(k) >= 2) || period;
+  }
+  const fromIdx = startIdxOf(period);
+  const sdView = sdSeries.slice(fromIdx);
+  const hiView = hiSeries.slice(fromIdx);
+
+  const periodBtn = (label, key) => {
+    const disabled = pointsOf(key) < 2;
+    const active = period === key && !disabled;
+    const style = `flex:1;padding:8px;font-size:15px`
+      + (active ? ';background:var(--gold);color:var(--green-deep)' : '')
+      + (disabled ? ';opacity:.4;pointer-events:none' : '');
+    return `<button class="btn-secondary" style="${style}" ${disabled ? 'disabled' : ''} onclick="window._statChartPeriod='${key}';renderPlayerStats()">${label}</button>`;
+  };
+  const periodBar = `<div style="display:flex;gap:6px;margin:8px 0 4px">`
+    + periodBtn('Laatste 20', 'l20') + periodBtn('Dit jaar', 'jaar') + periodBtn('Alles', 'alles')
+    + `</div>`;
   const whs = whsHandicap(last20, 'effective', effectiveLowHi(player, all, 'effective'), priorHiFor(last20, 'effective'));
   // "Nieuwe hcp" als alle meetellende SD's vastgesteld zijn, anders "Verwachte hcp"
   const hcpLabel = (() => {
@@ -3022,6 +3058,19 @@ function renderPlayerStats() {
     return cnt ? sum / (cnt / 9) : null; // gemiddelde afwijking per 9 holes
   };
   const outAvg = nine('out'), inAvg = nine('in');
+
+  // Alleen 9-holesrondes: gemiddelde t.o.v. par per blok van drie holes (1-3, 4-6, 7-9)
+  const three = (blockIdx) => {
+    let sum = 0, cnt = 0;
+    rounds.forEach(r => {
+      if ((r.holes?.length ?? 0) !== 9) return;
+      r.holes.slice(blockIdx * 3, blockIdx * 3 + 3).forEach(h => {
+        if (h.score != null) { sum += h.score - h.par; cnt++; }
+      });
+    });
+    return cnt ? sum / (cnt / 3) : null; // gemiddelde afwijking per 3 holes
+  };
+  const t1Avg = three(0), t2Avg = three(1), t3Avg = three(2);
 
   const kpi = (label, val, opts = {}) => `<div style="flex:1;min-width:90px;text-align:center"><div style="font-size:26px;font-weight:800;color:${opts.color || 'var(--green-light)'}">${val}</div><div style="font-size:15px;color:var(--muted);text-transform:uppercase;letter-spacing:.5px">${label}${opts.suffix || ''}</div></div>`;
   // Verwachte hcp: grijs bij 'alle rondes'; oranje driehoekje bij 'alleen q' met onbevestigde meetellende SD
@@ -3071,28 +3120,56 @@ function renderPlayerStats() {
     + distRow('Slechter', worse, 'var(--dist-worse)')
     + `<div style="font-size:15px;color:var(--muted);margin-top:6px">${holesTot} holes over ${rounds.length} rondes</div></div>`;
 
-  // Gemiddelde score t.o.v. par per tee
+  // Gemiddelde per tee, gecorrigeerd voor baanmoeilijkheid (CR/SR) via Score Differential (WHS).
+  // Ruwe "score t.o.v. par" wordt hier bewust niet gebruikt: die maakt tees met verschillende
+  // CR/SR ten onrechte direct vergelijkbaar. SD = (113/SR) * (AGS - CR - PCC) normaliseert dat.
   const teeBuckets = {};
+  const teeRawBuckets = {}; // fallback: ruwe score-par, voor rondes zonder geldige CR/SR
   rounds.forEach(r => {
     const tee = r.tee || 'Onbekend';
-    r.holes.forEach(h => {
-      if (h.score == null) return;
-      (teeBuckets[tee] = teeBuckets[tee] || []).push(h.score - h.par);
-    });
+    const e = effectiveSD(r);
+    if (e && e.value != null) {
+      (teeBuckets[tee] = teeBuckets[tee] || []).push({ value: e.value, approx: !!e.approx });
+    } else {
+      const scored = r.holes.filter(h => h.score != null);
+      if (scored.length) {
+        const diff = scored.reduce((s, h) => s + (h.score - h.par), 0);
+        (teeRawBuckets[tee] = teeRawBuckets[tee] || []).push({ diff, n: scored.length });
+      }
+    }
   });
+  const allTeeKeys = Array.from(new Set([...Object.keys(teeBuckets), ...Object.keys(teeRawBuckets)]));
   const teeRow = (tee) => {
-    const arr = teeBuckets[tee];
-    if (!arr.length) return '';
-    const avg = arr.reduce((s, x) => s + x, 0) / arr.length;
-    const sign = avg > 0 ? '+' : '';
+    const sdArr = teeBuckets[tee] || [];
+    const rawArr = teeRawBuckets[tee] || [];
+    if (!sdArr.length && !rawArr.length) return '';
+    let label, count;
+    if (sdArr.length) {
+      const avg = sdArr.reduce((s, x) => s + x.value, 0) / sdArr.length;
+      const approxCount = sdArr.filter(x => x.approx).length;
+      const tilde = approxCount ? '~' : '';
+      label = `<span style="flex:1;font-size:17px;font-weight:700">${tilde}${fmt1(avg)} <span style="color:var(--muted);font-weight:400">gem. Sd</span></span>`;
+      count = `${sdArr.length}×`;
+      if (approxCount) count += ` <span style="color:var(--muted)">(~${approxCount}× 9-holes benaderd)</span>`;
+      if (rawArr.length) count += ` <span style="color:var(--muted)">(+${rawArr.length}× zonder CR/SR)</span>`;
+    } else {
+      // Geen enkele volledige ronde met CR/SR voor deze tee: terugval op ruwe score-t.o.v.-par
+      const totalDiff = rawArr.reduce((s, x) => s + x.diff, 0);
+      const totalN = rawArr.reduce((s, x) => s + x.n, 0);
+      const avg = totalDiff / totalN;
+      const sign = avg > 0 ? '+' : '';
+      label = `<span style="flex:1;font-size:17px;font-weight:700">${sign}${avg.toFixed(2)} <span style="color:var(--muted);font-weight:400">t.o.v. par (ongecorrigeerd)</span></span>`;
+      count = `${totalN}×`;
+    }
     return `<div style="display:flex;align-items:center;gap:8px;margin-bottom:4px">`
       + `<span style="width:96px;font-size:17px;color:var(--muted)">${escapeHtml(tee)}</span>`
-      + `<span style="flex:1;font-size:17px;font-weight:700">${sign}${avg.toFixed(2)} <span style="color:var(--muted);font-weight:400">t.o.v. par</span></span>`
-      + `<span style="width:56px;text-align:right;font-size:15px;color:var(--muted)">${arr.length}×</span></div>`;
+      + label
+      + `<span style="text-align:right;font-size:15px;color:var(--muted)">${count}</span></div>`;
   };
-  const teeCardBody = Object.keys(teeBuckets).sort((a, b) => teeBuckets[b].length - teeBuckets[a].length).map(teeRow).join('');
+  const teeSortKey = (t) => (teeBuckets[t]?.length ?? 0) + (teeRawBuckets[t]?.length ?? 0);
+  const teeCardBody = allTeeKeys.sort((a, b) => teeSortKey(b) - teeSortKey(a)).map(teeRow).join('');
   const teeCard = teeCardBody
-    ? `<div class="card"><h2>Gemiddelde per tee</h2>${teeCardBody}</div>`
+    ? `<div class="card"><h2>Gemiddelde per tee</h2>${teeCardBody}<div style="font-size:15px;color:var(--muted);margin-top:6px">Sd = Score Differential (WHS), gecorrigeerd voor Course/Slope Rating. Lager = beter, onafhankelijk van welke tee gespeeld is.</div></div>`
     : '';
 
   // Gemiddelde score t.o.v. par per par-type (3/4/5)
@@ -3115,24 +3192,6 @@ function renderPlayerStats() {
   const parCard = parCardBody
     ? `<div class="card"><h2>Gemiddelde per par</h2>${parCardBody}</div>`
     : '';
-
-  // Start vs. slot: gemiddelde t.o.v. par op holes 1-3 en 16-18 (alleen 18-holesrondes)
-  const startArr = [], finishArr = [];
-  rounds.forEach(r => {
-    if ((r.holes?.length ?? 0) !== 18) return;
-    r.holes.slice(0, 3).forEach(h => { if (h.score != null) startArr.push(h.score - h.par); });
-    r.holes.slice(15, 18).forEach(h => { if (h.score != null) finishArr.push(h.score - h.par); });
-  });
-  const ssRow = (label, arr) => {
-    if (!arr.length) return '';
-    const avg = arr.reduce((s, x) => s + x, 0) / arr.length;
-    const sign = avg > 0 ? '+' : '';
-    return `<div style="display:flex;align-items:center;gap:8px;margin-bottom:4px">`
-      + `<span style="width:130px;font-size:17px;color:var(--muted)">${label}</span>`
-      + `<span style="flex:1;font-size:17px;font-weight:700">${sign}${avg.toFixed(2)} <span style="color:var(--muted);font-weight:400">t.o.v. par</span></span></div>`;
-  };
-  const ssBody = ssRow('Start (1-3)', startArr) + ssRow('Slot (16-18)', finishArr);
-  const ssCard = ssBody ? `<div class="card"><h2>Start vs. slot</h2>${ssBody}<div style="font-size:15px;color:var(--muted);margin-top:6px">Alleen 18-holesrondes</div></div>` : '';
 
   // Verdeling rond je handicap: dagresultaat per ronde t.o.v. de index die vóór die ronde gold
   const distBuckets = { onder: 0, gelijk: 0, boven1_3: 0, boven3_5: 0, boven5: 0 };
@@ -3171,39 +3230,6 @@ function renderPlayerStats() {
       + `<div style="font-size:15px;color:var(--muted);margin-top:6px">${distTot} rondes met een eerdere index</div></div>`
     : '';
 
-  // Prestatie per par-lengte gecombineerd met tee: gemiddelde t.o.v. par per (tee, par)
-  const teeParMap = {};
-  rounds.forEach(r => {
-    const tee = r.tee || 'Onbekend';
-    r.holes.forEach(h => {
-      if (h.score == null || !(h.par >= 3 && h.par <= 5)) return;
-      const key = tee + '|' + h.par;
-      (teeParMap[key] = teeParMap[key] || []).push(h.score - h.par);
-    });
-  });
-  const teesUsed = [...new Set(Object.keys(teeParMap).map(k => k.split('|')[0]))].sort();
-  window._statTeeCollapsed = window._statTeeCollapsed || {};
-  const tpBody = teesUsed.map(tee => {
-    const parRows = [3, 4, 5].map(p => {
-      const arr = teeParMap[tee + '|' + p];
-      if (!arr || !arr.length) return '';
-      const avg = arr.reduce((s, x) => s + x, 0) / arr.length;
-      const sign = avg > 0 ? '+' : '';
-      return `<div style="display:flex;align-items:center;gap:8px;margin:4px 0 4px 12px">`
-        + `<span style="width:84px;font-size:17px;color:var(--muted)">Par ${p}</span>`
-        + `<span style="flex:1;font-size:17px;font-weight:700">${sign}${avg.toFixed(2)} <span style="color:var(--muted);font-weight:400">t.o.v. par</span></span>`
-        + `<span style="width:44px;text-align:right;font-size:15px;color:var(--muted)">${arr.length}×</span></div>`;
-    }).join('');
-    if (!parRows) return '';
-    const tk = tee.replace(/\W/g, '_');
-    const collapsed = window._statTeeCollapsed[tk] !== false; // standaard ingeklapt
-    const totalTee = [3, 4, 5].reduce((s, p) => s + ((teeParMap[tee + '|' + p] || []).length), 0);
-    const header = `<div onclick="window._statTeeCollapsed['${tk}']=window._statTeeCollapsed['${tk}']===false?true:false;renderPlayerStats()" style="display:flex;align-items:center;gap:8px;cursor:pointer;padding:6px 0">`
-      + `<span style="flex:1;font-size:17px;font-weight:700">${escapeHtml(tee)}</span>`
-      + `<span style="width:44px;text-align:right;font-size:15px;color:var(--muted)">${totalTee}×</span>`
-      + `<span style="display:inline-block;transform:rotate(${collapsed ? 0 : 90}deg);transition:transform .15s">▶</span></div>`;
-    return header + (collapsed ? '' : `<div>${parRows}</div>`);
-  }).join('');
   // Inklapbare gouden kaartkoppen (standaard ingeklapt)
   window._statCardCollapsed = window._statCardCollapsed || {};
   const cardHead = (title, key) => {
@@ -3212,10 +3238,6 @@ function renderPlayerStats() {
       + `<span style="flex:1">${title}</span>`
       + `<span style="display:inline-block;font-size:15px;transform:rotate(${col ? 0 : 90}deg);transition:transform .15s">▶</span></h2>`;
   };
-  const tpCollapsed = window._statCardCollapsed['card_tee'] !== false;
-  const tpCard = tpBody
-    ? `<div class="card">${cardHead('Per tee &amp; par-lengte', 'card_tee')}${tpCollapsed ? '' : tpBody}</div>`
-    : '';
 
   // Uitsplitsing per club → banen (inklapbaar, standaard ingeklapt)
   const byClub = {};
@@ -3240,13 +3262,29 @@ function renderPlayerStats() {
     const total = Object.values(tracks).reduce((s, x) => s + x.length, 0);
     const ck = club.replace(/\W/g, '_');
     const collapsed = window._statClubCollapsed[ck] !== false; // standaard ingeklapt
+    window._statTrackCollapsed = window._statTrackCollapsed || {};
     const trackRows = Object.keys(tracks).sort((a, b) => tracks[b].length - tracks[a].length).map(track => {
       const rs = tracks[track];
       const avg = avgSdOf(rs);
-      return `<div style="display:flex;align-items:center;gap:8px;margin:4px 0 4px 12px">`
+      const tk = ck + '_' + track.replace(/\W/g, '_');
+      const tCollapsed = window._statTrackCollapsed[tk] !== false; // standaard ingeklapt
+      // Tee-subgroepen: gemiddeld dagresultaat per tee op deze baan
+      const byTee = {};
+      rs.forEach(r => { const t = r.tee || 'Onbekend'; (byTee[t] = byTee[t] || []).push(r); });
+      const teeRows = Object.keys(byTee).sort((a, b) => byTee[b].length - byTee[a].length).map(tee => {
+        const trs = byTee[tee];
+        const tAvg = avgSdOf(trs);
+        return `<div style="display:flex;align-items:center;gap:8px;margin:3px 0 3px 24px">`
+          + `<span style="flex:1;font-size:16px;color:var(--muted)">${escapeHtml(tee)}</span>`
+          + `<span style="width:44px;text-align:right;font-size:15px;color:var(--muted)">${trs.length}×</span>`
+          + `<span style="width:64px;text-align:right;font-size:16px;font-weight:700">${tAvg != null ? 'Sd ' + tAvg.toFixed(1) : '—'}</span></div>`;
+      }).join('');
+      const trackHeader = `<div onclick="window._statTrackCollapsed['${tk}']=window._statTrackCollapsed['${tk}']===false?true:false;renderPlayerStats()" style="display:flex;align-items:center;gap:8px;cursor:pointer;margin:4px 0 4px 12px">`
         + `<span style="flex:1;font-size:17px">${escapeHtml(track)}</span>`
         + `<span style="width:44px;text-align:right;font-size:15px;color:var(--muted)">${rs.length}×</span>`
-        + `<span style="width:64px;text-align:right;font-size:17px;font-weight:700">${avg != null ? 'Sd ' + avg.toFixed(1) : '—'}</span></div>`;
+        + `<span style="width:64px;text-align:right;font-size:17px;font-weight:700">${avg != null ? 'Sd ' + avg.toFixed(1) : '—'}</span>`
+        + `<span style="display:inline-block;font-size:13px;transform:rotate(${tCollapsed ? 0 : 90}deg);transition:transform .15s">▶</span></div>`;
+      return trackHeader + (tCollapsed ? '' : teeRows);
     }).join('');
     const header = `<div onclick="window._statClubCollapsed['${ck}']=window._statClubCollapsed['${ck}']===false?true:false;renderPlayerStats()" style="display:flex;align-items:center;gap:8px;cursor:pointer;padding:6px 0">`
       + `<span style="flex:1;font-size:17px;font-weight:700">${escapeHtml(club)}</span>`
@@ -3272,16 +3310,30 @@ function renderPlayerStats() {
   const spreadRow = spread != null
     ? `<div style="display:flex;align-items:center;gap:8px;margin-bottom:4px"><span style="flex:1;font-size:17px;color:var(--muted)">Consistentie (spreiding)</span><span style="font-size:17px;font-weight:700">± ${spread.toFixed(1)}</span></div>`
     : '';
-  const nineRow = (outAvg != null || inAvg != null)
-    ? `<div style="display:flex;align-items:center;gap:8px;margin-bottom:4px"><span style="flex:1;font-size:17px;color:var(--muted)">Gem. vs par (1e 9 / 2e 9)</span><span style="font-size:17px;font-weight:700">${outAvg != null ? fmtSigned(outAvg) : '—'} / ${inAvg != null ? fmtSigned(inAvg) : '—'}</span></div>`
+  // Subkopje + datarijen, zodat de labels niet te lang worden
+  const subHead = (txt) => `<div style="font-size:15px;font-weight:800;color:var(--green-light);text-transform:uppercase;letter-spacing:.6px;margin:10px 0 4px">${txt}</div>`;
+  const dataRow = (label, val) => `<div style="display:flex;align-items:center;gap:8px;margin-bottom:4px">`
+    + `<span style="flex:1;font-size:17px;color:var(--muted)">${label}</span>`
+    + `<span style="font-size:17px;font-weight:700">${val != null ? fmtSigned(val) : '—'}</span></div>`;
+
+  const threeRow = (t1Avg != null || t2Avg != null || t3Avg != null)
+    ? subHead('Gem. vs par &middot; 9 holes')
+      + dataRow('Hole 1&ndash;3', t1Avg)
+      + dataRow('Hole 4&ndash;6', t2Avg)
+      + dataRow('Hole 7&ndash;9', t3Avg)
     : '';
-  const formBody = trendRow + spreadRow + nineRow;
+  const nineRow = (outAvg != null || inAvg != null)
+    ? subHead('Gem. vs par &middot; 18 holes')
+      + dataRow('Hole 1&ndash;9', outAvg)
+      + dataRow('Hole 10&ndash;18', inAvg)
+    : '';
+  const formBody = trendRow + spreadRow + threeRow + nineRow;
   const formCard = formBody ? `<div class="card"><h2>Vorm &amp; consistentie</h2>${formBody}</div>` : '';
 
-  el.innerHTML = toggleBar + kpiRow + `<div class="card" id="sdChartCard"><h2>Dagresultaat en handicapverloop</h2><div id="sdChart"></div><div style="display:flex;gap:16px;margin-top:8px;font-size:15px;color:var(--muted)"><span style="display:flex;align-items:center;gap:6px"><span style="width:14px;height:3px;background:var(--green-light);display:inline-block;border-radius:2px"></span>Dagresultaat</span><span style="display:flex;align-items:center;gap:6px"><span style="width:14px;height:3px;background:var(--gold);display:inline-block;border-radius:2px"></span>Handicap</span></div></div>` + distCard + hdCard + formCard + ssCard + teeCard + parCard + tpCard + trackCard;
+  el.innerHTML = toggleBar + kpiRow + `<div class="card" id="sdChartCard"><h2>Dagresultaat en handicapverloop</h2>${periodBar}<div id="sdChart"></div><div style="display:flex;gap:16px;margin-top:8px;font-size:15px;color:var(--muted)"><span style="display:flex;align-items:center;gap:6px"><span style="width:14px;height:3px;background:var(--green-light);display:inline-block;border-radius:2px"></span>Dagresultaat</span><span style="display:flex;align-items:center;gap:6px"><span style="width:14px;height:3px;background:var(--gold);display:inline-block;border-radius:2px"></span>Handicap</span></div></div>` + distCard + hdCard + formCard + teeCard + parCard + trackCard;
 
   // Grafiek tekenen (na invoegen in DOM)
-  renderSdChart(sdSeries, hiSeries);
+  renderSdChart(sdView, hiView);
 }
 
 // SD-lijngrafiek (SVG) met tweede lijn voor het handicapverloop
@@ -3298,7 +3350,11 @@ function renderSdChart(sdSeries, hiSeries) {
   const xOf = i => padL + (n <= 1 ? 0 : (i / (n - 1)) * (w - padL - padR));
   const yOf = v => padT + (1 - (v - minY) / (maxY - minY)) * (h - padT - padB);
   const lineOf = pts => pts.map((p, k) => `${k ? 'L' : 'M'}${xOf(p.i).toFixed(1)} ${yOf(p.v).toFixed(1)}`).join(' ');
-  const dotsOf = (pts, color) => pts.map(p => `<circle cx="${xOf(p.i).toFixed(1)}" cy="${yOf(p.v).toFixed(1)}" r="2.5" fill="${color}"/>`).join('');
+  // Bij veel punten alleen lijnen tekenen; cirkeltjes zouden onleesbaar samenklonteren
+  const showDots = sdPts.length <= 30;
+  const dotsOf = (pts, color) => showDots
+    ? pts.map(p => `<circle cx="${xOf(p.i).toFixed(1)}" cy="${yOf(p.v).toFixed(1)}" r="2.5" fill="${color}"/>`).join('')
+    : '';
   const yTicks = [minY, Math.round((minY+maxY)/2), maxY].map(v =>
     `<text x="2" y="${(yOf(v)+4).toFixed(1)}" font-size="10" fill="var(--muted)">${v}</text>`).join('');
   const hiLine = hiPts.length >= 2
@@ -4109,7 +4165,7 @@ function openQuickClub() {
   loadSaved();
   setTimeout(() => {
     const header = document.querySelector(`#screen-archive [onclick*="${ck}"]`);
-    if (header) header.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    if (header) header.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
   }, 100);
 }
 
@@ -4135,7 +4191,7 @@ function openQuickPlanned() {
     // Scroll naar de kop van 'Gepland'
     const headers = [...document.querySelectorAll('#screen-archive [onclick*="gepland"]')];
     const target = headers[0];
-    if (target) target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    if (target) target.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
   }, 100);
 }
 
@@ -4152,6 +4208,7 @@ function openQuickLast20() {
   const players = [...new Set(loadSavedRounds().map(r => r.player).filter(Boolean))];
   window._pgCollapsed = {};
   window._pgSubCollapsed = {};
+  window._pgYearCollapsed = {};
   players.forEach(p => { window._pgCollapsed['pg_' + p.replace(/\W/g, '_')] = true; });
 
   // Speler 1: alleen de laatste 20 openklappen, alle andere categorieën dicht
@@ -4196,13 +4253,29 @@ function updateComputedHcp() {
 }
 
 function jumpToFullRound(roundId) {
-  // Klap 'Alle rondes' van speler 1 uit indien nodig, render en scroll naar het volledige blokje
+  // Klap het blok met de volledige kaart uit, render en scroll ernaartoe.
+  // Werkt zowel bij groeperen op speler als op categorie.
   const saved = loadSavedRounds();
   const r = saved.find(x => x.id === roundId);
   if (!r) return;
-  const key = (r.player || '').replace(/\W/g, '_');
-  window._pgSubCollapsed = window._pgSubCollapsed || {};
-  window._pgSubCollapsed['pga_' + key] = false;
+  const year = (r.date || '').slice(0, 4) || 'Onbekend';
+
+  if (window._groupByCategory) {
+    // Categorie: 'Afgerond' + het jaar-subblok
+    window._catCollapsed = window._catCollapsed || {};
+    window._catCollapsed['afgerond'] = false;
+    window._finYearCollapsed = window._finYearCollapsed || {};
+    window._finYearCollapsed['fin_' + year] = false;
+  } else {
+    // Speler: spelergroep + 'Alle rondes' + het jaar-subblok
+    const key = (r.player || '').replace(/\W/g, '_');
+    window._pgCollapsed = window._pgCollapsed || {};
+    window._pgCollapsed['pg_' + key] = false;
+    window._pgSubCollapsed = window._pgSubCollapsed || {};
+    window._pgSubCollapsed['pga_' + key] = false;
+    window._pgYearCollapsed = window._pgYearCollapsed || {};
+    window._pgYearCollapsed['pgy_' + key + '_' + year] = false;
+  }
   loadSaved();
   setTimeout(() => {
     const el = document.getElementById('round-full-' + roundId);
@@ -4395,7 +4468,17 @@ function loadSaved() {
     if (inProgress.length) html += collapsibleHeader('Opgeslagen', inProgress.length, 'opgeslagen', '_catCollapsed') + inProgress.map(r => makeCard(r)).join('') + '</div>';
     if (finished.length) {
       html += collapsibleHeader('Afgerond', finished.length, 'afgerond', '_catCollapsed');
-      // Subcategorieën per jaar (nieuwste jaar eerst), standaard ingeklapt
+      // Subcategorie 'Laatste 12 maanden' bovenaan, daarna per jaar (nieuwste eerst)
+      const cutoff12 = Date.now() - 365 * 24 * 60 * 60 * 1000;
+      const last12 = finished.filter(r => {
+        const t = new Date(`${r.date || '1970-01-01'}T${r.time || '00:00'}`).getTime();
+        return isFinite(t) && t >= cutoff12;
+      });
+      if (last12.length) {
+        html += `<div style="padding-left:12px">`
+          + collapsibleHeader('Laatste 12 maanden', last12.length, 'fin_last12', '_finYearCollapsed').replace('color:var(--gold)', 'color:var(--green-light)')
+          + last12.map(r => makeCard(r, null, true)).join('') + '</div></div>';
+      }
       const byYear = {};
       finished.forEach(r => {
         const y = (r.date || '').slice(0, 4) || 'Onbekend';
@@ -4465,8 +4548,31 @@ function loadSaved() {
         html += `<div style="padding-left:12px">` + qh
           + qualifying.map(r => makeCard(r, null, true)).join('') + '</div></div>';
         html += `<div style="padding-left:12px">`
-          + collapsibleHeader('Alle rondes', rounds.length, 'pga_' + key, '_pgSubCollapsed').replace('color:var(--gold)', 'color:var(--green-light)')
-          + rounds.map(r => makeCard(r)).join('') + '</div></div>';
+          + collapsibleHeader('Alle rondes', rounds.length, 'pga_' + key, '_pgSubCollapsed').replace('color:var(--gold)', 'color:var(--green-light)');
+        // Subcategorie 'Laatste 12 maanden' bovenaan, daarna per jaar (nieuwste eerst)
+        {
+          const cutoff12 = Date.now() - 365 * 24 * 60 * 60 * 1000;
+          const last12 = [...rounds].sort(sortDesc).filter(r => {
+            const t = new Date(`${r.date || '1970-01-01'}T${r.time || '00:00'}`).getTime();
+            return isFinite(t) && t >= cutoff12;
+          });
+          if (last12.length) {
+            html += `<div style="padding-left:12px">`
+              + collapsibleHeader('Laatste 12 maanden', last12.length, 'pgy_' + key + '_last12', '_pgYearCollapsed').replace('color:var(--gold)', 'color:var(--muted)')
+              + last12.map(r => makeCard(r, null, true)).join('') + '</div></div>';
+          }
+          const byYear = {};
+          rounds.forEach(r => {
+            const y = (r.date || '').slice(0, 4) || 'Onbekend';
+            (byYear[y] = byYear[y] || []).push(r);
+          });
+          Object.keys(byYear).sort((a, b) => b.localeCompare(a)).forEach(year => {
+            html += `<div style="padding-left:12px">`
+              + collapsibleHeader(year, byYear[year].length, 'pgy_' + key + '_' + year, '_pgYearCollapsed').replace('color:var(--gold)', 'color:var(--muted)')
+              + byYear[year].map(r => makeCard(r)).join('') + '</div></div>';
+          });
+        }
+        html += '</div></div>';
         html += '</div>';
       } else {
         html += playerGroupHeader(player, byPlayer[player].length) + byPlayer[player].map(r => makeCard(r)).join('') + '</div>';
