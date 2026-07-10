@@ -4402,9 +4402,7 @@ function loadSaved() {
       ${compact ? `<div class="saved-meta">${(`${totalStb != null ? `Stb ${totalStb}` : ''}${sdFrag}`).replace(/^ · /, '')}</div>` : ''}
       ${compact && hcpInfo ? (() => {
         const arrow = '<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:-1px;margin:0 3px"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>';
-        const goldCheck = '<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="var(--gold)" stroke-width="4" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:0px;margin-left:2px"><polyline points="20 6 9 17 4 12"/></svg>';
-        const provisionalMark = '<span style="color:var(--orange);font-weight:700;margin-left:2px">?</span>';
-        const { oldHcp, newHcp, isCurrent, provisional } = hcpInfo;
+        const { oldHcp, newHcp } = hcpInfo;
         if (newHcp == null) return '';
         const diff = (oldHcp != null) ? Math.round((newHcp - oldHcp) * 10) / 10 : null;
         let diffFrag = '';
@@ -4412,7 +4410,7 @@ function loadSaved() {
           const color = diff > 0 ? 'var(--red)' : 'var(--green-light)';
           diffFrag = ` <span style="color:${color}">(${diff > 0 ? '+' : ''}${diff.toFixed(1)})</span>`;
         }
-        return `<div class="saved-meta">Hcp ${oldHcp != null ? fmt1(oldHcp) : '—'}${arrow}${fmt1(newHcp)}${isCurrent ? goldCheck : ''}${provisional ? provisionalMark : ''}${diffFrag}</div>`;
+        return `<div class="saved-meta">Hcp ${oldHcp != null ? fmt1(oldHcp) : '—'}${arrow}${fmt1(newHcp)}${diffFrag}</div>`;
       })() : ''}
       ${compact ? '' : `<div class="saved-meta">${done ? '' : `${playedCount}/${holesCount} · `}Score ${total}${sdFrag}</div>`}
       ${compact ? '' : `<div style="margin-top:8px">${flatChartHtml(r.holes)}</div>`}
@@ -4553,10 +4551,8 @@ function loadSaved() {
           return sd != null && sd !== '' && isFinite(parseFloat(sd));
         };
         // Hcp-regel voor de compacte weergave: per qualifying ronde de handicap waarmee
-        // gespeeld is, de handicap die daarna gold (WHS-staffel, zonder ESR/caps — zelfde
-        // methode als het handicapverloop in de statistieken), of dat een nieuwe laagste
-        // handicap was, en of die nieuwe waarde nog voorlopig is (niet alle Sd's in het
-        // gebruikte venster zijn al handmatig vastgesteld).
+        // gespeeld is, en de handicap die daarna gold (WHS-staffel, zonder ESR/caps —
+        // zelfde methode als het handicapverloop in de statistieken).
         const hcpMap = {};
         {
           const qualAll = rounds
@@ -4570,13 +4566,9 @@ function loadSaved() {
             const avg = [...sds].sort((a, b) => a - b).slice(0, staffel.count).reduce((s, x) => s + x, 0) / staffel.count;
             const newHcp = whsIndexRound(avg + staffel.adj);
             const oldHcpVal = parseFloat(r.hcp);
-            const provisional = window20.some(x => !sdFixed(x));
-            const isMostRecent = idx === qualAll.length - 1;
             hcpMap[r.id] = {
               oldHcp: isFinite(oldHcpVal) ? oldHcpVal : null,
               newHcp,
-              isCurrent: isMostRecent && !provisional,
-              provisional,
             };
           });
         }
