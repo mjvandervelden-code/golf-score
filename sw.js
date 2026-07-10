@@ -1,7 +1,10 @@
 // Service worker voor de Golf Score PWA.
 // Plaats dit bestand naast golf-score.html in de GitHub Pages-repo.
-// Verhoog CACHE_VERSION bij elke nieuwe release zodat de cache ververst.
-const CACHE_VERSION = 'golf-score-v9';
+// CACHE_VERSION wordt automatisch afgeleid uit een hash van de app-bestanden
+// door update_cache_version.py. Niet handmatig aanpassen — draai na elke
+// wijziging aan index.html/golf-score.html/manifest.json/icon.svg gewoon:
+//   python3 update_cache_version.py
+const CACHE_VERSION = 'golf-score-a88279bd0c93';
 
 // Bestanden die offline beschikbaar moeten zijn.
 const APP_FILES = [
