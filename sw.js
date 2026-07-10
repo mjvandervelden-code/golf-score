@@ -4,7 +4,7 @@
 // door update_cache_version.py. Niet handmatig aanpassen — draai na elke
 // wijziging aan index.html/golf-score.html/manifest.json/icon.svg gewoon:
 //   python3 update_cache_version.py
-const CACHE_VERSION = 'golf-score-e5880c3931f6';
+const CACHE_VERSION = 'golf-score-961e88cebab3';
 
 // Bestanden die offline beschikbaar moeten zijn.
 const APP_FILES = [
