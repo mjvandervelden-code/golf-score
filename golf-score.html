@@ -183,6 +183,11 @@
     }
     .tab  { flex: 1; padding: 13px 0; background: none; border: none; color: rgba(255,255,255,.5); font-size:17px; font-weight: 700; cursor: pointer; border-top: 3px solid transparent; transition: transform .1s ease, color .15s ease; display: flex; align-items: center; justify-content: center; }
     .switch { position: relative; display: inline-block; width: 52px; height: 30px; flex: 0 0 auto; }
+    .more-toggle { font-size: 15px; color: var(--gold); font-weight: 700; margin-top: 6px; cursor: pointer; display: inline-flex; align-items: center; gap: 4px; user-select: none; }
+    .more-toggle svg { transition: transform .15s; flex-shrink: 0; }
+    .more-toggle.open svg { transform: rotate(90deg); }
+    .more-full { font-size: 17px; color: var(--muted); margin-top: 0; max-height: 0; overflow: hidden; transition: max-height .2s ease; }
+    .more-full.open { max-height: 300px; margin-top: 8px; }
     .switch input { opacity: 0; width: 0; height: 0; }
     .switch .slider { position: absolute; inset: 0; cursor: pointer; background: rgba(255,255,255,.2); border-radius: 30px; transition: background .2s; }
     .switch .slider::before { content: ''; position: absolute; height: 24px; width: 24px; left: 3px; top: 3px; background: #fff; border-radius: 50%; transition: transform .2s; }
@@ -522,8 +527,8 @@
       <input id="iName" type="text" placeholder="Jouw naam" maxlength="50" oninput="this.value=this.value.replace(/[^a-zA-Z0-9 \-_()\[\]+.,!'&]/g,''); savePlayerProfile()" onblur="this.value=this.value.trim(); savePlayerProfile()" />
     </div>
     <div class="fg" id="hcpField">
-      <label>Handicap (WHS)</label>
-      <div id="computedHcpRow" style="font-size:17px;color:var(--muted);margin-bottom:6px"><span id="computedHcpLabel">Hcp</span>: <span id="computedHcpVal" style="color:var(--green-light);font-weight:700">—</span></div>
+      <label>Handicap</label>
+      <div id="computedHcpRow" style="font-size:17px;color:var(--muted);margin-bottom:6px"><span id="computedHcpLabel">WHS-hcp</span>: <span id="computedHcpVal" style="color:var(--green-light);font-weight:700">—</span></div>
       <input id="iHcp" type="text" inputmode="decimal" enterkeyhint="done" placeholder="hcp"
         oninput="onHcpInput(this)" onblur="onHcpBlur(this); savePlayerProfile()" onchange="onHcpBlur(this)"
         onkeydown="if(event.key==='Enter'){onHcpBlur(this); savePlayerProfile(); this.blur();}" />
@@ -552,7 +557,7 @@
       <input id="iName2" type="text" placeholder="Naam speler 2" maxlength="50" oninput="this.value=this.value.replace(/[^a-zA-Z0-9 \-_()\[\]+.,!'&]/g,''); savePlayer2Profile(); updateFavPlayer2Star()" onblur="this.value=this.value.trim(); savePlayer2Profile(); updateFavPlayer2Star()" />
     </div>
     <div class="fg">
-      <label>Handicap (WHS)</label>
+      <label>Handicap</label>
       <input id="iHcp2" type="text" inputmode="decimal" enterkeyhint="done" placeholder="hcp"
         oninput="onHcpInput(this)" onblur="onHcpBlur(this); savePlayer2Profile()" onchange="onHcpBlur(this)"
         onkeydown="if(event.key==='Enter'){onHcpBlur(this); savePlayer2Profile(); this.blur();}" />
@@ -799,8 +804,10 @@
   <div style="font-size:20px;font-weight:800;color:var(--gold);text-transform:uppercase;letter-spacing:.7px;padding:16px 0 8px;margin-bottom:4px;display:flex;align-items:center;gap:8px">Handicap <span style="text-transform:none;font-weight:400">(<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:-3px"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg>)</span></div>
   <div class="card">
     <div style="margin-bottom:8px">
-      <div style="font-size:20px;font-weight:700;color:var(--white)">Laagste handicap (365 dagen)</div>
-      <div style="font-size:17px;color:var(--muted)">Het World Handicap System begrenst hoe snel je handicap mag stijgen ten opzichte van je laagste index van de afgelopen 365 dagen. Vul die hier in voor een exacte berekening. Laat je het leeg, dan leidt de app de waarde af uit je opgeslagen rondes (kan afwijken als je historie onvolledig is).</div>
+      <div style="font-size:20px;font-weight:700;color:var(--white)">Low HI (365 dagen)</div>
+      <div style="font-size:17px;color:var(--muted)">Begrenst hoe snel je handicap mag stijgen (WHS-caps). Leeg = automatisch afgeleid.</div>
+      <div class="more-toggle" onclick="toggleMoreInfo(this)">Meer uitleg<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="9 6 15 12 9 18"/></svg></div>
+      <div class="more-full">Het World Handicap System begrenst hoe snel je handicap mag stijgen ten opzichte van je laagste index van de afgelopen 365 dagen. Vul die hier in voor een exacte berekening. Laat je het leeg, dan leidt de app de waarde af uit je opgeslagen rondes (kan afwijken als je historie onvolledig is).</div>
     </div>
     <div class="fg" style="margin-bottom:0">
       <input id="lowHiInput" type="text" inputmode="decimal" placeholder="bijv. 12.4" oninput="previewLowHi(this)" onblur="saveLowHi(this)">
@@ -814,7 +821,9 @@
     <div style="display:flex;align-items:center;justify-content:space-between;gap:12px">
       <div>
         <div style="font-size:20px;font-weight:700;color:var(--white)">Actieknoppen bij clubs altijd zichtbaar</div>
-        <div style="font-size:17px;color:var(--muted)">Uit: de knoppenbalk (selecteer, favoriet, bewerk, exporteer, verwijder) onderin een clubblok is verborgen totdat je op de clubnaam of de korte naam tikt. Nogmaals tikken verbergt hem weer</div>
+        <div style="font-size:17px;color:var(--muted)">Uit: knoppenbalk pas zichtbaar na een tik op de clubnaam.</div>
+        <div class="more-toggle" onclick="toggleMoreInfo(this)">Meer uitleg<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="9 6 15 12 9 18"/></svg></div>
+        <div class="more-full">Uit: de knoppenbalk (selecteer, favoriet, bewerk, exporteer, verwijder) onderin een clubblok is verborgen totdat je op de clubnaam of de korte naam tikt. Nogmaals tikken verbergt hem weer</div>
       </div>
       <label class="switch"><input type="checkbox" id="clubActionsAlwaysVisibleToggle" onchange="toggleClubActionsAlwaysVisible()"><span class="slider"></span></label>
     </div>
@@ -823,7 +832,9 @@
     <div style="display:flex;align-items:center;justify-content:space-between;gap:12px">
       <div>
         <div style="font-size:20px;font-weight:700;color:var(--white)">Alles inklappen bij categorie-groepering (Clubs)</div>
-        <div style="font-size:17px;color:var(--muted)">Een klik op "groepeer op categorie" bij Clubs klapt "Geselecteerd" altijd uit, "Favorieten" en "Overig" blijven dicht. Lang indrukken van "groepeer op categorie" bij Clubs (<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:-2px"><path d="M3 7v12a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V9a2 2 0 0 0-2-2h-7l-2-2H5a2 2 0 0 0-2 2Z"/></svg> <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:-1px"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg> <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:-2px"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/></svg>) klapt juist alles weer in</div>
+        <div style="font-size:17px;color:var(--muted)">Klik = geselecteerde categorie uitklappen. Long press = alles inklappen.</div>
+        <div class="more-toggle" onclick="toggleMoreInfo(this)">Meer uitleg<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="9 6 15 12 9 18"/></svg></div>
+        <div class="more-full">Een klik op "groepeer op categorie" bij Clubs klapt "Geselecteerd" altijd uit, "Favorieten" en "Overig" blijven dicht. Lang indrukken van "groepeer op categorie" bij Clubs (<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:-2px"><path d="M3 7v12a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V9a2 2 0 0 0-2-2h-7l-2-2H5a2 2 0 0 0-2 2Z"/></svg> <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:-1px"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg> <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:-2px"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/></svg>) klapt juist alles weer in</div>
       </div>
       <label class="switch"><input type="checkbox" id="quickClubCategoryToggle" onchange="toggleQuickClubCategory()"><span class="slider"></span></label>
     </div>
@@ -834,7 +845,9 @@
     <div style="display:flex;align-items:center;justify-content:space-between;gap:12px">
       <div>
         <div style="font-size:20px;font-weight:700;color:var(--white)">Actieknoppen bij rondes altijd zichtbaar</div>
-        <div style="font-size:17px;color:var(--muted)">Uit: de knoppenbalk (info, resultaat, exporteren, laden, verwijderen) onderin een rondeblok in het archief is verborgen totdat je ergens op het blok tikt. Nogmaals tikken verbergt hem weer</div>
+        <div style="font-size:17px;color:var(--muted)">Uit: knoppenbalk pas zichtbaar na een tik op het rondeblok.</div>
+        <div class="more-toggle" onclick="toggleMoreInfo(this)">Meer uitleg<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="9 6 15 12 9 18"/></svg></div>
+        <div class="more-full">Uit: de knoppenbalk (info, resultaat, exporteren, laden, verwijderen) onderin een rondeblok in het archief is verborgen totdat je ergens op het blok tikt. Nogmaals tikken verbergt hem weer</div>
       </div>
       <label class="switch"><input type="checkbox" id="actionsAlwaysVisibleToggle" onchange="toggleActionsAlwaysVisible()"><span class="slider"></span></label>
     </div>
@@ -843,7 +856,9 @@
     <div style="display:flex;align-items:center;justify-content:space-between;gap:12px">
       <div>
         <div style="font-size:20px;font-weight:700;color:var(--white)">Alles inklappen bij club-groepering</div>
-        <div style="font-size:17px;color:var(--muted)">Een klik op "groepeer op club" in het archief zet de geselecteerde club altijd bovenaan en uitgeklapt. Lang indrukken van "groepeer op club" (<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:-2px"><path d="M3 7v12a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V9a2 2 0 0 0-2-2h-7l-2-2H5a2 2 0 0 0-2 2Z"/></svg> <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:-1px"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg> <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:-2px"><path d="M3 12h18"/><path d="M3 6l9-3 9 3"/><path d="M3 18l9 3 9-3"/></svg>) klapt juist alles weer in</div>
+        <div style="font-size:17px;color:var(--muted)">Klik = geselecteerde club bovenaan uitklappen. Long press = alles inklappen.</div>
+        <div class="more-toggle" onclick="toggleMoreInfo(this)">Meer uitleg<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="9 6 15 12 9 18"/></svg></div>
+        <div class="more-full">Een klik op "groepeer op club" in het archief zet de geselecteerde club altijd bovenaan en uitgeklapt. Lang indrukken van "groepeer op club" (<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:-2px"><path d="M3 7v12a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V9a2 2 0 0 0-2-2h-7l-2-2H5a2 2 0 0 0-2 2Z"/></svg> <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:-1px"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg> <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:-2px"><path d="M3 12h18"/><path d="M3 6l9-3 9 3"/><path d="M3 18l9 3 9-3"/></svg>) klapt juist alles weer in</div>
       </div>
       <label class="switch"><input type="checkbox" id="quickClubToggle" onchange="toggleQuickClub()"><span class="slider"></span></label>
     </div>
@@ -852,7 +867,9 @@
     <div style="display:flex;align-items:center;justify-content:space-between;gap:12px">
       <div>
         <div style="font-size:20px;font-weight:700;color:var(--white)">Alles inklappen bij categorie-groepering</div>
-        <div style="font-size:17px;color:var(--muted)">Een klik op "groepeer op categorie" in het archief klapt "Actief" en "Gepland" altijd uit, de rest blijft dicht. Lang indrukken van "groepeer op categorie" (<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:-2px"><path d="M3 7v12a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V9a2 2 0 0 0-2-2h-7l-2-2H5a2 2 0 0 0-2 2Z"/></svg> <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:-1px"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg> <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:-2px"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/></svg>) klapt juist alles weer in</div>
+        <div style="font-size:17px;color:var(--muted)">Klik = Actief + Gepland uitklappen. Long press = alles inklappen.</div>
+        <div class="more-toggle" onclick="toggleMoreInfo(this)">Meer uitleg<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="9 6 15 12 9 18"/></svg></div>
+        <div class="more-full">Een klik op "groepeer op categorie" in het archief klapt "Actief" en "Gepland" altijd uit, de rest blijft dicht. Lang indrukken van "groepeer op categorie" (<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:-2px"><path d="M3 7v12a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V9a2 2 0 0 0-2-2h-7l-2-2H5a2 2 0 0 0-2 2Z"/></svg> <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:-1px"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg> <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:-2px"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/></svg>) klapt juist alles weer in</div>
       </div>
       <label class="switch"><input type="checkbox" id="quickPlannedToggle" onchange="toggleQuickPlanned()"><span class="slider"></span></label>
     </div>
@@ -861,7 +878,9 @@
     <div style="display:flex;align-items:center;justify-content:space-between;gap:12px">
       <div>
         <div style="font-size:20px;font-weight:700;color:var(--white)">Alles inklappen bij speler-groepering</div>
-        <div style="font-size:17px;color:var(--muted)">Een klik op "groepeer op speler" in het archief zet de hoofdspeler altijd bovenaan met de laatste 20 qualifying rondes uitgeklapt. Lang indrukken van "groepeer op speler" (<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:-2px"><path d="M3 7v12a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V9a2 2 0 0 0-2-2h-7l-2-2H5a2 2 0 0 0-2 2Z"/></svg> <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:-1px"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg> <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:-2px"><circle cx="9" cy="7" r="4"/><path d="M3 21v-2a4 4 0 0 1 4-4h4a4 4 0 0 1 4 4v2"/><circle cx="19" cy="7" r="2"/><path d="M23 21v-1a3 3 0 0 0-3-3h-1"/></svg>) klapt juist alles weer in</div>
+        <div style="font-size:17px;color:var(--muted)">Klik = hoofdspeler + laatste 20 uitklappen. Long press = alles inklappen.</div>
+        <div class="more-toggle" onclick="toggleMoreInfo(this)">Meer uitleg<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="9 6 15 12 9 18"/></svg></div>
+        <div class="more-full">Een klik op "groepeer op speler" in het archief zet de hoofdspeler altijd bovenaan met de laatste 20 qualifying rondes uitgeklapt. Lang indrukken van "groepeer op speler" (<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:-2px"><path d="M3 7v12a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V9a2 2 0 0 0-2-2h-7l-2-2H5a2 2 0 0 0-2 2Z"/></svg> <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:-1px"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg> <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:-2px"><circle cx="9" cy="7" r="4"/><path d="M3 21v-2a4 4 0 0 1 4-4h4a4 4 0 0 1 4 4v2"/><circle cx="19" cy="7" r="2"/><path d="M23 21v-1a3 3 0 0 0-3-3h-1"/></svg>) klapt juist alles weer in</div>
       </div>
       <label class="switch"><input type="checkbox" id="quickLast20Toggle" onchange="toggleQuickLast20()"><span class="slider"></span></label>
     </div>
@@ -2803,7 +2822,7 @@ function renderScoreInfo(played, total, totalAgs, totalStb, rawFmt, rparPlayed, 
           .slice(0, 20);
         const mode = sdFixed ? 'fixed' : 'effective';
         const whs = whsHandicap(pool, mode, effectiveLowHi(game.player, all, mode), priorHiFor(pool, mode));
-        const label = sdFixed ? 'Nieuwe hcp' : 'Verwachte hcp';
+        const label = sdFixed ? 'Nieuwe WHS-hcp' : 'Verwachte WHS-hcp';
         return [[label, whs ? fmt1(whs.value) : '—']];
       })(),
     ]],
@@ -3220,8 +3239,8 @@ function renderPlayerStats() {
   }
   const kpiRow = `<div class="card"><h2>${escapeHtml(player)}</h2>`
     + `<div style="display:flex;flex-wrap:wrap;gap:12px 8px">`
-    + kpi('Hcp', whs ? fmt1(whs.value) : '—', { color: hcpColor, suffix: hcpTriangle })
-    + (() => { const lo = effectiveLowHi(player, all, 'effective'); return kpi('Laagste hcp', lo != null ? fmt1(lo) : '—', { suffix: loTriangle }); })()
+    + kpi('WHS-hcp', whs ? fmt1(whs.value) : '—', { color: hcpColor, suffix: hcpTriangle })
+    + (() => { const lo = effectiveLowHi(player, all, 'effective'); return kpi('Low HI', lo != null ? fmt1(lo) : '—', { suffix: loTriangle }); })()
     + kpi('Rondes', rounds.length)
     + kpi('Beste Sd', bestSd != null ? fmt1(bestSd) : '—')
     + kpi('Gem. Sd', avgSd != null ? fmt1(avgSd) : '—')
@@ -4490,7 +4509,7 @@ function updateComputedHcp() {
     : '';
   el.innerHTML = (whs ? fmt1(whs.value) : '—') + triangle;
   const labelEl = document.getElementById('computedHcpLabel');
-  if (labelEl) labelEl.textContent = 'Hcp';
+  if (labelEl) labelEl.textContent = 'WHS-hcp';
   // Afwijkingsmelding: zodra je zelf iets anders hebt ingevuld dan wat de app berekent. Grijs
   // en niet-alarmerend, want een bewuste afwijking kan best de bedoeling zijn (bv. een
   // ervaren speler die net begint met de app). Het driehoekje hierboven vertelt er al bij
@@ -4501,7 +4520,7 @@ function updateComputedHcp() {
     const hcpInput = document.getElementById('iHcp');
     const typed = hcpInput ? parseFloat(hcpInput.value) : NaN;
     const deviates = whs && isFinite(typed) && fmt1(typed) !== fmt1(whs.value);
-    if (noteEl) noteEl.textContent = 'Hcp wijkt af van de berekende hcp';
+    if (noteEl) noteEl.textContent = 'Hcp wijkt af van de berekende WHS-hcp';
     overrideRow.classList.toggle('hidden', !deviates);
   }
 }
@@ -7394,6 +7413,13 @@ function toggleQuickClubCategory() {
   storage.setItem('golf_quick_club_category', on ? 'on' : 'off');
 }
 
+// Instellingen: 'Meer uitleg'-uitklapper (korte standaardtekst + volledige uitleg op aanvraag)
+function toggleMoreInfo(el) {
+  el.classList.toggle('open');
+  const full = el.nextElementSibling;
+  if (full) full.classList.toggle('open');
+}
+
 function quickClubEnabled() {
   return storage.getItem('golf_quick_club') !== 'off'; // afwezig = aan
 }
@@ -7458,7 +7484,7 @@ function refreshLowHiWarning(previewVal) {
   const currStale = curr != null && isFinite(curr) && curr < v;
   if (currStale) {
     warnEl.style.color = 'var(--orange)';
-    warnEl.innerHTML = `${triangle} Je huidige handicap ligt lager (${fmt1(curr)}) — controleer je laagste handicap.`;
+    warnEl.innerHTML = `${triangle} Je huidige handicap ligt lager (${fmt1(curr)}) — controleer je Low HI.`;
     warnEl.classList.remove('hidden');
     return;
   }
@@ -7480,7 +7506,7 @@ function refreshLowHiWarning(previewVal) {
   const stale = d != null && isFinite(d) && d < v;
   warnEl.style.color = 'var(--orange)';
   if (stale) {
-    warnEl.innerHTML = `${triangle} Uit je rondes blijkt een lagere waarde (${fmt1(d)}) — controleer je laagste handicap.`;
+    warnEl.innerHTML = `${triangle} Uit je rondes blijkt een lagere waarde (${fmt1(d)}) — controleer je Low HI.`;
     warnEl.classList.remove('hidden');
   } else {
     warnEl.classList.add('hidden');
