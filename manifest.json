@@ -1,6 +1,6 @@
 {
   "name": "Golf Score",
-  "short_name": "Score",
+  "short_name": "Golf Score",
   "description": "Golf score app",
   "start_url": "./golf-score.html",
   "scope": "./",
@@ -23,4 +23,3 @@
     }
   ]
 }
-
