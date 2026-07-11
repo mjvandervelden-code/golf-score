@@ -4693,8 +4693,8 @@ function loadSaved() {
         <button class="btn-secondary" style="padding:8px 14px" onclick="openExportModal(${saved.indexOf(r)})" title="Exporteer/Deel"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:middle"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"/><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"/></svg></button>
         ${isActive
           ? isPlayer2Active
-            ? `<button class="btn-secondary" style="padding:8px 14px" data-round-id="${r.id}" onclick="saveAndClearPlayer2Round(this)"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:middle"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2Z"/><polyline points="17 21 17 13 7 13 7 21"/><polyline points="7 3 7 8 15 8"/></svg></button>`
-            : `<button class="btn-secondary" style="padding:8px 14px" data-round-id="${r.id}" onclick="saveAndClearActiveRound(this)"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:middle"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2Z"/><polyline points="17 21 17 13 7 13 7 21"/><polyline points="7 3 7 8 15 8"/></svg></button>`
+            ? `<button class="btn-secondary" style="padding:8px 14px" data-round-id="${r.id}" onclick="saveAndClearPlayer2Round(this)" title="Stop"><svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" stroke="none" style="vertical-align:middle"><rect x="5" y="5" width="14" height="14" rx="1"/></svg></button>`
+            : `<button class="btn-secondary" style="padding:8px 14px" data-round-id="${r.id}" onclick="saveAndClearActiveRound(this)" title="Stop"><svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" stroke="none" style="vertical-align:middle"><rect x="5" y="5" width="14" height="14" rx="1"/></svg></button>`
           : `<button class="btn-secondary" style="padding:8px 14px" onclick="loadRound(${saved.indexOf(r)})" title="Laad"><svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" stroke="none" style="vertical-align:middle"><polygon points="6 3 20 12 6 21 6 3"/></svg></button>
              ${r._justImported ? `<button class="btn-secondary" style="padding:8px 14px" data-round-id="${r.id}" onclick="archiveImportedRound(${saved.indexOf(r)}, this)" title="Sla op"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:middle"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2Z"/><polyline points="17 21 17 13 7 13 7 21"/><polyline points="7 3 7 8 15 8"/></svg></button>` : ''}`}
         <button class="btn-secondary" style="padding:8px 14px" onclick="deleteRound(${saved.indexOf(r)}, this)"><span class="delete-icon" style="vertical-align:middle"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"></path><path d="M10 11v6"></path><path d="M14 11v6"></path><path d="M9 6V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2"></path></svg></span></button>
@@ -4858,9 +4858,7 @@ function loadSaved() {
         if (anyUnfixed) qh = qh.replace('</span><span style="opacity:.8">', warnTriangle + '</span><span style="opacity:.8">');
         html += `<div style="padding-left:12px">` + qh
           + qualifying.map(r => makeCard(r, null, true, hcpMap[r.id])).join('') + '</div></div>';
-        html += `<div style="padding-left:12px">`
-          + collapsibleHeader('Alle rondes', rounds.length, 'pga_' + key, '_pgSubCollapsed').replace('color:var(--gold)', 'color:var(--green-light)');
-        // Subcategorie 'Laatste 12 maanden' bovenaan, daarna per jaar (nieuwste eerst)
+        // 'Laatste 12 maanden' op hetzelfde niveau als 'Laatste 20 qualifying' en 'Alle rondes'
         {
           const cutoff12 = Date.now() - 365 * 24 * 60 * 60 * 1000;
           const last12 = [...rounds].sort(sortDesc).filter(r => {
@@ -4869,9 +4867,14 @@ function loadSaved() {
           });
           if (last12.length) {
             html += `<div style="padding-left:12px">`
-              + collapsibleHeader('Laatste 12 maanden', last12.length, 'pgy_' + key + '_last12', '_pgYearCollapsed').replace('color:var(--gold)', 'color:var(--muted)')
+              + collapsibleHeader('Laatste 12 maanden', last12.length, 'pgy_' + key + '_last12', '_pgYearCollapsed').replace('color:var(--gold)', 'color:var(--green-light)')
               + last12.map(r => makeCard(r, null, true, hcpMap[r.id])).join('') + '</div></div>';
           }
+        }
+        html += `<div style="padding-left:12px">`
+          + collapsibleHeader('Alle rondes', rounds.length, 'pga_' + key, '_pgSubCollapsed').replace('color:var(--gold)', 'color:var(--green-light)');
+        // Per jaar (nieuwste eerst)
+        {
           const byYear = {};
           rounds.forEach(r => {
             const y = (r.date || '').slice(0, 4) || 'Onbekend';
