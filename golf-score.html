@@ -523,10 +523,14 @@
     </div>
     <div class="fg" id="hcpField">
       <label>Handicap (WHS)</label>
+      <div id="computedHcpRow" style="font-size:17px;color:var(--muted);margin-bottom:6px"><span id="computedHcpLabel">Verwachte hcp</span>: <span id="computedHcpVal" style="color:var(--green-light);font-weight:700">—</span></div>
       <input id="iHcp" type="text" inputmode="decimal" enterkeyhint="done" placeholder="hcp"
         oninput="onHcpInput(this)" onblur="onHcpBlur(this); savePlayerProfile()" onchange="onHcpBlur(this)"
         onkeydown="if(event.key==='Enter'){onHcpBlur(this); savePlayerProfile(); this.blur();}" />
-      <div id="computedHcpRow" style="font-size:17px;color:var(--muted);margin-top:6px"><span id="computedHcpLabel">Verwachte hcp</span>: <span id="computedHcpVal" style="color:var(--green-light);font-weight:700">—</span></div>
+      <div class="chcp-override-row hidden" id="hcpOverrideRow">
+        <span id="hcpOverrideNote" class="info-msg" style="color:var(--muted)">Hcp wijkt af van verwachte handicap</span>
+        <button class="btn-secondary" style="padding:8px 14px;opacity:.6" onclick="resetHcpToComputed()"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:middle"><path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/><path d="M3 3v5h5"/></svg></button>
+      </div>
     </div>
   </div>
 
@@ -2020,7 +2024,12 @@ function onHcpInput(input) {
   let v = input.value.replace(',', '.');
   const m = v.match(/^-?\d*(\.\d?)?/);
   if (m) input.value = m[0];
-  input.id === 'iHcp2' ? updateChcp2() : updateChcp();
+  if (input.id === 'iHcp2') {
+    updateChcp2();
+  } else {
+    updateChcp();
+    updateComputedHcp(); // laat de afwijkingsmelding + undo al live meebewegen tijdens typen
+  }
 }
 
 function onHcpBlur(input) {
@@ -4477,16 +4486,41 @@ function updateComputedHcp() {
   const last20 = last20Qualifying(player1, loadSavedRounds(), actId, game2Id);
   const whs = whsHandicap(last20, 'effective', effectiveLowHi(player1, loadSavedRounds(), 'effective'), priorHiFor(last20, 'effective'));
   el.textContent = whs ? fmt1(whs.value) : '—';
+  let established = false;
   const labelEl = document.getElementById('computedHcpLabel');
   if (labelEl) {
     let label = 'Verwachte hcp';
     if (whs && whs.usedIds && whs.usedIds.size) {
-      const allFixed = last20
+      established = last20
         .filter(r => whs.usedIds.has(r.id))
         .every(r => r.sdFinal != null && r.sdFinal !== '' && isFinite(parseFloat(r.sdFinal)));
-      if (allFixed) label = 'Nieuwe hcp';
+      if (established) label = 'Nieuwe hcp';
     }
     labelEl.textContent = label;
+  }
+  // Afwijkingsmelding: zodra je zelf iets anders hebt ingevuld dan wat de app berekent —
+  // ongeacht of dat een vastgestelde ('Nieuwe hcp') of nog voorlopige ('Verwachte hcp')
+  // inschatting is. Grijs en niet-alarmerend, want een bewuste afwijking kan best de
+  // bedoeling zijn (bv. een ervaren speler die net begint met de app).
+  const overrideRow = document.getElementById('hcpOverrideRow');
+  const noteEl = document.getElementById('hcpOverrideNote');
+  if (overrideRow) {
+    const hcpInput = document.getElementById('iHcp');
+    const typed = hcpInput ? parseFloat(hcpInput.value) : NaN;
+    const deviates = whs && isFinite(typed) && fmt1(typed) !== fmt1(whs.value);
+    if (noteEl) noteEl.textContent = `Hcp wijkt af van ${established ? 'nieuwe' : 'verwachte'} handicap`;
+    overrideRow.classList.toggle('hidden', !deviates);
+  }
+}
+
+// Undo: zet het Hcp-veld terug op de berekende/vastgestelde waarde.
+function resetHcpToComputed() {
+  const el = document.getElementById('computedHcpVal');
+  const input = document.getElementById('iHcp');
+  if (!el || !input) return;
+  if (el.textContent && el.textContent !== '—') {
+    input.value = el.textContent;
+    savePlayerProfile();
   }
 }
 
@@ -7415,7 +7449,7 @@ function refreshLowHiWarning(previewVal) {
   const currStale = curr != null && isFinite(curr) && curr < v;
   if (currStale) {
     warnEl.style.color = 'var(--orange)';
-    warnEl.innerHTML = `${triangle} Je huidige handicap ligt lager (${fmt1(curr)}) — controleer je low handicap.`;
+    warnEl.innerHTML = `${triangle} Je huidige handicap ligt lager (${fmt1(curr)}) — controleer je laagste handicap.`;
     warnEl.classList.remove('hidden');
     return;
   }
@@ -7437,7 +7471,7 @@ function refreshLowHiWarning(previewVal) {
   const stale = d != null && isFinite(d) && d < v;
   warnEl.style.color = 'var(--orange)';
   if (stale) {
-    warnEl.innerHTML = `${triangle} Uit je rondes blijkt een lagere waarde (${fmt1(d)}) — controleer je low handicap.`;
+    warnEl.innerHTML = `${triangle} Uit je rondes blijkt een lagere waarde (${fmt1(d)}) — controleer je laagste handicap.`;
     warnEl.classList.remove('hidden');
   } else {
     warnEl.classList.add('hidden');
