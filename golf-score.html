@@ -792,6 +792,19 @@
     </div>
   </div>
 
+  <div style="font-size:20px;font-weight:800;color:var(--gold);text-transform:uppercase;letter-spacing:.7px;padding:16px 0 8px;margin-bottom:4px;display:flex;align-items:center;gap:8px">Handicap <span style="text-transform:none;font-weight:400">(<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:-3px"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg>)</span></div>
+  <div class="card">
+    <div style="margin-bottom:8px">
+      <div style="font-size:20px;font-weight:700;color:var(--white)">Laagste handicap (365 dagen)</div>
+      <div style="font-size:17px;color:var(--muted)">Het World Handicap System begrenst hoe snel je handicap mag stijgen ten opzichte van je laagste index van de afgelopen 365 dagen. Vul die hier in voor een exacte berekening. Laat je het leeg, dan leidt de app de waarde af uit je opgeslagen rondes (kan afwijken als je historie onvolledig is).</div>
+    </div>
+    <div class="fg" style="margin-bottom:0">
+      <input id="lowHiInput" type="text" inputmode="decimal" placeholder="bijv. 12.4" oninput="previewLowHi(this)" onblur="saveLowHi(this)">
+      <div id="derivedLowHiRow" style="font-size:17px;color:var(--muted);margin-top:6px">Uit historie afgeleid: <span id="derivedLowHiVal" style="color:var(--green-light);font-weight:700">—</span></div>
+      <div id="lowHiStaleWarning" class="hidden" style="font-size:17px;color:var(--orange);font-weight:700;margin-top:6px"></div>
+    </div>
+  </div>
+
   <div style="font-size:20px;font-weight:800;color:var(--gold);text-transform:uppercase;letter-spacing:.7px;padding:16px 0 8px;margin-bottom:4px;display:flex;align-items:center;gap:8px">Clubs <span style="text-transform:none;font-weight:400">(<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:-3px"><path d="M5 3v18"/><path d="M5 4h11l-2 4 2 4H5"/></svg>)</span></div>
   <div class="card">
     <div style="display:flex;align-items:center;justify-content:space-between;gap:12px">
@@ -847,19 +860,6 @@
         <div style="font-size:17px;color:var(--muted)">Een klik op "groepeer op speler" in het archief zet de hoofdspeler altijd bovenaan met de laatste 20 qualifying rondes uitgeklapt. Lang indrukken van "groepeer op speler" (<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:-2px"><path d="M3 7v12a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V9a2 2 0 0 0-2-2h-7l-2-2H5a2 2 0 0 0-2 2Z"/></svg> <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:-1px"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg> <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:-2px"><circle cx="9" cy="7" r="4"/><path d="M3 21v-2a4 4 0 0 1 4-4h4a4 4 0 0 1 4 4v2"/><circle cx="19" cy="7" r="2"/><path d="M23 21v-1a3 3 0 0 0-3-3h-1"/></svg>) klapt juist alles weer in</div>
       </div>
       <label class="switch"><input type="checkbox" id="quickLast20Toggle" onchange="toggleQuickLast20()"><span class="slider"></span></label>
-    </div>
-  </div>
-
-  <div style="font-size:20px;font-weight:800;color:var(--gold);text-transform:uppercase;letter-spacing:.7px;padding:16px 0 8px;margin-bottom:4px;display:flex;align-items:center;gap:8px">Handicap <span style="text-transform:none;font-weight:400">(<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:-3px"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg>)</span></div>
-  <div class="card">
-    <div style="margin-bottom:8px">
-      <div style="font-size:20px;font-weight:700;color:var(--white)">Laagste handicap (365 dagen)</div>
-      <div style="font-size:17px;color:var(--muted)">Het World Handicap System begrenst hoe snel je handicap mag stijgen ten opzichte van je laagste index van de afgelopen 365 dagen. Vul die hier in voor een exacte berekening. Laat je het leeg, dan leidt de app de waarde af uit je opgeslagen rondes (kan afwijken als je historie onvolledig is).</div>
-    </div>
-    <div class="fg" style="margin-bottom:0">
-      <input id="lowHiInput" type="text" inputmode="decimal" placeholder="bijv. 12.4" oninput="previewLowHi(this)" onblur="saveLowHi(this)">
-      <div id="derivedLowHiRow" style="font-size:17px;color:var(--muted);margin-top:6px">Uit historie afgeleid: <span id="derivedLowHiVal" style="color:var(--green-light);font-weight:700">—</span></div>
-      <div id="lowHiStaleWarning" class="hidden" style="font-size:17px;color:var(--orange);font-weight:700;margin-top:6px"></div>
     </div>
   </div>
 
@@ -1186,6 +1186,16 @@ function lowHiCheckStatus(player, allRounds) {
     if (dates.length) daysSinceFirst = Math.floor((Date.now() - Math.min(...dates)) / (24 * 60 * 60 * 1000));
   }
   return { established: roundsCount >= 20 && daysSinceFirst >= 365, roundsCount, daysSinceFirst };
+}
+
+// Huidige officiële handicap (met ESR/caps, dezelfde berekening als de Hcp-KPI op
+// Statistieken) voor gebruik op plekken die niet al een eigen whs-berekening hebben,
+// zoals Instellingen.
+function currentOfficialHcp(player, allRounds) {
+  if (!player) return null;
+  const last20 = last20Qualifying(player, allRounds, null, null);
+  const whs = whsHandicap(last20, 'effective', effectiveLowHi(player, allRounds, 'effective'), priorHiFor(last20, 'effective'));
+  return whs ? whs.value : null;
 }
 
 function derivedLowHi(player, allRounds, mode) {
@@ -3181,15 +3191,19 @@ function renderPlayerStats() {
     && last20.some(r => whs.usedIds.has(r.id) && !(r.sdFinal != null && r.sdFinal !== '' && isFinite(parseFloat(r.sdFinal)))))
     ? ' <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="var(--orange)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:middle"><path d="M10.29 3.86 1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>'
     : '';
-  // Laagste hcp: als er een handmatige waarde is ingesteld die inmiddels hoger is dan wat uit
-  // de rondes zelf blijkt, is die mogelijk verouderd — zelfde oranje driehoekje als elders.
-  // Los daarvan (dus ook mét handmatige waarde) tonen we een korte, gouden melding zodra de
-  // uit de rondes afgeleide laagste handicap lager is dan de vorige keer dat die werd gezien —
-  // dat is altijd het vermelden waard, ongeacht of je een handmatige waarde hebt ingevuld.
+  // Laagste hcp: twee onafhankelijke redenen waarom de handmatige waarde niet meer klopt.
+  // (1) Je HUIDIGE officiële handicap (hetzelfde getal als de Hcp-KPI) is al lager dan de
+  //     handmatige waarde — dat is een hard feit, dus deze check geldt altijd, ook zonder
+  //     opgebouwde historie.
+  // (2) De over je hele geschiedenis afgeleide laagste index (kan van een eerder, inmiddels
+  //     alweer voorbije dieptepunt zijn) is lager — deze blijft wél achter de opbouwdrempel,
+  //     want die berekening is met weinig data minder betrouwbaar.
   const loManual = getManualLowHi();
   const loDerived = derivedLowHi(player, all, 'effective');
-  const loStale = loManual != null && loDerived != null && isFinite(loDerived) && loDerived < loManual
-    && lowHiCheckStatus(player, all).established;
+  const loEstablished = lowHiCheckStatus(player, all).established;
+  const loStaleFromHistory = loManual != null && loDerived != null && isFinite(loDerived) && loDerived < loManual && loEstablished;
+  const loStaleFromCurrent = loManual != null && whs && whs.value != null && isFinite(whs.value) && whs.value < loManual;
+  const loStale = loStaleFromHistory || loStaleFromCurrent;
   const loTriangle = loStale
     ? ' <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="var(--orange)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:middle"><path d="M10.29 3.86 1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>'
     : '';
@@ -7235,7 +7249,7 @@ function toggleBadWeather() {
 }
 
 function quickLast20Enabled() {
-  return storage.getItem('golf_quick_last20') === 'on';
+  return storage.getItem('golf_quick_last20') !== 'off'; // afwezig = aan
 }
 function updateQuickLast20Toggle() {
   const cb = document.getElementById('quickLast20Toggle');
@@ -7248,7 +7262,7 @@ function toggleQuickLast20() {
 }
 
 function quickPlannedEnabled() {
-  return storage.getItem('golf_quick_planned') === 'on';
+  return storage.getItem('golf_quick_planned') !== 'off'; // afwezig = aan
 }
 function updateQuickPlannedToggle() {
   const cb = document.getElementById('quickPlannedToggle');
@@ -7325,7 +7339,7 @@ function collapseAllClubCategories() {
 }
 
 function quickClubCategoryEnabled() {
-  return storage.getItem('golf_quick_club_category') === 'on';
+  return storage.getItem('golf_quick_club_category') !== 'off'; // afwezig = aan
 }
 function updateQuickClubCategoryToggle() {
   const cb = document.getElementById('quickClubCategoryToggle');
@@ -7338,7 +7352,7 @@ function toggleQuickClubCategory() {
 }
 
 function quickClubEnabled() {
-  return storage.getItem('golf_quick_club') === 'on';
+  return storage.getItem('golf_quick_club') !== 'off'; // afwezig = aan
 }
 function updateQuickClubToggle() {
   const cb = document.getElementById('quickClubToggle');
@@ -7392,10 +7406,24 @@ function refreshLowHiWarning(previewVal) {
   const warnEl = document.getElementById('lowHiStaleWarning');
   if (!warnEl) return;
   if (v == null || !isFinite(v)) { warnEl.classList.add('hidden'); return; }
+
+  const triangle = '<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="var(--orange)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:-2px"><path d="M10.29 3.86 1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>';
+
+  // Check 1: HUIDIGE officiële handicap (hard feit, geldt altijd, ook zonder opgebouwde
+  // historie — precies zoals bij het vaststellen van een ronde direct zichtbaar zou moeten zijn).
+  const curr = player ? currentOfficialHcp(player, rounds) : null;
+  const currStale = curr != null && isFinite(curr) && curr < v;
+  if (currStale) {
+    warnEl.style.color = 'var(--orange)';
+    warnEl.innerHTML = `${triangle} Je huidige handicap ligt lager (${fmt1(curr)}) — controleer je low handicap.`;
+    warnEl.classList.remove('hidden');
+    return;
+  }
+
+  // Check 2: over de hele geschiedenis afgeleide laagste index — dit ís een statistische
+  // inschatting, dus alleen tonen met genoeg opgebouwde eigen historie (zie lowHiCheckStatus).
   const status = player ? lowHiCheckStatus(player, rounds) : { established: false, roundsCount: 0, daysSinceFirst: 0 };
   if (!status.established) {
-    // Nog niet genoeg eigen historie om de vergelijking te mogen maken: neutrale, informatieve
-    // opbouw-melding in plaats van een waarschuwing (zie lowHiCheckStatus).
     const parts = [];
     const roundsLeft = Math.max(0, 20 - status.roundsCount);
     const daysLeft = Math.max(0, 365 - status.daysSinceFirst);
@@ -7409,7 +7437,6 @@ function refreshLowHiWarning(previewVal) {
   const stale = d != null && isFinite(d) && d < v;
   warnEl.style.color = 'var(--orange)';
   if (stale) {
-    const triangle = '<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="var(--orange)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:-2px"><path d="M10.29 3.86 1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>';
     warnEl.innerHTML = `${triangle} Uit je rondes blijkt een lagere waarde (${fmt1(d)}) — controleer je low handicap.`;
     warnEl.classList.remove('hidden');
   } else {
