@@ -7661,6 +7661,7 @@ document.addEventListener('focusin', (e) => {
   else                                                     selectGender('Heren');
 
   rebuildStartScreen();
+  updateLowHiInput(); // laat de low-hcp-meldingen in Instellingen al bij opstarten kloppen
   restorePlayer2Visibility();
   updateHeaderClubName();
   loadSaved();
