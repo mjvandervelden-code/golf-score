@@ -354,6 +354,13 @@
     .score-val { display: inline-block; width: calc(1ch + 24px); text-align: center; font-size:24px; font-weight: 800; color: var(--white); -webkit-touch-callout: none; -webkit-user-select: none; user-select: none; touch-action: manipulation; justify-self: center; padding: 4px 12px 2px; border-radius: 8px; }
     .score-val.wide-score { width: calc(2ch + 24px); }
     .score-val.tap-armed { color: var(--gold); }
+    /* Traditionele scorekaart-symbolen (instelling 'Scorekaart-symbolen' bij Weergave).
+       Cirkel = onder par, vierkant = boven par; dubbele rand = eagle/dubbel bogey of erger.
+       Puur decoratief (border/box-shadow) — beïnvloedt de vaste boxbreedte niet. */
+    .score-val.sym-birdie { border: 2px solid currentColor; border-radius: 50%; }
+    .score-val.sym-eagle  { border: 2px solid currentColor; border-radius: 50%; box-shadow: 0 0 0 2px var(--green-deep), 0 0 0 4px currentColor; }
+    .score-val.sym-bogey  { border: 2px solid currentColor; border-radius: 3px; }
+    .score-val.sym-double { border: 2px solid currentColor; border-radius: 3px; box-shadow: 0 0 0 2px var(--green-deep), 0 0 0 4px currentColor; }
     /* Legenda/telling onder grafiek. Terugdraaien: zet var(--res-*) terug. Par blijft grijs. */
     .c-eagle  { color: var(--dist-eagle); }
     .c-birdie { color: var(--dist-birdie); }
@@ -683,7 +690,7 @@
 
 <!-- ARCHIEF -->
 <div id="screen-archive" class="screen">
-  <div id="backupReminder" class="hidden orange-msg" style="font-size:20px;font-weight:700;color:var(--orange);margin-bottom:10px"></div>
+  <div id="backupReminder" class="hidden orange-msg" style="display:flex;align-items:center;justify-content:space-between;gap:10px;font-size:20px;font-weight:700;color:var(--orange);margin-bottom:10px"></div>
   <div id="exportRoundsMsg" class="hidden orange-msg" style="font-size:20px;font-weight:700;color:var(--orange);text-align:right;margin-bottom:4px">Tik nogmaals om te bevestigen</div>
   <div id="exportRoundsSuccess" class="hidden" style="font-size:20px;font-weight:700;color:var(--green-light);text-align:right;margin-bottom:4px"></div>
   <div style="display:flex;gap:8px;align-items:center;margin-bottom:8px;justify-content:flex-end">
@@ -760,6 +767,15 @@
       <label class="switch"><input type="checkbox" id="themeToggle" onchange="toggleTheme()"><span class="slider"></span></label>
     </div>
   </div>
+  <div class="card">
+    <div style="display:flex;align-items:center;justify-content:space-between;gap:12px">
+      <div>
+        <div style="font-size:20px;font-weight:700;color:var(--white)">Scorekaart-symbolen</div>
+        <div style="font-size:17px;color:var(--muted)">Traditionele rondjes/vierkantjes om het cijfer op het Score-tabblad (birdie/eagle = rond, bogey/dubbel = vierkant)</div>
+      </div>
+      <label class="switch"><input type="checkbox" id="scorecardSymbolsToggle" onchange="toggleScorecardSymbols()"><span class="slider"></span></label>
+    </div>
+  </div>
 
   <div style="font-size:20px;font-weight:800;color:var(--gold);text-transform:uppercase;letter-spacing:.7px;padding:16px 0 8px;margin-bottom:4px;display:flex;align-items:center;gap:8px">Tijdens de ronde <span style="text-transform:none;font-weight:400">(<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:-3px"><path d="M12 20h9"/><path d="M16.5 3.5a2.12 2.12 0 0 1 3 3L7 19l-4 1 1-4Z"/></svg>)</span></div>
   <div class="card">
@@ -767,6 +783,8 @@
       <div>
         <div style="font-size:20px;font-weight:700;color:var(--white)">Voortgangsindicator</div>
         <div style="font-size:17px;color:var(--muted)">Toon tijdens de ronde of je voor of achter op schema ligt</div>
+        <div class="more-toggle" onclick="toggleMoreInfo(this)">Meer uitleg<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="9 6 15 12 9 18"/></svg></div>
+        <div class="more-full">Vergelijkt je behaalde Stableford-punten tot nu toe met het evenredige deel van de WHS-norm (36 punten bij 18 holes, 19 bij 9 holes). Heb je bijvoorbeeld de helft van de holes gespeeld en al de helft van de norm behaald, dan sta je "op schema". Zegt dus iets over je tempo t.o.v. die norm — niet over je uiteindelijke handicap of eindscore.</div>
       </div>
       <label class="switch"><input type="checkbox" id="progressToggle" onchange="toggleProgressIndicator()"><span class="slider"></span></label>
     </div>
@@ -828,17 +846,6 @@
       <label class="switch"><input type="checkbox" id="clubActionsAlwaysVisibleToggle" onchange="toggleClubActionsAlwaysVisible()"><span class="slider"></span></label>
     </div>
   </div>
-  <div class="card">
-    <div style="display:flex;align-items:center;justify-content:space-between;gap:12px">
-      <div>
-        <div style="font-size:20px;font-weight:700;color:var(--white)">Alles inklappen bij categorie-groepering (Clubs)</div>
-        <div style="font-size:17px;color:var(--muted)">Klik = geselecteerde categorie uitklappen. Long press = alles inklappen.</div>
-        <div class="more-toggle" onclick="toggleMoreInfo(this)">Meer uitleg<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="9 6 15 12 9 18"/></svg></div>
-        <div class="more-full">Een klik op "groepeer op categorie" bij Clubs klapt "Geselecteerd" altijd uit, "Favorieten" en "Overig" blijven dicht. Lang indrukken van "groepeer op categorie" bij Clubs (<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:-2px"><path d="M3 7v12a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V9a2 2 0 0 0-2-2h-7l-2-2H5a2 2 0 0 0-2 2Z"/></svg> <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:-1px"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg> <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:-2px"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/></svg>) klapt juist alles weer in</div>
-      </div>
-      <label class="switch"><input type="checkbox" id="quickClubCategoryToggle" onchange="toggleQuickClubCategory()"><span class="slider"></span></label>
-    </div>
-  </div>
 
   <div style="font-size:20px;font-weight:800;color:var(--gold);text-transform:uppercase;letter-spacing:.7px;padding:16px 0 8px;margin-bottom:4px;display:flex;align-items:center;gap:8px">Archief <span style="text-transform:none;font-weight:400">(<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:-3px"><path d="M3 7v12a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V9a2 2 0 0 0-2-2h-7l-2-2H5a2 2 0 0 0-2 2Z"/></svg>)</span></div>
   <div class="card">
@@ -855,34 +862,17 @@
   <div class="card">
     <div style="display:flex;align-items:center;justify-content:space-between;gap:12px">
       <div>
-        <div style="font-size:20px;font-weight:700;color:var(--white)">Alles inklappen bij club-groepering</div>
-        <div style="font-size:17px;color:var(--muted)">Klik = geselecteerde club bovenaan uitklappen. Long press = alles inklappen.</div>
+        <div style="font-size:20px;font-weight:700;color:var(--white)">Lang indrukken bij groeperen</div>
+        <div style="font-size:17px;color:var(--muted)">Lang indrukken op een groepeerknop (club, speler, categorie) klapt alles in. Geldt voor alle groepeerknoppen, in archief én bij Clubs.</div>
         <div class="more-toggle" onclick="toggleMoreInfo(this)">Meer uitleg<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="9 6 15 12 9 18"/></svg></div>
-        <div class="more-full">Een klik op "groepeer op club" in het archief zet de geselecteerde club altijd bovenaan en uitgeklapt. Lang indrukken van "groepeer op club" (<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:-2px"><path d="M3 7v12a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V9a2 2 0 0 0-2-2h-7l-2-2H5a2 2 0 0 0-2 2Z"/></svg> <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:-1px"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg> <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:-2px"><path d="M3 12h18"/><path d="M3 6l9-3 9 3"/><path d="M3 18l9 3 9-3"/></svg>) klapt juist alles weer in</div>
+        <div class="more-full">Bij alle groepeerknoppen geldt hetzelfde patroon: een klik klapt het meest relevante uit, lang indrukken klapt juist alles weer in:<br>
+          &bull; Groepeer op club (archief): klik = geselecteerde club bovenaan uitklappen<br>
+          &bull; Groepeer op speler (archief): klik = hoofdspeler + laatste 20 qualifying uitklappen<br>
+          &bull; Groepeer op categorie (archief): klik = Actief + Gepland uitklappen<br>
+          &bull; Groepeer op categorie (Clubs): klik = geselecteerde categorie uitklappen<br>
+          Zet je deze instelling uit, dan werkt bij geen van de vier knoppen het lang-indrukken-gebaar meer; het klik-gedrag hierboven blijft wel altijd actief.</div>
       </div>
-      <label class="switch"><input type="checkbox" id="quickClubToggle" onchange="toggleQuickClub()"><span class="slider"></span></label>
-    </div>
-  </div>
-  <div class="card">
-    <div style="display:flex;align-items:center;justify-content:space-between;gap:12px">
-      <div>
-        <div style="font-size:20px;font-weight:700;color:var(--white)">Alles inklappen bij categorie-groepering</div>
-        <div style="font-size:17px;color:var(--muted)">Klik = Actief + Gepland uitklappen. Long press = alles inklappen.</div>
-        <div class="more-toggle" onclick="toggleMoreInfo(this)">Meer uitleg<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="9 6 15 12 9 18"/></svg></div>
-        <div class="more-full">Een klik op "groepeer op categorie" in het archief klapt "Actief" en "Gepland" altijd uit, de rest blijft dicht. Lang indrukken van "groepeer op categorie" (<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:-2px"><path d="M3 7v12a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V9a2 2 0 0 0-2-2h-7l-2-2H5a2 2 0 0 0-2 2Z"/></svg> <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:-1px"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg> <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:-2px"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/></svg>) klapt juist alles weer in</div>
-      </div>
-      <label class="switch"><input type="checkbox" id="quickPlannedToggle" onchange="toggleQuickPlanned()"><span class="slider"></span></label>
-    </div>
-  </div>
-  <div class="card">
-    <div style="display:flex;align-items:center;justify-content:space-between;gap:12px">
-      <div>
-        <div style="font-size:20px;font-weight:700;color:var(--white)">Alles inklappen bij speler-groepering</div>
-        <div style="font-size:17px;color:var(--muted)">Klik = hoofdspeler + laatste 20 uitklappen. Long press = alles inklappen.</div>
-        <div class="more-toggle" onclick="toggleMoreInfo(this)">Meer uitleg<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="9 6 15 12 9 18"/></svg></div>
-        <div class="more-full">Een klik op "groepeer op speler" in het archief zet de hoofdspeler altijd bovenaan met de laatste 20 qualifying rondes uitgeklapt. Lang indrukken van "groepeer op speler" (<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:-2px"><path d="M3 7v12a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V9a2 2 0 0 0-2-2h-7l-2-2H5a2 2 0 0 0-2 2Z"/></svg> <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:-1px"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg> <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:-2px"><circle cx="9" cy="7" r="4"/><path d="M3 21v-2a4 4 0 0 1 4-4h4a4 4 0 0 1 4 4v2"/><circle cx="19" cy="7" r="2"/><path d="M23 21v-1a3 3 0 0 0-3-3h-1"/></svg>) klapt juist alles weer in</div>
-      </div>
-      <label class="switch"><input type="checkbox" id="quickLast20Toggle" onchange="toggleQuickLast20()"><span class="slider"></span></label>
+      <label class="switch"><input type="checkbox" id="quickGroupingToggle" onchange="toggleQuickGrouping()"><span class="slider"></span></label>
     </div>
   </div>
 
@@ -1206,7 +1196,10 @@ function lowHiCheckStatus(player, allRounds) {
     const dates = qual
       .map(r => new Date(`${r.date || '1970-01-01'}T${r.time || '00:00'}`).getTime())
       .filter(t => isFinite(t));
-    if (dates.length) daysSinceFirst = Math.floor((Date.now() - Math.min(...dates)) / (24 * 60 * 60 * 1000));
+    // Math.round i.p.v. Math.floor: bij een zomer/wintertijd-overgang is een
+    // 'kalenderdag' soms 23 of 25 uur i.p.v. 24 — afronden vangt dat verschil
+    // op, afkappen (floor) zou de teller op de overgangsdag met 1 laten missen.
+    if (dates.length) daysSinceFirst = Math.round((Date.now() - Math.min(...dates)) / (24 * 60 * 60 * 1000));
   }
   return { established: roundsCount >= 20 && daysSinceFirst >= 365, roundsCount, daysSinceFirst };
 }
@@ -2976,7 +2969,16 @@ function renderScoreTable() {
       else               { cls='c-worse';  lbl = '+' + d; }
     }
     const armed = scoreTapHole === i;
-    const scoreVal = `<div class="sum-tr-btn-cell score-cell"><span class="score-val${armed ? ' tap-armed' : ''}${anyDoubleDigit ? ' wide-score' : ''}" style="font-size:24px;font-weight:900"${i === currentHole
+    // Traditionele scorekaart-symbolen (instelling): cirkel/vierkant om het cijfer,
+    // enkel of dubbel — bovenop het bestaande rechter kleurstreepje, niet i.p.v.
+    let symCls = '';
+    if (scorecardSymbolsEnabled()) {
+      if      (d <= -2)  symCls = ' sym-eagle';
+      else if (d === -1) symCls = ' sym-birdie';
+      else if (d === 1)  symCls = ' sym-bogey';
+      else if (d >= 2)   symCls = ' sym-double';
+    }
+    const scoreVal = `<div class="sum-tr-btn-cell score-cell"><span class="score-val${armed ? ' tap-armed' : ''}${anyDoubleDigit ? ' wide-score' : ''}${symCls}" style="font-size:24px;font-weight:900"${i === currentHole
         ? ` onpointerdown="decreaseScore(${i})" onpointerup="increaseScore(${i})" onpointerleave="cancelScore()" onpointercancel="cancelScore()" oncontextmenu="return false" onclick="event.stopPropagation()"`
         : ` onclick="event.stopPropagation(); selectScoreRow(${i})"`}>${s == null ? '—' : s}</span></div>`;
     const showBtns = i === currentHole && scoreButtonsRow === i;
@@ -4582,6 +4584,15 @@ function loadSaved() {
   const searchInput = document.getElementById('archiveSearch');
   const query = (searchInput?.value || '').trim().toLowerCase();
 
+  // Lazy render van de platte lijst (geen groepering): begin bij een nieuwe
+  // zoekopdracht altijd weer met de standaardlimiet, niet met een eerder
+  // opgehoogde limiet van een vorige, andere zoekopdracht.
+  const FLAT_LIST_PAGE_SIZE = 50;
+  if (window._flatListLastQuery !== query) {
+    window._flatListLimit = FLAT_LIST_PAGE_SIZE;
+    window._flatListLastQuery = query;
+  }
+
   // WHS-set: alleen voor de speler bovenin Start (nooit speler 2 of andere spelers)
   window._whsUsedIds = new Set();
   {
@@ -4915,7 +4926,17 @@ function loadSaved() {
     // Platte lijst: actief bovenaan zonder header, rest op datum nieuw→oud (incl. gepland)
     if (actives.length) html += sortedActives.map(r => makeCard(r)).join('');
     const rest = [...planned, ...imported, ...inProgress, ...finished].sort(sortDesc);
-    html += rest.map(r => makeCard(r)).join('');
+    // Lazy render: bij veel rondes niet in één keer alles opbouwen — alleen de
+    // eerste FLAT_LIST_PAGE_SIZE, met een knop om de rest desgewenst te laden.
+    const limit = window._flatListLimit || FLAT_LIST_PAGE_SIZE;
+    const shown = rest.slice(0, limit);
+    html += shown.map(r => makeCard(r)).join('');
+    const remaining = rest.length - shown.length;
+    if (remaining > 0) {
+      html += `<div style="text-align:center;padding:16px 0">`
+        + `<button class="btn-secondary" style="padding:10px 20px" onclick="window._flatListLimit=(window._flatListLimit||${FLAT_LIST_PAGE_SIZE})+${FLAT_LIST_PAGE_SIZE};loadSaved();">Toon meer (${remaining} resterend)</button>`
+        + `</div>`;
+    }
   }
   el.innerHTML = html;
 }
@@ -6565,9 +6586,9 @@ function doResetAll() {
    'golf_fav_player2_hcp','golf_default_player2_name','golf_default_player2_hcp',
    'golf_setup_date_day','golf_setup_date','golf_setup_time',
    'golf_last_backup_date','golf_last_backup_count','golf_progress_indicator','golf_bad_weather',
-   'golf_quick_last20','golf_quick_planned','golf_quick_club','golf_quick_club_category',
+   'golf_quick_grouping',
    'golf_actions_always_visible','golf_club_actions_always_visible',
-   'golf_low_hi','golf_backup_reminder_shown','golf_theme']
+   'golf_low_hi','golf_backup_reminder_shown','golf_theme','golf_scorecard_symbols']
     .forEach(k => storage.removeItem(k));
   // Dynamische per-speler sleutels (bv. golf_seen_low_hi_<speler>, voor de gouden
   // 'nieuwe laagste handicap'-melding) staan niet in bovenstaande vaste lijst en
@@ -6852,7 +6873,7 @@ function updateBackupReminder() {
   }
 
   if (show) {
-    el.textContent = 'Exporteer je rondes';
+    el.innerHTML = `<span>Exporteer je rondes</span><button class="btn-secondary" style="padding:6px 14px;font-size:15px;color:var(--orange);border-color:var(--orange);flex-shrink:0" onclick="exportAllRounds()">Nu exporteren</button>`;
     el.classList.remove('hidden');
     storage.setItem('golf_backup_reminder_shown', todayISO());
   } else {
@@ -7195,12 +7216,10 @@ function nav(id) {
   }
   if (id === 'settings') {
     updateThemeIcon();
+    updateScorecardSymbolsToggle();
     updateProgressToggleBtn();
     updateBadWeatherToggle();
-    updateQuickLast20Toggle();
-    updateQuickPlannedToggle();
-    updateQuickClubToggle();
-    updateQuickClubCategoryToggle();
+    updateQuickGroupingToggle();
     updateActionsAlwaysVisibleToggle();
     updateClubActionsAlwaysVisibleToggle();
     updateLowHiInput();
@@ -7275,6 +7294,21 @@ function toggleTheme() {
   storage.setItem('golf_theme', dark ? 'dark' : 'light');
 }
 
+// Scorekaart-symbolen (cirkel/vierkant om het cijfer op het Score-tabblad): standaard aan.
+function scorecardSymbolsEnabled() {
+  return storage.getItem('golf_scorecard_symbols') !== 'off'; // afwezig = aan
+}
+function updateScorecardSymbolsToggle() {
+  const cb = document.getElementById('scorecardSymbolsToggle');
+  if (cb) cb.checked = scorecardSymbolsEnabled();
+}
+function toggleScorecardSymbols() {
+  const cb = document.getElementById('scorecardSymbolsToggle');
+  const on = cb ? cb.checked : !scorecardSymbolsEnabled();
+  storage.setItem('golf_scorecard_symbols', on ? 'on' : 'off');
+  renderScore();
+}
+
 // Voortgangsindicator aan/uit (standaard uit)
 function progressIndicatorEnabled() {
   return storage.getItem('golf_progress_indicator') === 'on';
@@ -7310,30 +7344,20 @@ function toggleBadWeather() {
   applyBadWeather();
 }
 
-function quickLast20Enabled() {
-  return storage.getItem('golf_quick_last20') !== 'off'; // afwezig = aan
+// Long-press-gebaar bij groeperen (club, speler, categorie-archief, categorie-clubs):
+// standaard aan, één instelling voor alle vier — ze deelden toch precies hetzelfde
+// aan/uit-gedrag, dus geen aparte schakelaar per knop nodig.
+function quickGroupingEnabled() {
+  return storage.getItem('golf_quick_grouping') !== 'off'; // afwezig = aan
 }
-function updateQuickLast20Toggle() {
-  const cb = document.getElementById('quickLast20Toggle');
-  if (cb) cb.checked = quickLast20Enabled();
+function updateQuickGroupingToggle() {
+  const cb = document.getElementById('quickGroupingToggle');
+  if (cb) cb.checked = quickGroupingEnabled();
 }
-function toggleQuickLast20() {
-  const cb = document.getElementById('quickLast20Toggle');
-  const on = cb ? cb.checked : !quickLast20Enabled();
-  storage.setItem('golf_quick_last20', on ? 'on' : 'off');
-}
-
-function quickPlannedEnabled() {
-  return storage.getItem('golf_quick_planned') !== 'off'; // afwezig = aan
-}
-function updateQuickPlannedToggle() {
-  const cb = document.getElementById('quickPlannedToggle');
-  if (cb) cb.checked = quickPlannedEnabled();
-}
-function toggleQuickPlanned() {
-  const cb = document.getElementById('quickPlannedToggle');
-  const on = cb ? cb.checked : !quickPlannedEnabled();
-  storage.setItem('golf_quick_planned', on ? 'on' : 'off');
+function toggleQuickGrouping() {
+  const cb = document.getElementById('quickGroupingToggle');
+  const on = cb ? cb.checked : !quickGroupingEnabled();
+  storage.setItem('golf_quick_grouping', on ? 'on' : 'off');
 }
 
 // Actieknoppen bij rondes in het archief: standaard altijd zichtbaar. Uitgezet
@@ -7400,37 +7424,11 @@ function collapseAllClubCategories() {
   buildClubList();
 }
 
-function quickClubCategoryEnabled() {
-  return storage.getItem('golf_quick_club_category') !== 'off'; // afwezig = aan
-}
-function updateQuickClubCategoryToggle() {
-  const cb = document.getElementById('quickClubCategoryToggle');
-  if (cb) cb.checked = quickClubCategoryEnabled();
-}
-function toggleQuickClubCategory() {
-  const cb = document.getElementById('quickClubCategoryToggle');
-  const on = cb ? cb.checked : !quickClubCategoryEnabled();
-  storage.setItem('golf_quick_club_category', on ? 'on' : 'off');
-}
-
 // Instellingen: 'Meer uitleg'-uitklapper (korte standaardtekst + volledige uitleg op aanvraag)
 function toggleMoreInfo(el) {
   el.classList.toggle('open');
   const full = el.nextElementSibling;
   if (full) full.classList.toggle('open');
-}
-
-function quickClubEnabled() {
-  return storage.getItem('golf_quick_club') !== 'off'; // afwezig = aan
-}
-function updateQuickClubToggle() {
-  const cb = document.getElementById('quickClubToggle');
-  if (cb) cb.checked = quickClubEnabled();
-}
-function toggleQuickClub() {
-  const cb = document.getElementById('quickClubToggle');
-  const on = cb ? cb.checked : !quickClubEnabled();
-  storage.setItem('golf_quick_club', on ? 'on' : 'off');
 }
 
 // Laagste handicap-index van de afgelopen 365 dagen (WHS soft/hard cap).
@@ -7590,7 +7588,7 @@ document.addEventListener('focusin', (e) => {
     if (!btn) return;
     let timer = null, fired = false;
     const start = () => {
-      if (!quickLast20Enabled()) return;
+      if (!quickGroupingEnabled()) return;
       fired = false;
       timer = setTimeout(() => { fired = true; collapseAllPlayers(); }, 550);
     };
@@ -7609,7 +7607,7 @@ document.addEventListener('focusin', (e) => {
     if (!btn) return;
     let timer = null, fired = false;
     const start = () => {
-      if (!quickPlannedEnabled()) return;
+      if (!quickGroupingEnabled()) return;
       fired = false;
       timer = setTimeout(() => { fired = true; collapseAllCategories(); }, 550);
     };
@@ -7627,7 +7625,7 @@ document.addEventListener('focusin', (e) => {
     if (!btn) return;
     let timer = null, fired = false;
     const start = () => {
-      if (!quickClubCategoryEnabled()) return;
+      if (!quickGroupingEnabled()) return;
       fired = false;
       timer = setTimeout(() => { fired = true; collapseAllClubCategories(); }, 550);
     };
@@ -7645,7 +7643,7 @@ document.addEventListener('focusin', (e) => {
     if (!btn) return;
     let timer = null, fired = false;
     const start = () => {
-      if (!quickClubEnabled()) return;
+      if (!quickGroupingEnabled()) return;
       fired = false;
       timer = setTimeout(() => { fired = true; collapseAllClubs(); }, 550);
     };
