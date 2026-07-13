@@ -481,6 +481,8 @@
 </head>
 <body>
 
+<div id="debugScrollInfo" style="position:fixed;top:2px;right:2px;z-index:9999;background:rgba(0,0,0,.75);color:#0f0;font-size:11px;font-family:monospace;padding:3px 6px;border-radius:4px;pointer-events:none"></div>
+
 <header>
   <div class="hdr-top-row">
     <h1><span id="hdrClubName"></span></h1>
@@ -886,6 +888,23 @@
 // window.scrollTo(0,0)-aanroepen bij navigatie), dus dit automatische browsergedrag is
 // hier niet nodig.
 if ('scrollRestoration' in history) history.scrollRestoration = 'manual';
+
+// TIJDELIJK — diagnose voor het scroll-op-lege-schermen-probleem. Toont keihard de
+// werkelijke pagina-hoogte vs. de viewport-hoogte, i.p.v. dat we dit van screenshots
+// moeten aflezen. Wordt weer verwijderd zodra de oorzaak gevonden is.
+function updateDebugScrollInfo() {
+  const el = document.getElementById('debugScrollInfo');
+  if (!el) return;
+  const sH = document.documentElement.scrollHeight;
+  const vH = window.innerHeight;
+  const cH = document.documentElement.clientHeight;
+  const activeScreen = document.querySelector('.screen.active, .screen[style*="display: block"], .screen[style*="display:block"]');
+  const screenId = activeScreen ? activeScreen.id : '?';
+  el.textContent = `${screenId} | sH:${sH} vH:${vH} cH:${cH} Δ:${sH - vH}`;
+}
+window.addEventListener('load', updateDebugScrollInfo);
+window.addEventListener('resize', updateDebugScrollInfo);
+setInterval(updateDebugScrollInfo, 500);
 
 // ══ EXACTE BAANDATA uit mvgolfcourses.json ══════════════════════════════
 const CLUBS = {};;
@@ -2782,7 +2801,7 @@ function selectHole(i) {
 
 // ══ SUMMARY ══════════════════════════════════════════════════════════════
 function emptyStateHTML() {
-  return '<span class="info-msg" style="font-size:20px;color:var(--info-grey);font-weight:700">—</span>';
+  return '<span class="info-msg" style="font-size:20px;color:var(--info-grey);font-weight:700">Geen scores</span>';
 }
 
 function renderScoreEmpty() {
@@ -3071,7 +3090,7 @@ function renderPlayerStats() {
   const el = document.getElementById('playerStats');
   if (!el) return;
   const player = startPlayerName();
-  if (!player) { el.innerHTML = ''; return; }
+  if (!player) { el.innerHTML = '<span class="info-msg" style="font-size:20px;color:var(--info-grey);font-weight:700">Geen statistieken</span>'; return; }
 
   const all = loadSavedRounds();
   const isDone = r => (r.playedCount ?? r.holes.filter(h => h.score !== null).length) >= (r.holesCount ?? r.holes.length);
