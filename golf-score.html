@@ -355,10 +355,9 @@
     .score-val.tap-armed { color: var(--gold) !important; }
     /* Traditionele scorekaart-symbolen (instelling 'Scorekaart-symbolen' bij Weergave).
        Cirkel = onder par, vierkant = boven par; dubbele rand = eagle/dubbel bogey of slechter.
-       Randkleur via --sym-color (inline gezet bij 'Symbolen in categoriekleur'), met
-       currentColor als terugval — zo blijft de tekstkleur (bv. paars bij de score-swap-
-       instelling) volledig los staan van de randkleur. Puur decoratief, beïnvloedt de
-       vaste boxbreedte niet. */
+       Randkleur via --sym-color (altijd de categoriekleur), met currentColor als terugval
+       voor par (geen symbool, dus geen kleur nodig). Puur decoratief, beïnvloedt de vaste
+       boxbreedte niet. */
     .score-val.sym-birdie { border: 2px solid var(--sym-color, currentColor); border-radius: 50%; }
     .score-val.sym-eagle  { border: 2px solid var(--sym-color, currentColor); border-radius: 50%; box-shadow: 0 0 0 2px var(--green-deep), 0 0 0 4px var(--sym-color, currentColor); }
     .score-val.sym-bogey  { border: 2px solid var(--sym-color, currentColor); border-radius: 3px; }
@@ -2753,6 +2752,7 @@ function updateHeaderScore() {}
 
 function selectHole(i) {
   if (i === currentHole) return;
+  scoreButtonsRow = null; // voorkomt dat een oude 'aangetikte score'-hole later per ongeluk weer knoppen toont
   setCurrentHole(i);
   updateHeaderScore();
 }
@@ -2985,11 +2985,8 @@ function renderScoreTable() {
       else if (d !== null && d >= 3) { symCls = ' sym-double'; symColorVar = 'var(--dist-worse)'; }
     }
     // Randkleur van het symbool in de categoriekleur, via een losse CSS-variabele
-    // (--sym-color) — staat helemaal los van de tekstkleur hieronder, zodat die intussen
-    // bv. paars kan blijven via de score-swap-instelling.
+    // (--sym-color) — staat los van de tekstkleur van het cijfer zelf.
     const symColorStyle = symColorVar ? `--sym-color:${symColorVar};` : '';
-    // Experimentele instelling: score-cijfer paars i.p.v. neutraal (en Stb dan andersom
-    // neutraal i.p.v. paars) — swapt welke van de twee de 'accentkleur' draagt.
     const scoreVal = `<div class="sum-tr-btn-cell score-cell"><span class="score-val${armed ? ' tap-armed' : ''}${anyDoubleDigit ? ' wide-score' : ''}${symCls}" style="font-size:24px;font-weight:900;${symColorStyle}"${i === currentHole
         ? ` onpointerdown="decreaseScore(${i})" onpointerup="increaseScore(${i})" onpointerleave="cancelScore()" onpointercancel="cancelScore()" oncontextmenu="return false" onclick="event.stopPropagation()"`
         : ` onclick="event.stopPropagation(); selectScoreRow(${i})"`}>${s == null ? '—' : s}</span></div>`;
@@ -3878,41 +3875,43 @@ function importRound(input) {
 
       // Array van meerdere rondes (backup)
       if (Array.isArray(parsed) && parsed.length > 1) {
-        const saved = loadSavedRounds();
-
-        // Eerst alles valideren en checken op conflicten, dan pas importeren
+        // Eerst alles valideren, vóór er iets gebeurt
         for (const r of parsed) {
           if (!r.date || !r.player || !Array.isArray(r.holes) || !r.holes.length) {
             return showStatus('Ongeldig bestand — een of meer rondes missen verplichte gegevens', true);
           }
         }
 
-        for (const r of parsed) {
-          const sameSlot = saved.filter(s => (s.date || '') === (r.date || '') && (s.time || '') === (r.time || ''));
-          if (sameSlot.length >= 2) {
-            const formattedDate = formatFullDate(r.date);
-            const formattedTime = r.time ? ` om ${r.time}` : '';
-            showInfoModal('Import gestopt', `Er bestaan al twee rondes op ${formattedDate}${formattedTime} (ronde van ${r.player}). Pas de ronde aan in het backupbestand of verwijder een bestaande ronde, en probeer het opnieuw.`);
-            return;
-          }
-          // Tel deze ronde mee voor volgende conflictchecks binnen dezelfde import
-          saved.push(r);
+        const existingCount = loadSavedRounds().length;
+        const n = parsed.length;
+
+        // Archief nu al leeg: toevoegen en vervangen zijn functioneel identiek, dus geen
+        // keuzescherm nodig.
+        if (existingCount === 0) {
+          doAdditiveImport(parsed);
+          return;
         }
 
-        // Geen conflicten — daadwerkelijk importeren
-        const savedReal = loadSavedRounds();
-        const coupledPartners = [];
-        parsed.forEach(r => {
-          const sameSlot = savedReal.filter(s => (s.date || '') === (r.date || '') && (s.time || '') === (r.time || ''));
-          if (sameSlot.length === 1) coupledPartners.push(sameSlot[0].player);
-          doImportRound(r, savedReal, true);
-        });
-        loadSaved();
-        showStatus(`${parsed.length} ronde${parsed.length !== 1 ? 's' : ''} geïmporteerd`, false);
-        nav('archive');
-        if (coupledPartners.length) {
-          showInfoModal('Koppeling mogelijk', `${coupledPartners.length} ronde${coupledPartners.length !== 1 ? 's kunnen' : ' kan'} gekoppeld worden aan een bestaande ronde op dezelfde datum en tijd (${coupledPartners.join(', ')}).`);
-        }
+        showConfirmModal(
+          'Meerdere rondes importeren',
+          `Dit bestand bevat ${n} ronde${n !== 1 ? 's' : ''}. Wil je ze toevoegen aan je bestaande archief (${existingCount} ronde${existingCount !== 1 ? 's' : ''}), of je archief volledig vervangen door dit bestand?`,
+          () => doAdditiveImport(parsed),
+          'Volledig herstellen…',
+          () => {
+            showConfirmModal(
+              'Weet je het zeker?',
+              `Je huidige archief (${existingCount} ronde${existingCount !== 1 ? 's' : ''}) wordt volledig vervangen door de ${n} ronde${n !== 1 ? 's' : ''} uit dit bestand. Dit kan niet ongedaan gemaakt worden.`,
+              () => {
+                doFullRestoreImport(parsed);
+                showStatus(`Archief hersteld: ${n} ronde${n !== 1 ? 's' : ''}`, false);
+              },
+              'Annuleren',
+              null,
+              'Ja, vervangen'
+            );
+          },
+          'Toevoegen'
+        );
         return;
       }
 
@@ -3990,11 +3989,14 @@ function importRound(input) {
   reader.readAsText(file);
 }
 
-function doImportRound(r, saved, skipImportFlag = false) {
-  // Nieuw id, berekende velden aanvullen
+// Bouwt een importeerbare ronde-entry (nieuw id + berekende velden) uit ruwe geïmporteerde
+// data. existingIds is een Set die wordt bijgewerkt, zodat opeenvolgende aanroepen (bv. bij
+// een volledig herstel met meerdere rondes) nooit hetzelfde id genereren.
+function buildImportEntry(r, existingIds, skipImportFlag) {
   const played = r.holes.filter(h => h.score !== null);
   let newId = Date.now();
-  while (saved.some(s => s.id === newId)) newId++;
+  while (existingIds.has(newId)) newId++;
+  existingIds.add(newId);
   const entry = {
     ...r,
     id: newId,
@@ -4016,6 +4018,11 @@ function doImportRound(r, saved, skipImportFlag = false) {
   };
   delete entry.sd; // informatief in bestand; altijd opnieuw afgeleid
   if (skipImportFlag) delete entry._justImported;
+  return entry;
+}
+
+function doImportRound(r, saved, skipImportFlag = false) {
+  const entry = buildImportEntry(r, new Set(saved.map(s => s.id)), skipImportFlag);
 
   // Boven aan archief, maar onder de actieve ronde
   const activeId = storage.getItem('golf_active_id');
@@ -4024,6 +4031,47 @@ function doImportRound(r, saved, skipImportFlag = false) {
   saved.splice(insertAt, 0, entry);
   storage.setItem('golf_rounds', JSON.stringify(saved.slice(0, ROUND_STORAGE_LIMIT)));
   loadSaved();
+}
+
+// 'Toevoegen': verwerkt elke ronde apart. Eén probleemronde blokkeert niet meer de hele
+// batch — exacte duplicaten en volle datum/tijd-slots worden overgeslagen en aan het eind
+// in één samenvattende melding gerapporteerd.
+function doAdditiveImport(parsed) {
+  let imported = 0, exactDup = 0, slotFull = 0;
+  const coupledPartners = [];
+  parsed.forEach(r => {
+    const current = loadSavedRounds();
+    const sameSlot = current.filter(s => (s.date || '') === (r.date || '') && (s.time || '') === (r.time || ''));
+    const exactMatch = sameSlot.find(s => s.player === r.player);
+    if (exactMatch) { exactDup++; return; }
+    if (sameSlot.length >= 2) { slotFull++; return; }
+    if (sameSlot.length === 1) coupledPartners.push(sameSlot[0].player);
+    doImportRound(r, current, true);
+    imported++;
+  });
+  nav('archive');
+  const parts = [`${imported} ronde${imported !== 1 ? 's' : ''} geïmporteerd.`];
+  if (exactDup) parts.push(`${exactDup} ronde${exactDup !== 1 ? 's' : ''} overgeslagen: bestond${exactDup !== 1 ? 'en' : ''} al exact (zelfde speler, datum en tijd).`);
+  if (slotFull) parts.push(`${slotFull} ronde${slotFull !== 1 ? 's' : ''} overgeslagen: er stonden al 2 rondes op die datum/tijd — importeer die apart als je alsnog wilt overschrijven.`);
+  if (coupledPartners.length) parts.push(`${coupledPartners.length} ronde${coupledPartners.length !== 1 ? 's kunnen' : ' kan'} gekoppeld worden aan een bestaande ronde op dezelfde datum/tijd (${coupledPartners.join(', ')}).`);
+  showInfoModal('Import voltooid', parts.join(' '));
+}
+
+// 'Volledig herstellen': vervangt het hele archief in één keer door de inhoud van het
+// bestand. Een eventuele actieve ronde hoorde bij de oude data en wordt losgelaten.
+function doFullRestoreImport(parsed) {
+  const existingIds = new Set();
+  const entries = parsed.map(r => buildImportEntry(r, existingIds, true));
+  storage.setItem('golf_rounds', JSON.stringify(entries.slice(0, ROUND_STORAGE_LIMIT)));
+  storage.removeItem('golf_active_id');
+  storage.removeItem('golf_game2_id');
+  game = { started: false, holes: [] };
+  game2Id = null;
+  activePlayer = 1;
+  player2Visible = false;
+  resetHeader();
+  updatePlayerSwitchBar();
+  nav('archive');
 }
 
 function archiveImportedRound(idx, btn) {
