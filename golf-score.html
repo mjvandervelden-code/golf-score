@@ -2389,6 +2389,20 @@ function showInfoModal(title, msg) {
   showConfirmModal(title, msg, null, 'Sluiten');
 }
 
+// Hergebruikt de bestaande, degelijke rode waarschuwingsmodal (voorheen alleen 'Alles
+// wissen') voor elke destructieve bevestiging met dubbele check.
+function showDangerModal(title, msg, confirmText, onConfirm, cancelText = 'Annuleren') {
+  document.getElementById('dangerModalTitle').textContent = title;
+  document.getElementById('dangerModalMessage').textContent = msg;
+  const cancelBtn = document.getElementById('dangerModalCancelBtn');
+  cancelBtn.textContent = cancelText;
+  cancelBtn.onclick = () => document.getElementById('resetAllModal').classList.add('hidden');
+  const confirmBtn = document.getElementById('dangerModalConfirmBtn');
+  confirmBtn.textContent = confirmText;
+  confirmBtn.onclick = () => { document.getElementById('resetAllModal').classList.add('hidden'); onConfirm(); };
+  document.getElementById('resetAllModal').classList.remove('hidden');
+}
+
 // Bouwt het actieve game-object op uit een opgeslagen ronde en zet currentHole correct.
 function gameFromRound(r) {
   game = { ...r, started: true, holes: r.holes.map(h => ({ ...h })) };
@@ -3898,16 +3912,14 @@ function importRound(input) {
           () => doAdditiveImport(parsed),
           'Volledig herstellen…',
           () => {
-            showConfirmModal(
+            showDangerModal(
               'Weet je het zeker?',
               `Je huidige archief (${existingCount} ronde${existingCount !== 1 ? 's' : ''}) wordt volledig vervangen door de ${n} ronde${n !== 1 ? 's' : ''} uit dit bestand. Dit kan niet ongedaan gemaakt worden.`,
+              'Vervangen',
               () => {
                 doFullRestoreImport(parsed);
                 showStatus(`Archief hersteld: ${n} ronde${n !== 1 ? 's' : ''}`, false);
-              },
-              'Annuleren',
-              null,
-              'Ja, vervangen'
+              }
             );
           },
           'Toevoegen'
@@ -6644,7 +6656,12 @@ function confirmResetAll(btn) {
   clearTimeout(btn._confirmTimeout);
   btn.dataset.confirm = '0';
   msg?.classList.add('hidden');
-  document.getElementById('resetAllModal').classList.remove('hidden');
+  showDangerModal(
+    'Alles wissen',
+    'Alle rondes, clubs en instellingen worden definitief verwijderd. Dit kan niet ongedaan worden gemaakt.',
+    'Wissen',
+    doResetAll
+  );
 }
 
 function doResetAll() {
@@ -7860,11 +7877,11 @@ document.addEventListener('focusin', (e) => {
 <!-- Bevestigingsmodal voor alles wissen (rode stijl) -->
 <div id="resetAllModal" class="hidden" style="position:fixed;inset:0;background:rgba(0,0,0,.75);z-index:600;display:flex;align-items:center;justify-content:center;padding:20px">
   <div style="background:var(--green-deep);border:2px solid var(--gold);border-radius:16px;padding:20px;width:100%;max-width:320px">
-    <div class="error-msg" style="font-size:20px;color:var(--red);font-weight:800;text-transform:uppercase;letter-spacing:.7px;margin-bottom:16px;text-align:center">Alles wissen</div>
-    <div style="font-size:20px;color:var(--white);text-align:center;margin-bottom:16px;line-height:1.5">Alle rondes, clubs en instellingen worden definitief verwijderd. Dit kan niet ongedaan worden gemaakt.</div>
+    <div class="error-msg" id="dangerModalTitle" style="font-size:20px;color:var(--red);font-weight:800;text-transform:uppercase;letter-spacing:.7px;margin-bottom:16px;text-align:center">Alles wissen</div>
+    <div id="dangerModalMessage" style="font-size:20px;color:var(--white);text-align:center;margin-bottom:16px;line-height:1.5">Alle rondes, clubs en instellingen worden definitief verwijderd. Dit kan niet ongedaan worden gemaakt.</div>
     <div style="display:flex;gap:8px">
-      <button class="btn-secondary" style="flex:1;padding:12px;font-size:20px" onclick="document.getElementById('resetAllModal').classList.add('hidden')">Annuleren</button>
-      <button class="btn-secondary confirm-armed" style="flex:1;padding:12px;font-size:20px;background:var(--red);border-color:var(--red);color:#fff" onclick="doResetAll()">Wissen</button>
+      <button class="btn-secondary" id="dangerModalCancelBtn" style="flex:1;padding:12px;font-size:20px" onclick="document.getElementById('resetAllModal').classList.add('hidden')">Annuleren</button>
+      <button class="btn-secondary confirm-armed" id="dangerModalConfirmBtn" style="flex:1;padding:12px;font-size:20px;background:var(--red);border-color:var(--red);color:#fff">Wissen</button>
     </div>
   </div>
 </div>
