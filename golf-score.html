@@ -878,6 +878,15 @@
 </div>
 
 <script>
+// Voorkomt dat de browser bij een herlaad (bv. pull-to-refresh) automatisch de oude
+// scrollpositie probeert te herstellen. Dat kan, in combinatie met een adresbalk die op
+// dat moment in- of uitgeklapt is, een viewport opleveren die (tijdelijk) net iets kleiner
+// lijkt dan de daadwerkelijke content — waardoor er even scrollruimte lijkt te zijn die er
+// bij een verse start niet is. De app regelt scrollpositie zelf al bewust (zie de diverse
+// window.scrollTo(0,0)-aanroepen bij navigatie), dus dit automatische browsergedrag is
+// hier niet nodig.
+if ('scrollRestoration' in history) history.scrollRestoration = 'manual';
+
 // ══ EXACTE BAANDATA uit mvgolfcourses.json ══════════════════════════════
 const CLUBS = {};;
 
