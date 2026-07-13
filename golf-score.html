@@ -407,13 +407,6 @@
     .sum-tr { background: rgba(255,255,255,.05); border-radius: var(--radius); border: 1px solid rgba(255,255,255,.08); cursor: pointer; user-select: none; -webkit-user-select: none; position: relative; }
     .sum-tr::after { content:''; position:absolute; right:0; top:0; bottom:0; width:8px; border-radius:0 18px 18px 0; }
     .sum-tr::before { content:''; position:absolute; left:0; top:0; bottom:0; width:8px; border-radius:18px 0 0 18px; background:transparent; }
-    /* Scoreverdeling-kleuren toegepast op scoretabel-balkjes. Terugdraaien: zet var(--res-*) terug. */
-    .sum-tr.res-eagle::after  { background: var(--dist-eagle); }
-    .sum-tr.res-birdie::after { background: var(--dist-birdie); }
-    .sum-tr.res-par::after    { background: var(--res-par); }
-    .sum-tr.res-bogey::after  { background: var(--dist-bogey); }
-    .sum-tr.res-double::after { background: var(--dist-double); }
-    .sum-tr.res-worse::after  { background: var(--dist-worse); }
     .sum-tr:active { background: rgba(255,255,255,.05); }
     .sum-tr:nth-child(even) { background: rgba(255,255,255,.03); }
     .sum-tr.current-row { background: rgba(201,168,76,.14); }
@@ -421,11 +414,9 @@
     .tee-editor-row.tee-row-selected { background: rgba(201,168,76,.18); }
     #editorTees:has(.tee-row-selected) .tee-editor-row:not(.tee-row-selected) { opacity: .35; pointer-events: none; }
     .sum-tr.current-row::before { background: var(--gold); }
-    /* Experimenteel (instelling 'Rechterbalkje: goud i.p.v. categoriekleur'): rechterbalkje
-       toont dan geen categoriekleur meer, maar wordt net als het linkerbalkje goud bij de
-       geselecteerde hole. */
-    html.right-bar-no-colors .sum-tr::after { background: transparent; }
-    html.right-bar-no-colors .sum-tr.current-row::after { background: var(--gold); }
+    /* Rechterbalkje: geen categoriekleur, alleen goud bij de geselecteerde hole (net als
+       het linkerbalkje). */
+    .sum-tr.current-row::after { background: var(--gold); }
 
 
     .nine-tab {
@@ -773,15 +764,6 @@
       <label class="switch"><input type="checkbox" id="scorecardSymbolsToggle" onchange="toggleScorecardSymbols()"><span class="slider"></span></label>
     </div>
   </div>
-  <div class="card">
-    <div style="display:flex;align-items:center;justify-content:space-between;gap:12px">
-      <div>
-        <div style="font-size:20px;font-weight:700;color:var(--white)">Scorekleuren rechts in scoretabel <span style="font-size:15px;color:var(--muted);font-weight:400">(experimenteel)</span></div>
-        <div style="font-size:17px;color:var(--muted)">Aan: rechterbalkje toont de scorecategorie-kleur. Uit (standaard): geen categoriekleur, alleen goud bij de geselecteerde hole (net als het linkerbalkje).</div>
-      </div>
-      <label class="switch"><input type="checkbox" id="rightBarColorsToggle" onchange="toggleRightBarColors()"><span class="slider"></span></label>
-    </div>
-  </div>
 
   <div style="font-size:20px;font-weight:800;color:var(--gold);text-transform:uppercase;letter-spacing:.7px;padding:16px 0 8px;margin-bottom:4px;display:flex;align-items:center;gap:8px">Tijdens de ronde <span style="text-transform:none;font-weight:400">(<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:-3px"><path d="M12 20h9"/><path d="M16.5 3.5a2.12 2.12 0 0 1 3 3L7 19l-4 1 1-4Z"/></svg>)</span></div>
   <div class="card">
@@ -846,8 +828,6 @@
       <div>
         <div style="font-size:20px;font-weight:700;color:var(--white)">Actieknoppen altijd zichtbaar</div>
         <div style="font-size:17px;color:var(--muted)">Uit: knoppenbalk pas zichtbaar na een tik op het club- of rondeblok.</div>
-        <div class="more-toggle" onclick="toggleMoreInfo(this)">Meer uitleg<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="9 6 15 12 9 18"/></svg></div>
-        <div class="more-full">Uit: de knoppenbalk (bij Clubs: selecteer, favoriet, bewerk, exporteer, verwijder; bij Archief: info, resultaat, exporteren, laden, verwijderen) is verborgen totdat je op de clubnaam of het rondeblok tikt. Nogmaals tikken verbergt hem weer. Geldt voor beide tegelijk.</div>
       </div>
       <label class="switch"><input type="checkbox" id="actionsAlwaysVisibleToggle" onchange="toggleActionsAlwaysVisible()"><span class="slider"></span></label>
     </div>
@@ -857,13 +837,6 @@
       <div>
         <div style="font-size:20px;font-weight:700;color:var(--white)">Lang indrukken bij groeperen</div>
         <div style="font-size:17px;color:var(--muted)">Lang indrukken op een groepeerknop (club, speler, categorie) klapt alles in. Geldt voor alle groepeerknoppen, in archief én bij Clubs.</div>
-        <div class="more-toggle" onclick="toggleMoreInfo(this)">Meer uitleg<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="9 6 15 12 9 18"/></svg></div>
-        <div class="more-full">Bij alle groepeerknoppen geldt hetzelfde patroon: een klik klapt het meest relevante uit, lang indrukken klapt juist alles weer in:<br>
-          &bull; Groepeer op club (archief): klik = geselecteerde club bovenaan uitklappen<br>
-          &bull; Groepeer op speler (archief): klik = hoofdspeler + laatste 20 qualifying uitklappen<br>
-          &bull; Groepeer op categorie (archief): klik = Actief + Gepland uitklappen<br>
-          &bull; Groepeer op categorie (Clubs): klik = geselecteerde categorie uitklappen<br>
-          Zet je deze instelling uit, dan werkt bij geen van de vier knoppen het lang-indrukken-gebaar meer; het klik-gedrag hierboven blijft wel altijd actief.</div>
       </div>
       <label class="switch"><input type="checkbox" id="quickGroupingToggle" onchange="toggleQuickGrouping()"><span class="slider"></span></label>
     </div>
@@ -3026,15 +2999,8 @@ function renderScoreTable() {
     const isHiddenPparDouble = s !== null && d !== 2 && (s - h.ppar) === 2;
     const stbColor = 'var(--white)';
     const stbDisplay = (s !== null && isHiddenPparDouble) ? '—' : (s !== null ? stbFor(h) : '—');
-    let resCls = '';
-    if      (d <= -2) resCls = 'res-eagle';
-    else if (d === -1) resCls = 'res-birdie';
-    else if (d === 0)  resCls = 'res-par';
-    else if (d === 1)  resCls = 'res-bogey';
-    else if (d === 2)  resCls = 'res-double';
-    else if (d !== null && d >= 3) resCls = 'res-worse';
     const row = document.createElement('div');
-    row.className = 'sum-tr' + (i === currentHole ? ' current-row' : '') + (resCls ? ' ' + resCls : '');
+    row.className = 'sum-tr' + (i === currentHole ? ' current-row' : '');
     row.onclick = () => {
       if (i === currentHole && scoreButtonsRow === i) {
         scoreButtonsRow = null;
@@ -5042,6 +5008,9 @@ function loadSaved() {
         + `</div>`;
     }
   }
+  if (query) {
+    html = `<div class="info-msg" style="font-size:17px;color:var(--muted);font-weight:700;margin-bottom:8px">${filtered.length} ronde${filtered.length !== 1 ? 's' : ''} gevonden</div>` + html;
+  }
   el.innerHTML = html;
 }
 
@@ -6697,8 +6666,7 @@ function doResetAll() {
    'golf_last_backup_date','golf_last_backup_count','golf_progress_indicator','golf_bad_weather',
    'golf_quick_grouping',
    'golf_actions_always_visible',
-   'golf_low_hi','golf_backup_reminder_shown','golf_theme','golf_scorecard_symbols',
-   'golf_right_bar_colors']
+   'golf_low_hi','golf_backup_reminder_shown','golf_theme','golf_scorecard_symbols']
     .forEach(k => storage.removeItem(k));
   // Dynamische per-speler sleutels (bv. golf_seen_low_hi_<speler>, voor de gouden
   // 'nieuwe laagste handicap'-melding) staan niet in bovenstaande vaste lijst en
@@ -6855,6 +6823,9 @@ function buildClubList() {
     if (selectedClubs.length) html += selectedClubs.map(renderClub).join('');
     const restClubs = [...favClubs, ...otherClubs].sort((a, b) => a.localeCompare(b, 'nl'));
     html += restClubs.map(renderClub).join('');
+  }
+  if (query) {
+    html = `<div class="info-msg" style="font-size:17px;color:var(--muted);font-weight:700;margin-bottom:14px">${filteredClubs.length} golfclub${filteredClubs.length !== 1 ? 's' : ''} gevonden</div>` + html;
   }
   el.innerHTML = html;
 }
@@ -7311,7 +7282,6 @@ function nav(id) {
   if (id === 'settings') {
     updateThemeIcon();
     updateScorecardSymbolsToggle();
-    updateRightBarColorsToggle();
     updateProgressToggleBtn();
     updateBadWeatherToggle();
     updateQuickGroupingToggle();
@@ -7401,26 +7371,6 @@ function toggleScorecardSymbols() {
   const on = cb ? cb.checked : !scorecardSymbolsEnabled();
   storage.setItem('golf_scorecard_symbols', on ? 'on' : 'off');
   renderScore();
-}
-
-// Scorekleuren rechts in scoretabel: standaard uit. Uit: rechterbalkje toont geen
-// categoriekleur, maar wordt bij de geselecteerde hole goud (net als het linkerbalkje).
-// Aan: rechterbalkje toont de scorecategorie-kleur. Experimenteel.
-function rightBarColorsEnabled() {
-  return storage.getItem('golf_right_bar_colors') === 'on'; // afwezig = uit
-}
-function updateRightBarColorsToggle() {
-  const cb = document.getElementById('rightBarColorsToggle');
-  if (cb) cb.checked = rightBarColorsEnabled();
-}
-function toggleRightBarColors() {
-  const cb = document.getElementById('rightBarColorsToggle');
-  const on = cb ? cb.checked : !rightBarColorsEnabled();
-  storage.setItem('golf_right_bar_colors', on ? 'on' : 'off');
-  document.documentElement.classList.toggle('right-bar-no-colors', !on);
-  renderScore();
-  loadSaved();
-  buildClubList();
 }
 
 // Voortgangsindicator aan/uit (standaard uit)
@@ -7691,9 +7641,6 @@ document.addEventListener('focusin', (e) => {
 
   if (storage.getItem('golf_theme') !== 'dark') {
     document.documentElement.classList.add('light-mode');
-  }
-  if (!rightBarColorsEnabled()) {
-    document.documentElement.classList.add('right-bar-no-colors');
   }
   updateThemeIcon();
   updateProgressToggleBtn();
