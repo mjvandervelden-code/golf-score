@@ -4051,7 +4051,7 @@ function doAdditiveImport(parsed) {
   });
   nav('archive');
   const parts = [`${imported} ronde${imported !== 1 ? 's' : ''} geïmporteerd.`];
-  if (exactDup) parts.push(`${exactDup} ronde${exactDup !== 1 ? 's' : ''} overgeslagen: bestond${exactDup !== 1 ? 'en' : ''} al exact (zelfde speler, datum en tijd).`);
+  if (exactDup) parts.push(`${exactDup} ronde${exactDup !== 1 ? 's' : ''} overgeslagen: bestond${exactDup !== 1 ? 'en' : ''} al (zelfde datum, tijd en speler).`);
   if (slotFull) parts.push(`${slotFull} ronde${slotFull !== 1 ? 's' : ''} overgeslagen: er stonden al 2 rondes op die datum/tijd — importeer die apart als je alsnog wilt overschrijven.`);
   if (coupledPartners.length) parts.push(`${coupledPartners.length} ronde${coupledPartners.length !== 1 ? 's kunnen' : ' kan'} gekoppeld worden aan een bestaande ronde op dezelfde datum/tijd (${coupledPartners.join(', ')}).`);
   showInfoModal('Import voltooid', parts.join(' '));
