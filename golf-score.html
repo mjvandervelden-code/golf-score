@@ -129,7 +129,7 @@
 
 
 
-    body { font-family: 'Segoe UI', system-ui, sans-serif; background: var(--green-deep); color: var(--white); min-height: 100vh; overscroll-behavior: none; -webkit-overflow-scrolling: touch; user-select: none; -webkit-user-select: none; }
+    body { font-family: 'Segoe UI', system-ui, sans-serif; background: var(--green-deep); color: var(--white); min-height: var(--real-vh, 100vh); overscroll-behavior: none; -webkit-overflow-scrolling: touch; user-select: none; -webkit-user-select: none; }
 
     header {
       background:
@@ -889,6 +889,15 @@
 // hier niet nodig.
 if ('scrollRestoration' in history) history.scrollRestoration = 'manual';
 
+// Zet de werkelijke viewporthoogte als CSS-variabele, i.p.v. te vertrouwen op vh/dvh.
+// Gemeten (via het diagnostische overlay) dat in standalone PWA-modus zowel 100vh als
+// 100dvh ~52px te veel opleveren t.o.v. window.innerHeight — vandaar deze omweg.
+function setRealVH() {
+  document.documentElement.style.setProperty('--real-vh', window.innerHeight + 'px');
+}
+setRealVH();
+window.addEventListener('resize', setRealVH);
+
 // TIJDELIJK — diagnose voor het scroll-op-lege-schermen-probleem. Toont keihard de
 // werkelijke pagina-hoogte vs. de viewport-hoogte, i.p.v. dat we dit van screenshots
 // moeten aflezen. Wordt weer verwijderd zodra de oorzaak gevonden is.
@@ -909,7 +918,7 @@ function updateDebugScrollInfo() {
     .map(c => { const h = Math.round(c.getBoundingClientRect().height); return h > 3 ? `${c.tagName.toLowerCase()}#${c.id||'-'}.${[...c.classList].join('.')||'-'}:${h}` : null; })
     .filter(Boolean);
   const bodyH = document.body.getBoundingClientRect().height;
-  el.innerHTML = `[DEBUG-V7] ${screenId} | sH:${sH} vH:${vH} bodyH:${Math.round(bodyH)} Δ:${sH - vH}<br>hdr:${Math.round(headerH)} tabs:${Math.round(tabsH)} scr:${Math.round(screenH)} sum:${Math.round(headerH+screenH)}<br>${others.length ? others.join(' | ') : 'geen andere body-kinderen >3px'}`;
+  el.innerHTML = `[DEBUG-V8] ${screenId} | sH:${sH} vH:${vH} bodyH:${Math.round(bodyH)} Δ:${sH - vH}<br>hdr:${Math.round(headerH)} tabs:${Math.round(tabsH)} scr:${Math.round(screenH)} sum:${Math.round(headerH+screenH)}<br>${others.length ? others.join(' | ') : 'geen andere body-kinderen >3px'}`;
 }
 window.addEventListener('load', updateDebugScrollInfo);
 window.addEventListener('resize', updateDebugScrollInfo);
