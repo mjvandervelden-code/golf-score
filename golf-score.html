@@ -903,7 +903,7 @@ function updateDebugScrollInfo() {
   const headerH = document.querySelector('header')?.getBoundingClientRect().height ?? -1;
   const tabsH = document.querySelector('.tabs')?.getBoundingClientRect().height ?? -1;
   const screenH = activeScreen?.getBoundingClientRect().height ?? -1;
-  el.innerHTML = `[DEBUG-V3] ${screenId} | sH:${sH} vH:${vH} Δ:${sH - vH}<br>hdr:${Math.round(headerH)} tabs:${Math.round(tabsH)} scr:${Math.round(screenH)} sum:${Math.round(headerH+screenH)}`;
+  el.innerHTML = `[DEBUG-V4] ${screenId} | sH:${sH} vH:${vH} Δ:${sH - vH}<br>hdr:${Math.round(headerH)} tabs:${Math.round(tabsH)} scr:${Math.round(screenH)} sum:${Math.round(headerH+screenH)}<br>p2vis:${typeof player2Visible !== 'undefined' ? player2Visible : '?'} g2id:${typeof game2Id !== 'undefined' ? game2Id : '?'} actP:${typeof activePlayer !== 'undefined' ? activePlayer : '?'} started:${typeof game !== 'undefined' ? game.started : '?'}`;
 }
 window.addEventListener('load', updateDebugScrollInfo);
 window.addEventListener('resize', updateDebugScrollInfo);
@@ -3093,7 +3093,13 @@ function renderPlayerStats() {
   const el = document.getElementById('playerStats');
   if (!el) return;
   const player = startPlayerName();
-  if (!player) { el.innerHTML = '<span class="info-msg" style="font-size:20px;color:var(--info-grey);font-weight:700">Geen statistieken</span>'; return; }
+  if (!player) {
+    const hasAnyRounds = loadSavedRounds().length > 0;
+    el.innerHTML = hasAnyRounds
+      ? `<div class="card"><div style="font-size:20px;color:var(--muted)">Geen <b>statistieken</b>.</div><div style="font-size:15px;color:var(--muted);margin-top:8px">Er staan al rondes in het archief, maar er is geen spelernaam ingevuld bij Start (<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:-2px"><circle cx="12" cy="5" r="2"/><path d="M12 7v6l-3 7"/><path d="M12 13l4 6"/><path d="M9 11l6-1"/></svg>). Vul die daar in om de statistieken te zien.</div></div>`
+      : '<span class="info-msg" style="font-size:20px;color:var(--info-grey);font-weight:700">Geen statistieken</span>';
+    return;
+  }
 
   const all = loadSavedRounds();
   const isDone = r => (r.playedCount ?? r.holes.filter(h => h.score !== null).length) >= (r.holesCount ?? r.holes.length);
