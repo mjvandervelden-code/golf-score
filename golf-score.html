@@ -481,7 +481,7 @@
 </head>
 <body>
 
-<div id="debugScrollInfo" style="position:fixed;top:2px;right:2px;z-index:9999;background:rgba(0,0,0,.75);color:#0f0;font-size:11px;font-family:monospace;padding:3px 6px;border-radius:4px;pointer-events:none"></div>
+<div id="debugScrollInfo" style="position:fixed;top:2px;left:2px;right:2px;z-index:9999;background:rgba(0,0,0,.85);color:#0f0;font-size:10px;font-family:monospace;padding:3px 6px;border-radius:4px;pointer-events:none;word-break:break-all"></div>
 
 <header>
   <div class="hdr-top-row">
@@ -897,13 +897,19 @@ function updateDebugScrollInfo() {
   if (!el) return;
   const sH = document.documentElement.scrollHeight;
   const vH = window.innerHeight;
-  const cH = document.documentElement.clientHeight;
   const activeScreen = document.querySelector('.screen.active, .screen[style*="display: block"], .screen[style*="display:block"]');
   const screenId = activeScreen ? activeScreen.id : '?';
   const headerH = document.querySelector('header')?.getBoundingClientRect().height ?? -1;
   const tabsH = document.querySelector('.tabs')?.getBoundingClientRect().height ?? -1;
   const screenH = activeScreen?.getBoundingClientRect().height ?? -1;
-  el.innerHTML = `[DEBUG-V4] ${screenId} | sH:${sH} vH:${vH} Δ:${sH - vH}<br>hdr:${Math.round(headerH)} tabs:${Math.round(tabsH)} scr:${Math.round(screenH)} sum:${Math.round(headerH+screenH)}<br>p2vis:${typeof player2Visible !== 'undefined' ? player2Visible : '?'} g2id:${typeof game2Id !== 'undefined' ? game2Id : '?'} actP:${typeof activePlayer !== 'undefined' ? activePlayer : '?'} started:${typeof game !== 'undefined' ? game.started : '?'}`;
+  // Elk direct kind van body met een noemenswaardige hoogte, om het element buiten
+  // header/scherm/tabs te vinden dat de extra ruimte veroorzaakt.
+  const others = Array.from(document.body.children)
+    .filter(c => c !== document.querySelector('header') && c !== document.querySelector('.tabs') && !c.classList.contains('screen') && c.id !== 'debugScrollInfo')
+    .map(c => { const h = Math.round(c.getBoundingClientRect().height); return h > 3 ? `${c.tagName.toLowerCase()}#${c.id||'-'}.${[...c.classList].join('.')||'-'}:${h}` : null; })
+    .filter(Boolean);
+  const bodyH = document.body.getBoundingClientRect().height;
+  el.innerHTML = `[DEBUG-V6] ${screenId} | sH:${sH} vH:${vH} bodyH:${Math.round(bodyH)} Δ:${sH - vH}<br>hdr:${Math.round(headerH)} tabs:${Math.round(tabsH)} scr:${Math.round(screenH)} sum:${Math.round(headerH+screenH)}<br>${others.length ? others.join(' | ') : 'geen andere body-kinderen >3px'}`;
 }
 window.addEventListener('load', updateDebugScrollInfo);
 window.addEventListener('resize', updateDebugScrollInfo);
