@@ -21,23 +21,16 @@
       --cream:       #f5f0e8;
       --red:         #c0392b;
       --orange:      #c86a00;
-      --blue:        #4a9eff;
-      --res-eagle:   #4a9eff;
-      --res-birdie:  #1f5fa8;
-      --res-par:     #585858;
-      --res-bogey:   #ff8c00;
-      --res-double:  #e03030;
-      --res-worse:   #8b0000;
-      /* Scoreverdeling-kleuren (nieuw). Terugdraaien: verwijder deze vars + de light-mode-versie,
-         en laat grafiek/scoretabel de --res-* kleuren gebruiken zoals voorheen.
-         Origineel gebruikte: eagle var(--res-eagle) · birdie var(--res-birdie) · par var(--res-par)
-         · bogey var(--res-bogey) · double var(--res-double) · worse var(--res-worse). */
-      --dist-eagle:  #2e9e5b;
-      --dist-birdie: #5cc98c;
-      --dist-bogey:  #e0a458;
-      --dist-double: #d9713c;
-      --dist-worse:  #c0402f;
-      --info-purple: #aaaaaa;
+      --res-par:     #4a9e52;
+      /* Scoreverdeling-kleuren. Eagle/birdie/bogey/double/worse gebruiken --dist-*
+         (zie verderop); par gebruikt apart --res-par, omdat --info-grey/.c-par
+         breder wordt hergebruikt voor niet-score-gerelateerde teksten elders in de app. */
+      --dist-eagle:  #5a8fe0;
+      --dist-birdie: #4fc3dc;
+      --dist-bogey:  #dba832;
+      --dist-double: #d1723c;
+      --dist-worse:  #d95a40;
+      --info-grey: #aaaaaa;
       --white:       #ffffff;
       --muted:       #9fb5a8;
       --radius:      12px;
@@ -64,7 +57,7 @@
       --cream:          #2a3f33;
       --muted:          #5a6b60;
       --text-muted:     #5a6b60;
-      --info-purple:    #6a6a6a;
+      --info-grey:    #6a6a6a;
       --surface:        rgba(0,0,0,.05);
       --border-strong:  rgba(0,0,0,.14);
       --overlay-soft:   rgba(0,0,0,.05);
@@ -77,8 +70,6 @@
     html.light-mode .saved-item,
     html.light-mode .stat-box,
     html.light-mode .sum-tr { background: rgba(0,0,0,.05); border-color: rgba(0,0,0,.12); }
-    /* Alleen niet-gespeelde segmenten grijs maken; gekleurde bar-* klassen behouden hun kleur */
-    html.light-mode .flat-chart-seg:not([class*="bar-"]) { background: rgba(0,0,0,.05); border-color: rgba(0,0,0,.12); }
     html.light-mode .sum-tr:nth-child(even),
     html.light-mode .sum-info-row.alt { background: rgba(0,0,0,.03); }
     html.light-mode .sum-tr:active { background: rgba(0,0,0,.06); }
@@ -120,10 +111,18 @@
     html.light-mode .tee-badge.tee-Bruin, html.light-mode .tee-btn.tee-Bruin { color: #ffffff; }
     html.light-mode header { border-bottom-color: var(--gold); }
     /* Donkerder accenten voor voldoende contrast op lichte achtergrond */
-    html.light-mode { --gold: #9a7d2e; --green-light: #2e7d54;
-      --dist-eagle: #1f7d44; --dist-birdie: #2f9e68; --dist-bogey: #b9772f; --dist-double: #b4542a; --dist-worse: #9a2f22; }
+    html.light-mode {
+      --gold: #9a7d2e;
+      --green-light: #2e7d54;
+      --dist-eagle: #2c5aa0;
+      --dist-birdie: #1f8a9e;
+      --dist-bogey: #b9772f;
+      --dist-double: #a8502a;
+      --dist-worse: #8f2f1f;
+      --res-par: #2d7d3a;
+    }
     * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
-    html.light-mode .info-msg { color: var(--info-purple); }
+    html.light-mode .info-msg { color: var(--info-grey); }
     html, body { transition: background-color .2s ease, color .2s ease; }
 
 
@@ -172,8 +171,8 @@
 
     .hdr-score-row { display: flex; align-items: baseline; justify-content: flex-end; gap: 10px; }
     .hdr-total   { font-size:24px; font-weight: 900; color: var(--white); line-height: 1; }
-    .hdr-sep     { font-size:24px; font-weight: 700; color: var(--muted); }
-    .hdr-stb     { font-size:24px; font-weight: 900; color: var(--blue); line-height: 1; }
+    .hdr-sep     { font-size:24px; font-weight: 800; color: var(--cream); }
+    .hdr-stb     { font-size:24px; font-weight: 900; color: var(--white); line-height: 1; }
 
     .tabs {
       display: flex; background: var(--green-deep); border-top: 1px solid rgba(255,255,255,.1);
@@ -321,7 +320,7 @@
     .ppar-plus    { grid-area: ppar; display: flex; align-items: center; align-self: center; justify-self: center; gap: 5px; }
     .ppar-dot     { width: 8px; height: 8px; border-radius: 50%; background: var(--green-light); flex-shrink: 0; }
     .ppar-dot-red { width: 8px; height: 8px; border-radius: 50%; background: transparent; border: 1px solid transparent; box-sizing: border-box; flex-shrink: 0; }
-    .ppar-dot-neg { width: 8px; height: 8px; border-radius: 50%; background: var(--blue); flex-shrink: 0; }
+    .ppar-dot-neg { width: 8px; height: 8px; border-radius: 50%; background: transparent; border: 1.5px solid var(--green-light); box-sizing: border-box; flex-shrink: 0; }
     .hole-si-lab  {
       font-size:13px; font-weight: 900; color: var(--green-light);
     }
@@ -353,18 +352,21 @@
     .score-btn.reset.hidden { visibility: hidden; pointer-events: none; }
     .score-val { display: inline-block; width: calc(1ch + 24px); text-align: center; font-size:24px; font-weight: 800; color: var(--white); -webkit-touch-callout: none; -webkit-user-select: none; user-select: none; touch-action: manipulation; justify-self: center; padding: 4px 12px 2px; border-radius: 8px; }
     .score-val.wide-score { width: calc(2ch + 24px); }
-    .score-val.tap-armed { color: var(--gold); }
+    .score-val.tap-armed { color: var(--gold) !important; }
     /* Traditionele scorekaart-symbolen (instelling 'Scorekaart-symbolen' bij Weergave).
-       Cirkel = onder par, vierkant = boven par; dubbele rand = eagle/dubbel bogey of erger.
-       Puur decoratief (border/box-shadow) — beïnvloedt de vaste boxbreedte niet. */
-    .score-val.sym-birdie { border: 2px solid currentColor; border-radius: 50%; }
-    .score-val.sym-eagle  { border: 2px solid currentColor; border-radius: 50%; box-shadow: 0 0 0 2px var(--green-deep), 0 0 0 4px currentColor; }
-    .score-val.sym-bogey  { border: 2px solid currentColor; border-radius: 3px; }
-    .score-val.sym-double { border: 2px solid currentColor; border-radius: 3px; box-shadow: 0 0 0 2px var(--green-deep), 0 0 0 4px currentColor; }
+       Cirkel = onder par, vierkant = boven par; dubbele rand = eagle/dubbel bogey of slechter.
+       Randkleur via --sym-color (inline gezet bij 'Symbolen in categoriekleur'), met
+       currentColor als terugval — zo blijft de tekstkleur (bv. paars bij de score-swap-
+       instelling) volledig los staan van de randkleur. Puur decoratief, beïnvloedt de
+       vaste boxbreedte niet. */
+    .score-val.sym-birdie { border: 2px solid var(--sym-color, currentColor); border-radius: 50%; }
+    .score-val.sym-eagle  { border: 2px solid var(--sym-color, currentColor); border-radius: 50%; box-shadow: 0 0 0 2px var(--green-deep), 0 0 0 4px var(--sym-color, currentColor); }
+    .score-val.sym-bogey  { border: 2px solid var(--sym-color, currentColor); border-radius: 3px; }
+    .score-val.sym-double { border: 2px solid var(--sym-color, currentColor); border-radius: 3px; box-shadow: 0 0 0 2px var(--green-deep), 0 0 0 4px var(--sym-color, currentColor); }
     /* Legenda/telling onder grafiek. Terugdraaien: zet var(--res-*) terug. Par blijft grijs. */
     .c-eagle  { color: var(--dist-eagle); }
     .c-birdie { color: var(--dist-birdie); }
-    .c-par    { color: var(--info-purple); }
+    .c-par    { color: var(--res-par); }
     .c-bogey  { color: var(--dist-bogey); }
     .c-double { color: var(--dist-double); }
     .c-worse  { color: var(--dist-worse); }
@@ -380,15 +382,6 @@
     .chart-lbl { text-align: center; font-size:13px; font-weight: 700; color: var(--muted); margin-top: 3px; }
     .flat-chart { display: flex; gap: 3px; }
     .flat-chart-seg { flex: 1; height: 8px; border-radius: 4px; background: rgba(255,255,255,.08); }
-    /* Scoreverdeling-kleuren toegepast op grafiek. Terugdraaien: zet var(--res-*) terug.
-       Origineel: eagle var(--res-eagle) · birdie var(--res-birdie) · bogey var(--res-bogey)
-       · double var(--res-double) · worse var(--res-worse). Par bleef altijd var(--res-par). */
-    .bar-eagle  { background: var(--dist-eagle); }
-    .bar-birdie { background: var(--dist-birdie); }
-    .bar-par    { background: var(--res-par); }
-    .bar-bogey  { background: var(--dist-bogey); }
-    .bar-double { background: var(--dist-double); }
-    .bar-worse  { background: var(--dist-worse); }
 
     .sum-sub    { font-size:20px; color: var(--muted); margin-top: 6px; font-weight: 600; text-align: center; }
     .sum-info { display: flex; flex-direction: column; }
@@ -422,13 +415,18 @@
     .sum-tr.res-bogey::after  { background: var(--dist-bogey); }
     .sum-tr.res-double::after { background: var(--dist-double); }
     .sum-tr.res-worse::after  { background: var(--dist-worse); }
-    html.light-mode .stb-ppar-double-marker { filter: invert(1) hue-rotate(180deg); }
     .sum-tr:active { background: rgba(255,255,255,.05); }
     .sum-tr:nth-child(even) { background: rgba(255,255,255,.03); }
     .sum-tr.current-row { background: rgba(201,168,76,.14); }
+    html.light-mode .sum-tr.current-row { background: rgba(154,125,46,.18); }
     .tee-editor-row.tee-row-selected { background: rgba(201,168,76,.18); }
     #editorTees:has(.tee-row-selected) .tee-editor-row:not(.tee-row-selected) { opacity: .35; pointer-events: none; }
     .sum-tr.current-row::before { background: var(--gold); }
+    /* Experimenteel (instelling 'Rechterbalkje: goud i.p.v. categoriekleur'): rechterbalkje
+       toont dan geen categoriekleur meer, maar wordt net als het linkerbalkje goud bij de
+       geselecteerde hole. */
+    html.right-bar-no-colors .sum-tr::after { background: transparent; }
+    html.right-bar-no-colors .sum-tr.current-row::after { background: var(--gold); }
 
 
     .nine-tab {
@@ -502,7 +500,7 @@
     </div>
     <div class="hdr-score-row">
       <span class="hdr-total" id="hdrTotal">—</span>
-      <span class="hdr-sep">/</span>
+      <span class="hdr-sep">Stb</span>
       <span class="hdr-stb"  id="hdrStb">—</span>
     </div>
   </div>
@@ -614,7 +612,7 @@
     </div>
     <label style="font-size:17px;color:var(--green-light);text-transform:uppercase;letter-spacing:.5px;font-weight:700;display:block;margin-bottom:6px">Tee</label>
     <div class="tee-btns" id="teeBtns"></div>
-    <div id="teeAdvice" style="display:none;font-size:20px;color:var(--info-purple);font-weight:700"></div>
+    <div id="teeAdvice" style="display:none;font-size:20px;color:var(--info-grey);font-weight:700"></div>
     <div style="display:flex;align-items:center;justify-content:space-between;gap:12px;margin-top:12px">
       <label style="font-size:17px;color:var(--green-light);text-transform:uppercase;letter-spacing:.5px;font-weight:700">Qualifying</label>
       <label class="switch"><input type="checkbox" id="qualifyToggle1" onchange="toggleQualifying(1)"><span class="slider"></span></label>
@@ -632,7 +630,7 @@
       </div>
     </div>
     <div class="chcp-override-row hidden" id="chcpOverrideRow">
-      <span id="chcpOverrideNote" class="info-msg" style="color:var(--info-purple)">Handmatig aangepast</span>
+      <span id="chcpOverrideNote" class="info-msg" style="color:var(--info-grey)">Handmatig aangepast</span>
       <button class="btn-secondary" style="padding:8px 14px;opacity:.6" onclick="resetChcpOverride()"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:middle"><path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/><path d="M3 3v5h5"/></svg></button>
     </div>
   </div>
@@ -646,7 +644,7 @@
     </div>
     <label style="font-size:17px;color:var(--green-light);text-transform:uppercase;letter-spacing:.5px;font-weight:700;display:block;margin-bottom:6px">Tee</label>
     <div class="tee-btns" id="teeBtns2"></div>
-    <div id="teeAdvice2" style="display:none;font-size:20px;color:var(--info-purple);font-weight:700"></div>
+    <div id="teeAdvice2" style="display:none;font-size:20px;color:var(--info-grey);font-weight:700"></div>
     <div style="display:flex;align-items:center;justify-content:space-between;gap:12px;margin-top:12px">
       <label style="font-size:17px;color:var(--green-light);text-transform:uppercase;letter-spacing:.5px;font-weight:700">Qualifying</label>
       <label class="switch"><input type="checkbox" id="qualifyToggle2" onchange="toggleQualifying(2)"><span class="slider"></span></label>
@@ -664,7 +662,7 @@
       </div>
     </div>
     <div class="chcp-override-row hidden" id="chcp2OverrideRow">
-      <span class="info-msg" style="color:var(--info-purple)">Handmatig aangepast</span>
+      <span class="info-msg" style="color:var(--info-grey)">Handmatig aangepast</span>
       <button class="btn-secondary" style="padding:8px 14px;opacity:.6" onclick="resetChcp2Override()"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:middle"><path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/><path d="M3 3v5h5"/></svg></button>
     </div>
   </div>
@@ -707,7 +705,7 @@
     <input id="archiveSearch" type="text" placeholder="Zoek op club, baan of speler" oninput="loadSaved()">
   </div>
   <input type="file" id="importRoundFile" accept=".json" style="display:none" onchange="importRound(this)">
-  <div id="archiveEmptyMsg" class="info-msg hidden" style="font-size:20px;color:var(--info-purple);font-weight:700;margin-bottom:8px">Geen rondes</div>
+  <div id="archiveEmptyMsg" class="info-msg hidden" style="font-size:20px;color:var(--info-grey);font-weight:700;margin-bottom:8px">Geen rondes</div>
   <div id="importRoundStatus" class="hidden" style="font-size:20px;font-weight:700;color:var(--green-light);margin-bottom:8px"></div>
   <div id="savedList"></div>
 </div>
@@ -776,6 +774,15 @@
       <label class="switch"><input type="checkbox" id="scorecardSymbolsToggle" onchange="toggleScorecardSymbols()"><span class="slider"></span></label>
     </div>
   </div>
+  <div class="card">
+    <div style="display:flex;align-items:center;justify-content:space-between;gap:12px">
+      <div>
+        <div style="font-size:20px;font-weight:700;color:var(--white)">Scorekleuren rechts in scoretabel <span style="font-size:15px;color:var(--muted);font-weight:400">(experimenteel)</span></div>
+        <div style="font-size:17px;color:var(--muted)">Aan: rechterbalkje toont de scorecategorie-kleur. Uit (standaard): geen categoriekleur, alleen goud bij de geselecteerde hole (net als het linkerbalkje).</div>
+      </div>
+      <label class="switch"><input type="checkbox" id="rightBarColorsToggle" onchange="toggleRightBarColors()"><span class="slider"></span></label>
+    </div>
+  </div>
 
   <div style="font-size:20px;font-weight:800;color:var(--gold);text-transform:uppercase;letter-spacing:.7px;padding:16px 0 8px;margin-bottom:4px;display:flex;align-items:center;gap:8px">Tijdens de ronde <span style="text-transform:none;font-weight:400">(<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:-3px"><path d="M12 20h9"/><path d="M16.5 3.5a2.12 2.12 0 0 1 3 3L7 19l-4 1 1-4Z"/></svg>)</span></div>
   <div class="card">
@@ -834,27 +841,14 @@
     </div>
   </div>
 
-  <div style="font-size:20px;font-weight:800;color:var(--gold);text-transform:uppercase;letter-spacing:.7px;padding:16px 0 8px;margin-bottom:4px;display:flex;align-items:center;gap:8px">Clubs <span style="text-transform:none;font-weight:400">(<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:-3px"><path d="M5 3v18"/><path d="M5 4h11l-2 4 2 4H5"/></svg>)</span></div>
+  <div style="font-size:20px;font-weight:800;color:var(--gold);text-transform:uppercase;letter-spacing:.7px;padding:16px 0 8px;margin-bottom:4px;display:flex;align-items:center;gap:8px">Clubs &amp; Rondes <span style="text-transform:none;font-weight:400">(<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:-3px"><path d="M5 3v18"/><path d="M5 4h11l-2 4 2 4H5"/></svg>)</span></div>
   <div class="card">
     <div style="display:flex;align-items:center;justify-content:space-between;gap:12px">
       <div>
-        <div style="font-size:20px;font-weight:700;color:var(--white)">Actieknoppen bij clubs altijd zichtbaar</div>
-        <div style="font-size:17px;color:var(--muted)">Uit: knoppenbalk pas zichtbaar na een tik op de clubnaam.</div>
+        <div style="font-size:20px;font-weight:700;color:var(--white)">Actieknoppen altijd zichtbaar</div>
+        <div style="font-size:17px;color:var(--muted)">Uit: knoppenbalk pas zichtbaar na een tik op het club- of rondeblok.</div>
         <div class="more-toggle" onclick="toggleMoreInfo(this)">Meer uitleg<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="9 6 15 12 9 18"/></svg></div>
-        <div class="more-full">Uit: de knoppenbalk (selecteer, favoriet, bewerk, exporteer, verwijder) onderin een clubblok is verborgen totdat je op de clubnaam of de korte naam tikt. Nogmaals tikken verbergt hem weer</div>
-      </div>
-      <label class="switch"><input type="checkbox" id="clubActionsAlwaysVisibleToggle" onchange="toggleClubActionsAlwaysVisible()"><span class="slider"></span></label>
-    </div>
-  </div>
-
-  <div style="font-size:20px;font-weight:800;color:var(--gold);text-transform:uppercase;letter-spacing:.7px;padding:16px 0 8px;margin-bottom:4px;display:flex;align-items:center;gap:8px">Archief <span style="text-transform:none;font-weight:400">(<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:-3px"><path d="M3 7v12a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V9a2 2 0 0 0-2-2h-7l-2-2H5a2 2 0 0 0-2 2Z"/></svg>)</span></div>
-  <div class="card">
-    <div style="display:flex;align-items:center;justify-content:space-between;gap:12px">
-      <div>
-        <div style="font-size:20px;font-weight:700;color:var(--white)">Actieknoppen bij rondes altijd zichtbaar</div>
-        <div style="font-size:17px;color:var(--muted)">Uit: knoppenbalk pas zichtbaar na een tik op het rondeblok.</div>
-        <div class="more-toggle" onclick="toggleMoreInfo(this)">Meer uitleg<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="9 6 15 12 9 18"/></svg></div>
-        <div class="more-full">Uit: de knoppenbalk (info, resultaat, exporteren, laden, verwijderen) onderin een rondeblok in het archief is verborgen totdat je ergens op het blok tikt. Nogmaals tikken verbergt hem weer</div>
+        <div class="more-full">Uit: de knoppenbalk (bij Clubs: selecteer, favoriet, bewerk, exporteer, verwijder; bij Archief: info, resultaat, exporteren, laden, verwijderen) is verborgen totdat je op de clubnaam of het rondeblok tikt. Nogmaals tikken verbergt hem weer. Geldt voor beide tegelijk.</div>
       </div>
       <label class="switch"><input type="checkbox" id="actionsAlwaysVisibleToggle" onchange="toggleActionsAlwaysVisible()"><span class="slider"></span></label>
     </div>
@@ -2765,7 +2759,7 @@ function selectHole(i) {
 
 // ══ SUMMARY ══════════════════════════════════════════════════════════════
 function emptyStateHTML() {
-  return '<span class="info-msg" style="font-size:20px;color:var(--info-purple);font-weight:700">—</span>';
+  return '<span class="info-msg" style="font-size:20px;color:var(--info-grey);font-weight:700">—</span>';
 }
 
 function renderScoreEmpty() {
@@ -2892,27 +2886,37 @@ function renderScoreStats() {
 
 function renderScoreChart() {
   const MAXD = 3;
+  const isLight = document.documentElement.classList.contains('light-mode');
+  // Kleuren hier rechtstreeks (inline) toegepast i.p.v. via een CSS-klasse + custom
+  // property, om een onverklaard renderprobleem te omzeilen waarbij de browser de
+  // klasse/hoogte al die tijd al correct berekende, maar de achtergrondkleur van de
+  // klasse zelf niet schilderde. Waarden matchen --dist-*/--res-par (licht/donker).
+  const COLORS = isLight
+    ? { eagle: '#2c5aa0', birdie: '#1f8a9e', par: '#2d7d3a', bogey: '#b9772f', double: '#a8502a', worse: '#8f2f1f' }
+    : { eagle: '#5a8fe0', birdie: '#4fc3dc', par: '#4a9e52', bogey: '#dba832', double: '#d1723c', worse: '#d95a40' };
   document.getElementById('scoreChart').innerHTML = game.holes.map((h, i) => {
     const s = h.score;
-    let cls = '', overH = 0, underH = 0;
+    let overH = 0, underH = 0, colorKey = '';
     if (s !== null) {
-      const d = s - h.par;
-      if      (d <= -2) cls = 'bar-eagle';
-      else if (d === -1) cls = 'bar-birdie';
-      else if (d === 0)  cls = 'bar-par';
-      else if (d === 1)  cls = 'bar-bogey';
-      else if (d === 2)  cls = 'bar-double';
-      else               cls = 'bar-worse';
+      let d = s - h.par;
+      if (!isFinite(d)) d = 0;
+      if      (d <= -2)  colorKey = 'eagle';
+      else if (d === -1) colorKey = 'birdie';
+      else if (d === 0)  colorKey = 'par';
+      else if (d === 1)  colorKey = 'bogey';
+      else if (d === 2)  colorKey = 'double';
+      else               colorKey = 'worse';
       const mag = Math.min(Math.abs(d), MAXD);
       const px = Math.max(2, Math.round(mag / MAXD * 26));
       if      (d > 0) overH = px;
       else if (d < 0) underH = px;
       else            overH = 2;
     }
+    const bg = colorKey ? COLORS[colorKey] : 'transparent';
     return `<div class="chart-col">
       <div class="chart-bar-wrap">
-        <div class="chart-half chart-half-over"><div class="chart-bar ${cls}" style="height:${overH}px"></div></div>
-        <div class="chart-half chart-half-under"><div class="chart-bar ${cls}" style="height:${underH}px"></div></div>
+        <div class="chart-half chart-half-over"><div class="chart-bar" style="height:${overH}px;background:${bg}"></div></div>
+        <div class="chart-half chart-half-under"><div class="chart-bar" style="height:${underH}px;background:${bg}"></div></div>
       </div>
       <div class="chart-lbl">${i + 1}</div>
     </div>`;
@@ -2934,7 +2938,7 @@ function renderScoreNineTabs() {
   const nineScore = holes => { const p = holes.filter(h=>h.score!==null); return p.length ? p.reduce((s,h)=>s+h.score,0) : null; };
   const nineStb   = holes => holes.reduce((s,h)=>s+stbFor(h),0);
   const fmt = (score, stb) => score !== null
-    ? `<span style="color:var(--white);font-size:20px">${score}</span><span style="color:var(--white);font-size:20px"> / </span><span style="color:var(--blue);font-size:20px">${stb}</span>`
+    ? `<span style="color:var(--white);font-size:20px">${score}</span><span style="color:var(--white);font-size:20px"> / </span><span style="color:var(--white);font-size:20px">${stb}</span>`
     : '';
   const holeLabel = h => h.id;
   document.getElementById('nineTab0').innerHTML = `<span style="color:var(--white)">${holeLabel(front[0])}...${holeLabel(front[front.length-1])}</span><span>${fmt(nineScore(front), nineStb(front))}</span>`;
@@ -2972,18 +2976,26 @@ function renderScoreTable() {
     // Traditionele scorekaart-symbolen (instelling): cirkel/vierkant om het cijfer,
     // enkel of dubbel — bovenop het bestaande rechter kleurstreepje, niet i.p.v.
     let symCls = '';
+    let symColorVar = '';
     if (scorecardSymbolsEnabled()) {
-      if      (d <= -2)  symCls = ' sym-eagle';
-      else if (d === -1) symCls = ' sym-birdie';
-      else if (d === 1)  symCls = ' sym-bogey';
-      else if (d >= 2)   symCls = ' sym-double';
+      if      (d <= -2)  { symCls = ' sym-eagle';  symColorVar = 'var(--dist-eagle)'; }
+      else if (d === -1) { symCls = ' sym-birdie'; symColorVar = 'var(--dist-birdie)'; }
+      else if (d === 1)  { symCls = ' sym-bogey';  symColorVar = 'var(--dist-bogey)'; }
+      else if (d === 2)  { symCls = ' sym-double'; symColorVar = 'var(--dist-double)'; }
+      else if (d !== null && d >= 3) { symCls = ' sym-double'; symColorVar = 'var(--dist-worse)'; }
     }
-    const scoreVal = `<div class="sum-tr-btn-cell score-cell"><span class="score-val${armed ? ' tap-armed' : ''}${anyDoubleDigit ? ' wide-score' : ''}${symCls}" style="font-size:24px;font-weight:900"${i === currentHole
+    // Randkleur van het symbool in de categoriekleur, via een losse CSS-variabele
+    // (--sym-color) — staat helemaal los van de tekstkleur hieronder, zodat die intussen
+    // bv. paars kan blijven via de score-swap-instelling.
+    const symColorStyle = symColorVar ? `--sym-color:${symColorVar};` : '';
+    // Experimentele instelling: score-cijfer paars i.p.v. neutraal (en Stb dan andersom
+    // neutraal i.p.v. paars) — swapt welke van de twee de 'accentkleur' draagt.
+    const scoreVal = `<div class="sum-tr-btn-cell score-cell"><span class="score-val${armed ? ' tap-armed' : ''}${anyDoubleDigit ? ' wide-score' : ''}${symCls}" style="font-size:24px;font-weight:900;${symColorStyle}"${i === currentHole
         ? ` onpointerdown="decreaseScore(${i})" onpointerup="increaseScore(${i})" onpointerleave="cancelScore()" onpointercancel="cancelScore()" oncontextmenu="return false" onclick="event.stopPropagation()"`
         : ` onclick="event.stopPropagation(); selectScoreRow(${i})"`}>${s == null ? '—' : s}</span></div>`;
     const showBtns = i === currentHole && scoreButtonsRow === i;
     const isHiddenPparDouble = s !== null && d !== 2 && (s - h.ppar) === 2;
-    const stbColor = 'var(--blue)';
+    const stbColor = 'var(--white)';
     const stbDisplay = (s !== null && isHiddenPparDouble) ? '—' : (s !== null ? stbFor(h) : '—');
     let resCls = '';
     if      (d <= -2) resCls = 'res-eagle';
@@ -3063,7 +3075,7 @@ function renderPlayerStats() {
     + `</div>`;
 
   if (!rounds.length) {
-    el.innerHTML = `<div class="card"><h2>${escapeHtml(player)}</h2><div style="font-size:20px;color:var(--muted)">${showAll ? 'Geen <b>afgeronde</b> rondes.' : 'Geen <b>afgeronde</b> qualifying rondes.'}</div><div style="font-size:15px;color:var(--muted);margin-top:8px">Statistieken tonen alleen <b>afgeronde</b> rondes${showAll ? '' : ' die als qualifying zijn gemarkeerd'}, van de speler die is ingevuld bij Start (<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:-2px"><circle cx="12" cy="5" r="2"/><path d="M12 7v6l-3 7"/><path d="M12 13l4 6"/><path d="M9 11l6-1"/></svg>). Klopt de naam niet, pas die dan aan.</div></div>`;
+    el.innerHTML = `<div class="card"><h2>${escapeHtml(player)}</h2><div style="font-size:20px;color:var(--muted)">${showAll ? 'Geen <b>afgeronde</b> rondes.' : 'Geen <b>afgeronde</b> qualifying rondes.'}</div><div style="font-size:15px;color:var(--muted);margin-top:8px">Statistieken tonen alleen <b>afgeronde</b> rondes${showAll ? '' : ' (qualifying)'} van de speler die is ingevuld bij Start (<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:-2px"><circle cx="12" cy="5" r="2"/><path d="M12 7v6l-3 7"/><path d="M12 13l4 6"/><path d="M9 11l6-1"/></svg>). Klopt de naam niet, pas die dan aan.</div></div>`;
     return;
   }
 
@@ -4297,19 +4309,27 @@ function restoreActiveRound() {
 // ══ ARCHIEF: LIJST / LADEN / VERWIJDEREN ══════════════════════════════════
 // Kleine resultaatstrip (zelfde vorm als de voortgangsbalk in de header)
 function flatChartHtml(holes) {
+  const isLight = document.documentElement.classList.contains('light-mode');
+  // Zelfde fix als bij renderScoreChart: kleur rechtstreeks inline i.p.v. via een
+  // CSS-klasse + custom property, om het onverklaarde renderprobleem te omzeilen.
+  const COLORS = isLight
+    ? { eagle: '#2c5aa0', birdie: '#1f8a9e', par: '#2d7d3a', bogey: '#b9772f', double: '#a8502a', worse: '#8f2f1f' }
+    : { eagle: '#5a8fe0', birdie: '#4fc3dc', par: '#4a9e52', bogey: '#dba832', double: '#d1723c', worse: '#d95a40' };
+  const emptyBg = isLight ? 'rgba(0,0,0,.05)' : 'rgba(255,255,255,.08)';
   return '<div class="flat-chart">' + holes.map((h) => {
     const s = h.score;
-    let cls = '';
+    let colorKey = '';
     if (s !== null) {
       const d = s - h.par;
-      if      (d <= -2) cls = 'bar-eagle';
-      else if (d === -1) cls = 'bar-birdie';
-      else if (d === 0)  cls = 'bar-par';
-      else if (d === 1)  cls = 'bar-bogey';
-      else if (d === 2)  cls = 'bar-double';
-      else               cls = 'bar-worse';
+      if      (d <= -2) colorKey = 'eagle';
+      else if (d === -1) colorKey = 'birdie';
+      else if (d === 0)  colorKey = 'par';
+      else if (d === 1)  colorKey = 'bogey';
+      else if (d === 2)  colorKey = 'double';
+      else               colorKey = 'worse';
     }
-    return `<div class="flat-chart-seg ${cls}"></div>`;
+    const bg = colorKey ? COLORS[colorKey] : emptyBg;
+    return `<div class="flat-chart-seg" style="background:${bg}"></div>`;
   }).join('') + '</div>';
 }
 
@@ -4642,7 +4662,7 @@ function loadSaved() {
     : saved;
 
   if (!filtered.length) {
-    el.innerHTML = '<span class="archive-empty-msg info-msg" style="font-size:20px;color:var(--info-purple);font-weight:700">Geen rondes gevonden</span>';
+    el.innerHTML = '<span class="archive-empty-msg info-msg" style="font-size:20px;color:var(--info-grey);font-weight:700">Geen rondes gevonden</span>';
     return;
   }
 
@@ -4684,7 +4704,7 @@ function loadSaved() {
       ? `${!done ? `${playedCount}/${holesCount} · ` : ''}Score ${total}${totalStb != null ? ` · Stb ${totalStb}` : ''}`
       : `${playedCount}/${holesCount} · ${(r.gender || '').charAt(0)} · ${r.tee || '—'} · Chcp ${chcp ?? '—'} · Score ${total}${totalStb != null ? ` · Stb ${totalStb}` : ''}`;
     return `
-    <div class="saved-item"${compact ? '' : ` id="round-full-${r.id}"`}${isActive ? ' style="border-left:3px solid var(--gold);padding-left:10px"' : ''}${!compact && !actionsAlwaysVisible() ? ' onclick="toggleRoundActions(event, this)"' : ''}>
+    <div class="saved-item"${compact ? '' : ` id="round-full-${r.id}"`}${isActive ? ' style="border-left:3px solid var(--gold);padding-left:10px;border-right:3px solid var(--gold);padding-right:10px"' : ''}${!compact && !actionsAlwaysVisible() ? ' onclick="toggleRoundActions(event, this)"' : ''}>
       ${compact ? `<div onclick="jumpToFullRound(${r.id})" style="cursor:pointer">` : ''}
       ${importedLabel}
       <div class="saved-name" style="display:flex;align-items:center;justify-content:space-between;gap:8px">
@@ -4776,7 +4796,7 @@ function loadSaved() {
       html += collapsibleHeader('Gepland', planned.length, 'gepland', '_catCollapsed') + planned.map(r => makeCard(r)).join('') + '</div>';
     } else if (window._forceShowPlanned) {
       html += collapsibleHeader('Gepland', 0, 'gepland', '_catCollapsed')
-        + `<div class="saved-item" style="font-size:20px;color:var(--info-purple);font-weight:700">Er zijn geen geplande rondes</div></div>`;
+        + `<div class="saved-item" style="font-size:20px;color:var(--info-grey);font-weight:700">Er zijn geen geplande rondes</div></div>`;
     }
     if (inProgress.length) html += collapsibleHeader('Opgeslagen', inProgress.length, 'opgeslagen', '_catCollapsed') + inProgress.map(r => makeCard(r)).join('') + '</div>';
     if (finished.length) {
@@ -5240,7 +5260,7 @@ function resetHeader() {
   const clubNameEl = document.getElementById('hdrClubName');
   clubNameEl.textContent = 'Geen actieve ronde';
   clubNameEl.classList.add('info-msg');
-  clubNameEl.style.color = 'var(--info-purple)';
+  clubNameEl.style.color = 'var(--info-grey)';
   document.getElementById('hdrTrack').innerHTML = '&nbsp;';
   document.getElementById('hdrRoundName').innerHTML = '&nbsp;';
   document.getElementById('hdrHoleCount').textContent = '';
@@ -5328,7 +5348,7 @@ function updateHeaderClubName() {
   } else {
     el.textContent = 'Geen actieve ronde';
     el.classList.add('info-msg');
-    el.style.color = 'var(--info-purple)';
+    el.style.color = 'var(--info-grey)';
   }
 }
 
@@ -6587,8 +6607,9 @@ function doResetAll() {
    'golf_setup_date_day','golf_setup_date','golf_setup_time',
    'golf_last_backup_date','golf_last_backup_count','golf_progress_indicator','golf_bad_weather',
    'golf_quick_grouping',
-   'golf_actions_always_visible','golf_club_actions_always_visible',
-   'golf_low_hi','golf_backup_reminder_shown','golf_theme','golf_scorecard_symbols']
+   'golf_actions_always_visible',
+   'golf_low_hi','golf_backup_reminder_shown','golf_theme','golf_scorecard_symbols',
+   'golf_right_bar_colors']
     .forEach(k => storage.removeItem(k));
   // Dynamische per-speler sleutels (bv. golf_seen_low_hi_<speler>, voor de gouden
   // 'nieuwe laagste handicap'-melding) staan niet in bovenstaande vaste lijst en
@@ -6609,22 +6630,6 @@ function createNewClub() {
   openClubEditor(tmpName);
 }
 
-
-// Actieknoppen bij clubs: standaard altijd zichtbaar. Uitgezet betekent dat de
-// knoppenbalk pas verschijnt na een tik op de clubnaam of de korte naam.
-function clubActionsAlwaysVisible() {
-  return storage.getItem('golf_club_actions_always_visible') !== 'off'; // afwezig = aan
-}
-function updateClubActionsAlwaysVisibleToggle() {
-  const cb = document.getElementById('clubActionsAlwaysVisibleToggle');
-  if (cb) cb.checked = clubActionsAlwaysVisible();
-}
-function toggleClubActionsAlwaysVisible() {
-  const cb = document.getElementById('clubActionsAlwaysVisibleToggle');
-  const on = cb ? cb.checked : !clubActionsAlwaysVisible();
-  storage.setItem('golf_club_actions_always_visible', on ? 'on' : 'off');
-  buildClubList();
-}
 
 // Klik op de clubnaam of de korte naam om de verborgen knoppenbalk te tonen;
 // nogmaals klikken verbergt hem weer. Zichtbaar verbergt zichzelf automatisch
@@ -6686,8 +6691,8 @@ function buildClubList() {
     if (emptyMsgEl) {
       emptyMsgEl.classList.remove('hidden');
       emptyMsgEl.innerHTML = allClubNames.length
-        ? '<span class="info-msg" style="font-size:20px;color:var(--info-purple);font-weight:700">Geen clubs gevonden</span>'
-        : '<span class="info-msg" style="font-size:20px;color:var(--info-purple);font-weight:700">Geen clubs</span>';
+        ? '<span class="info-msg" style="font-size:20px;color:var(--info-grey);font-weight:700">Geen clubs gevonden</span>'
+        : '<span class="info-msg" style="font-size:20px;color:var(--info-grey);font-weight:700">Geen clubs</span>';
     }
     if (searchInput) searchInput.disabled = !allClubNames.length;
     setClubBtns(!allClubNames.length);
@@ -6718,7 +6723,7 @@ function buildClubList() {
       `<div style="font-size:20px;display:flex;justify-content:space-between;align-items:center;padding:3px 0 3px 12px;border-left:2px solid rgba(255,255,255,.15);gap:8px"><span style="color:var(--green-light);overflow-wrap:break-word;min-width:0">${escapeHtml(name)}</span><span style="color:var(--muted);flex:0 0 auto;white-space:nowrap">${(data.holes||[]).length} holes</span></div>`
     ).join('');
     return `
-    <div class="card" style="margin-bottom:10px${isActive ? ';border-left:3px solid var(--gold)' : ''}">
+    <div class="card" style="margin-bottom:10px${isActive ? ';border-left:3px solid var(--gold);border-right:3px solid var(--gold)' : ''}">
       <div style="font-size:20px;font-weight:700;overflow-wrap:break-word;color:${isActive ? 'var(--gold)' : 'var(--white)'};cursor:pointer" onclick="toggleClubActions(event, this.closest('.card'))">${escapeHtml(club)}</div>
       <div style="font-size:20px;font-weight:700;overflow-wrap:break-word;color:${isActive ? 'var(--gold)' : 'var(--white)'};margin-top:4px;cursor:pointer" onclick="toggleClubActions(event, this.closest('.card'))">Kort: ${escapeHtml(shortName || '—')}</div>
       <div style="display:flex;align-items:center;cursor:pointer;line-height:1;margin-top:4px" onclick="toggleCourseList(this)">
@@ -6730,7 +6735,7 @@ function buildClubList() {
       <div class="error-msg hidden" data-club-delete-msg="${escapeHtml(club)}" style="color:var(--red);font-size:20px;font-weight:700;text-align:right;margin-top:6px">Tik nogmaals om te bevestigen</div>
       <div class="hidden" data-club-export-msg="${escapeHtml(club)}" style="color:var(--green-light);font-size:20px;font-weight:700;text-align:right;margin-top:6px">Tik nogmaals om te bevestigen</div>
       <div class="hidden orange-msg" data-club-edit-msg="${escapeHtml(club)}" style="color:var(--orange);font-size:20px;font-weight:700;text-align:right;margin-top:6px">Tik nogmaals om te bevestigen</div>
-      <div class="club-actions${clubActionsAlwaysVisible() ? '' : ' actions-hidden'}">
+      <div class="club-actions${actionsAlwaysVisible() ? '' : ' actions-hidden'}">
         <button class="btn-secondary${isActive ? ' active-bg' : ''}" style="font-size:17px;padding:8px 14px" title="${isActive ? 'Deselecteer' : 'Selecteer'}" onclick="selectDefaultClub('${escapeJsString(club)}')">${isActive ? '<svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:middle"><path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"/></svg>' : '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:middle"><path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"/></svg>'}</button>
         <button class="btn-secondary${isFav ? ' active-bg' : ''}" style="font-size:17px;padding:8px 14px" title="Favoriet" onclick="toggleFavClub('${escapeJsString(club)}', this)"><svg width="16" height="16" viewBox="0 0 24 24" fill="${isFav ? 'currentColor' : 'none'}" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:middle"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg></button>
         <button class="btn-secondary" style="font-size:17px;padding:8px 14px" data-club="${escapeHtml(club)}" onclick="confirmEditClub(this)"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:middle"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4Z"/></svg></button>
@@ -7217,11 +7222,11 @@ function nav(id) {
   if (id === 'settings') {
     updateThemeIcon();
     updateScorecardSymbolsToggle();
+    updateRightBarColorsToggle();
     updateProgressToggleBtn();
     updateBadWeatherToggle();
     updateQuickGroupingToggle();
     updateActionsAlwaysVisibleToggle();
-    updateClubActionsAlwaysVisibleToggle();
     updateLowHiInput();
     updatePlayer2Summaries();
     window.scrollTo(0, 0);
@@ -7294,9 +7299,9 @@ function toggleTheme() {
   storage.setItem('golf_theme', dark ? 'dark' : 'light');
 }
 
-// Scorekaart-symbolen (cirkel/vierkant om het cijfer op het Score-tabblad): standaard aan.
+// Scorekaart-symbolen (cirkel/vierkant om het cijfer op het Score-tabblad): standaard uit.
 function scorecardSymbolsEnabled() {
-  return storage.getItem('golf_scorecard_symbols') !== 'off'; // afwezig = aan
+  return storage.getItem('golf_scorecard_symbols') === 'on'; // afwezig = uit
 }
 function updateScorecardSymbolsToggle() {
   const cb = document.getElementById('scorecardSymbolsToggle');
@@ -7307,6 +7312,26 @@ function toggleScorecardSymbols() {
   const on = cb ? cb.checked : !scorecardSymbolsEnabled();
   storage.setItem('golf_scorecard_symbols', on ? 'on' : 'off');
   renderScore();
+}
+
+// Scorekleuren rechts in scoretabel: standaard uit. Uit: rechterbalkje toont geen
+// categoriekleur, maar wordt bij de geselecteerde hole goud (net als het linkerbalkje).
+// Aan: rechterbalkje toont de scorecategorie-kleur. Experimenteel.
+function rightBarColorsEnabled() {
+  return storage.getItem('golf_right_bar_colors') === 'on'; // afwezig = uit
+}
+function updateRightBarColorsToggle() {
+  const cb = document.getElementById('rightBarColorsToggle');
+  if (cb) cb.checked = rightBarColorsEnabled();
+}
+function toggleRightBarColors() {
+  const cb = document.getElementById('rightBarColorsToggle');
+  const on = cb ? cb.checked : !rightBarColorsEnabled();
+  storage.setItem('golf_right_bar_colors', on ? 'on' : 'off');
+  document.documentElement.classList.toggle('right-bar-no-colors', !on);
+  renderScore();
+  loadSaved();
+  buildClubList();
 }
 
 // Voortgangsindicator aan/uit (standaard uit)
@@ -7577,6 +7602,9 @@ document.addEventListener('focusin', (e) => {
 
   if (storage.getItem('golf_theme') !== 'dark') {
     document.documentElement.classList.add('light-mode');
+  }
+  if (!rightBarColorsEnabled()) {
+    document.documentElement.classList.add('right-bar-no-colors');
   }
   updateThemeIcon();
   updateProgressToggleBtn();
@@ -7907,7 +7935,7 @@ document.addEventListener('focusin', (e) => {
         </div>
       </div>
       <div class="chcp-override-row hidden" id="editChcpOverrideRow" style="margin-top:8px">
-        <span class="info-msg" style="color:var(--info-purple)">Aangepast</span>
+        <span class="info-msg" style="color:var(--info-grey)">Aangepast</span>
         <button class="btn-secondary" style="padding:8px 14px;opacity:.6" onclick="resetEditChcp()"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:middle"><path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/><path d="M3 3v5h5"/></svg></button>
       </div>
     </div>
