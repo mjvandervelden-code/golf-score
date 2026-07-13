@@ -481,8 +481,6 @@
 </head>
 <body>
 
-<div id="debugScrollInfo" style="position:fixed;top:2px;left:2px;right:2px;z-index:9999;background:rgba(0,0,0,.85);color:#0f0;font-size:10px;font-family:monospace;padding:3px 6px;border-radius:4px;pointer-events:none;word-break:break-all"></div>
-
 <header>
   <div class="hdr-top-row">
     <h1><span id="hdrClubName"></span></h1>
@@ -897,32 +895,6 @@ function setRealVH() {
 }
 setRealVH();
 window.addEventListener('resize', setRealVH);
-
-// TIJDELIJK — diagnose voor het scroll-op-lege-schermen-probleem. Toont keihard de
-// werkelijke pagina-hoogte vs. de viewport-hoogte, i.p.v. dat we dit van screenshots
-// moeten aflezen. Wordt weer verwijderd zodra de oorzaak gevonden is.
-function updateDebugScrollInfo() {
-  const el = document.getElementById('debugScrollInfo');
-  if (!el) return;
-  const sH = document.documentElement.scrollHeight;
-  const vH = window.innerHeight;
-  const activeScreen = document.querySelector('.screen.active, .screen[style*="display: block"], .screen[style*="display:block"]');
-  const screenId = activeScreen ? activeScreen.id : '?';
-  const headerH = document.querySelector('header')?.getBoundingClientRect().height ?? -1;
-  const tabsH = document.querySelector('.tabs')?.getBoundingClientRect().height ?? -1;
-  const screenH = activeScreen?.getBoundingClientRect().height ?? -1;
-  // Elk direct kind van body met een noemenswaardige hoogte, om het element buiten
-  // header/scherm/tabs te vinden dat de extra ruimte veroorzaakt.
-  const others = Array.from(document.body.children)
-    .filter(c => c !== document.querySelector('header') && c !== document.querySelector('.tabs') && !c.classList.contains('screen') && c.id !== 'debugScrollInfo')
-    .map(c => { const h = Math.round(c.getBoundingClientRect().height); return h > 3 ? `${c.tagName.toLowerCase()}#${c.id||'-'}.${[...c.classList].join('.')||'-'}:${h}` : null; })
-    .filter(Boolean);
-  const bodyH = document.body.getBoundingClientRect().height;
-  el.innerHTML = `[DEBUG-V8] ${screenId} | sH:${sH} vH:${vH} bodyH:${Math.round(bodyH)} Δ:${sH - vH}<br>hdr:${Math.round(headerH)} tabs:${Math.round(tabsH)} scr:${Math.round(screenH)} sum:${Math.round(headerH+screenH)}<br>${others.length ? others.join(' | ') : 'geen andere body-kinderen >3px'}`;
-}
-window.addEventListener('load', updateDebugScrollInfo);
-window.addEventListener('resize', updateDebugScrollInfo);
-setInterval(updateDebugScrollInfo, 500);
 
 // ══ EXACTE BAANDATA uit mvgolfcourses.json ══════════════════════════════
 const CLUBS = {};;
