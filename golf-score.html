@@ -900,7 +900,10 @@ function updateDebugScrollInfo() {
   const cH = document.documentElement.clientHeight;
   const activeScreen = document.querySelector('.screen.active, .screen[style*="display: block"], .screen[style*="display:block"]');
   const screenId = activeScreen ? activeScreen.id : '?';
-  el.textContent = `${screenId} | sH:${sH} vH:${vH} cH:${cH} Δ:${sH - vH}`;
+  const headerH = document.querySelector('header')?.getBoundingClientRect().height ?? -1;
+  const tabsH = document.querySelector('.tabs')?.getBoundingClientRect().height ?? -1;
+  const screenH = activeScreen?.getBoundingClientRect().height ?? -1;
+  el.innerHTML = `${screenId} | sH:${sH} vH:${vH} Δ:${sH - vH}<br>hdr:${Math.round(headerH)} tabs:${Math.round(tabsH)} scr:${Math.round(screenH)} sum:${Math.round(headerH+screenH)}`;
 }
 window.addEventListener('load', updateDebugScrollInfo);
 window.addEventListener('resize', updateDebugScrollInfo);
