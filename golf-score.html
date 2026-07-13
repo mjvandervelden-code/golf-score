@@ -903,7 +903,7 @@ function updateDebugScrollInfo() {
   const headerH = document.querySelector('header')?.getBoundingClientRect().height ?? -1;
   const tabsH = document.querySelector('.tabs')?.getBoundingClientRect().height ?? -1;
   const screenH = activeScreen?.getBoundingClientRect().height ?? -1;
-  el.innerHTML = `${screenId} | sH:${sH} vH:${vH} Δ:${sH - vH}<br>hdr:${Math.round(headerH)} tabs:${Math.round(tabsH)} scr:${Math.round(screenH)} sum:${Math.round(headerH+screenH)}`;
+  el.innerHTML = `[DEBUG-V3] ${screenId} | sH:${sH} vH:${vH} Δ:${sH - vH}<br>hdr:${Math.round(headerH)} tabs:${Math.round(tabsH)} scr:${Math.round(screenH)} sum:${Math.round(headerH+screenH)}`;
 }
 window.addEventListener('load', updateDebugScrollInfo);
 window.addEventListener('resize', updateDebugScrollInfo);
