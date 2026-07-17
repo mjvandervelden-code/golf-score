@@ -822,7 +822,7 @@
     </div>
   </div>
 
-  <div style="font-size:20px;font-weight:800;color:var(--gold);text-transform:uppercase;letter-spacing:.7px;padding:16px 0 8px;margin-bottom:4px;display:flex;align-items:center;gap:8px">Clubs &amp; Rondes <span style="text-transform:none;font-weight:400">(<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:-3px"><path d="M5 3v18"/><path d="M5 4h11l-2 4 2 4H5"/></svg>)</span></div>
+  <div style="font-size:20px;font-weight:800;color:var(--gold);text-transform:uppercase;letter-spacing:.7px;padding:16px 0 8px;margin-bottom:4px;display:flex;align-items:center;gap:8px">Clubs &amp; Rondes <span style="text-transform:none;font-weight:400">(<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:-3px"><path d="M5 3v18"/><path d="M5 4h11l-2 4 2 4H5"/></svg> &amp; <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:-3px"><path d="M3 7v12a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V9a2 2 0 0 0-2-2h-7l-2-2H5a2 2 0 0 0-2 2Z"/></svg>)</span></div>
   <div class="card">
     <div style="display:flex;align-items:center;justify-content:space-between;gap:12px">
       <div>
@@ -846,7 +846,6 @@
   <div style="text-align:center;padding-bottom:8px">
     <div id="resetAllMsg" class="hidden error-msg" style="font-size:15px;font-weight:700;color:var(--red);margin-bottom:8px">Tik nogmaals om te bevestigen</div>
     <button id="resetAllBtn" class="btn-secondary" style="padding:6px 12px;font-size:15px;color:var(--muted)" onclick="confirmResetAll(this)">Alles wissen</button>
-    <div style="font-size:13px;color:var(--muted);margin-top:14px;opacity:.7">versie 1.0</div>
   </div>
 </div>
 
@@ -2359,8 +2358,12 @@ function closeConfirmModal() {
   }
 }
 
-function showConfirmModal(title, msg, onConfirm, cancelText = 'Sluiten', onCancel = null, confirmText = null) {
-  document.getElementById('confirmModalTitle').textContent = title;
+function showConfirmModal(title, msg, onConfirm, cancelText = 'Sluiten', onCancel = null, confirmText = null, titleColor = null) {
+  const titleEl = document.getElementById('confirmModalTitle');
+  titleEl.textContent = title;
+  // Titelkleur altijd expliciet gezet — ook het standaardgeval — want confirmModalTitle
+  // is één gedeeld element dat door alle aanroepen van showConfirmModal wordt hergebruikt.
+  titleEl.style.color = titleColor ? `var(--${titleColor})` : '';
   document.getElementById('confirmModalMessage').textContent = msg;
   const btn = document.getElementById('confirmModalBtn');
   btn.style.display = onConfirm ? '' : 'none';
@@ -2376,8 +2379,8 @@ function showConfirmModal(title, msg, onConfirm, cancelText = 'Sluiten', onCance
   document.getElementById('confirmModal').classList.remove('hidden');
 }
 
-function showInfoModal(title, msg) {
-  showConfirmModal(title, msg, null, 'Sluiten');
+function showInfoModal(title, msg, titleColor = null) {
+  showConfirmModal(title, msg, null, 'Sluiten', null, null, titleColor);
 }
 
 // Hergebruikt de bestaande, degelijke rode waarschuwingsmodal (voorheen alleen 'Alles
@@ -5067,7 +5070,7 @@ function loadRoundAsSecondPlayer(i) {
   const saved = loadSavedRounds();
   const r = saved[i];
   if (isPlayer2NameConflict(r.player)) {
-    showInfoModal('Niet mogelijk', 'Deze ronde is van speler 1 en kan niet als speler 2 worden gekoppeld.');
+    showInfoModal('Niet mogelijk', 'Deze ronde is van speler 1 en kan niet als speler 2 worden gekoppeld.', 'orange');
     return;
   }
   clearImportedFlag(r.id);
@@ -5107,7 +5110,7 @@ function loadRoundAsCouple(i, matchId) {
   const r = saved[i];
   const matchRound = saved.find(x => x.id === matchId);
   if (matchRound && isPlayer2NameConflict(matchRound.player)) {
-    showInfoModal('Niet mogelijk', 'De te koppelen ronde is van speler 1 en kan niet als speler 2 worden gekoppeld.');
+    showInfoModal('Niet mogelijk', 'De te koppelen ronde is van speler 1 en kan niet als speler 2 worden gekoppeld.', 'orange');
     return;
   }
   clearImportedFlag(r.id);
@@ -6782,7 +6785,7 @@ function buildClubList() {
     return `
     <div class="card" style="margin-bottom:10px${isActive ? ';border-left:3px solid var(--gold);border-right:3px solid var(--gold)' : ''}">
       <div style="font-size:20px;font-weight:700;overflow-wrap:break-word;color:${isActive ? 'var(--gold)' : 'var(--white)'};cursor:pointer" onclick="toggleClubActions(event, this.closest('.card'))">${escapeHtml(club)}</div>
-      <div style="font-size:20px;font-weight:700;overflow-wrap:break-word;color:${isActive ? 'var(--gold)' : 'var(--white)'};margin-top:4px;cursor:pointer" onclick="toggleClubActions(event, this.closest('.card'))">Kort: ${escapeHtml(shortName || '—')}</div>
+      <div style="font-size:20px;font-weight:700;overflow-wrap:break-word;color:var(--white);margin-top:4px;cursor:pointer" onclick="toggleClubActions(event, this.closest('.card'))">Kort: ${escapeHtml(shortName || '—')}</div>
       <div style="display:flex;align-items:center;cursor:pointer;line-height:1;margin-top:4px" onclick="toggleCourseList(this)">
         <span style="flex:1;font-size:20px;font-weight:700;color:var(--green-light)">Banen</span>
         <span style="font-size:20px;font-weight:700;color:var(--green-light);margin-left:8px">${sortedCourseEntries.length}</span>
@@ -7225,6 +7228,7 @@ function importCourseData(input) {
 
 // ══ NAV ══════════════════════════════════════════════════════════════════
 function nav(id) {
+  const previousScreen = document.querySelector('.screen.active')?.id.replace('screen-', '');
   document.querySelectorAll('.tab').forEach(b => b.classList.remove('active'));
   const tabEl = document.getElementById('tab-' + id);
   if (tabEl) tabEl.classList.add('active');
@@ -7260,10 +7264,18 @@ function nav(id) {
     if (warnEl) warnEl.classList.toggle('hidden', !isFarFutureDate(document.getElementById('iDate').value || ''));
   }
   if (id === 'score' || id === 'stat') {
-    // Bij 18 holes: ga naar het subtab van de huidige hole
-    if (game.started && game.holes.length === 18) {
+    // Bij 18 holes en een nog niet-afgeronde ronde: ga naar het subtab van de huidige
+    // hole — maar alleen als je van écht buiten Score/Statistieken komt (bv. vanuit
+    // Archief). Bij het heen-en-weer wisselen tussen Score en Statistieken zelf blijft
+    // de zelf-gekozen nine (bv. via swipen) met rust, anders wordt die daar steeds
+    // door overschreven.
+    const hasActiveHole = game.holes.some(h => h.score === null);
+    const fromOutside = previousScreen !== 'score' && previousScreen !== 'stat';
+    if (game.started && game.holes.length === 18 && hasActiveHole && fromOutside) {
       const targetNine = currentHole >= 9 ? 1 : 0;
-      if (currentNine !== targetNine) selectNine(targetNine);
+      if (currentNine !== targetNine) {
+        selectNine(targetNine);
+      }
     }
     renderScore();
     window.scrollTo(0, 0);
@@ -7295,18 +7307,13 @@ function nav(id) {
 
 // ══ SWIPE NAVIGATIE ═════════════════════════════════════════════════════
 const TAB_ORDER = ['club', 'setup', 'score', 'stat', 'archive', 'settings'];
-let swipeStartX = 0, swipeStartY = 0, swipeTracking = false, swipeOnSubtab = false, swipeOnHeader = false;
+let swipeStartX = 0, swipeStartY = 0, swipeTracking = false;
 
 document.addEventListener('touchstart', e => {
   if (e.touches.length !== 1) return;
   swipeStartX = e.touches[0].clientX;
   swipeStartY = e.touches[0].clientY;
   swipeTracking = true;
-  // Detecteer of swipe start op score-tabel of nineTabBar
-  const target = e.target.closest('#sumTable, #nineTabBar');
-  swipeOnSubtab = !!target;
-  // Detecteer of swipe start op header (voor spelerwisseling)
-  swipeOnHeader = !!e.target.closest('header');
 }, { passive: true });
 
 document.addEventListener('touchend', e => {
@@ -7316,29 +7323,39 @@ document.addEventListener('touchend', e => {
   const dy = e.changedTouches[0].clientY - swipeStartY;
   if (Math.abs(dx) < 60 || Math.abs(dx) < Math.abs(dy) * 1.5) return;
 
-  // Header swipe: wissel speler als er twee spelers zijn
-  if (swipeOnHeader && game2Id && game.started) {
-    if (dx < 0) switchToPlayer(2);      // links = speler 2
-    else         switchToPlayer(1);      // rechts = speler 1
-    return;
-  }
-
   const current = document.querySelector('.screen.active')?.id.replace('screen-', '');
   const idx = TAB_ORDER.indexOf(current);
   if (idx < 0) return;
 
-  // Subtab logica: alleen op score-scherm met zichtbare nineTabBar
-  const nineTabBar = document.getElementById('nineTabBar');
-  const hasSubtabs = current === 'score' && nineTabBar && !nineTabBar.classList.contains('hidden');
-
-  if (swipeOnSubtab && hasSubtabs) {
-    if (dx < 0 && currentNine === 0) {
-      selectNine(1);
-      return;
-    } else if (dx > 0 && currentNine === 1) {
-      selectNine(0);
-      return;
+  if (current === 'score') {
+    // 1) Holes wisselen (heen/terug 9), indien van toepassing (18 holes). Rechtstreeks op
+    // game.holes.length gebaseerd i.p.v. op de DOM-zichtbaarheid van nineTabBar, want die
+    // kan vlak na een spelerwissel nog de vorige speler weerspiegelen.
+    const hasSubtabs = game.started && game.holes.length === 18;
+    if (hasSubtabs) {
+      if (dx < 0 && currentNine === 0) { selectNine(1); return; }
+      if (dx > 0 && currentNine === 1) { selectNine(0); return; }
     }
+    // 2) Speler wisselen, indien van toepassing (twee spelers actief). De nine van de
+    // nieuwe speler wordt daarbij bewust op de 'spiegel'-startpositie gezet (i.p.v. de
+    // nine van de vorige speler te laten staan), zodat de swipe-richting één doorlopende,
+    // voorspelbare volgorde vormt: bv. rechts-swipen loopt steeds terug->heen per speler,
+    // en gaat na de heen-negen van speler A verder bij de terug-negen van speler B. De nine
+    // wordt na (niet vóór) switchToPlayer geforceerd, zodat niets dat switchToPlayer intern
+    // doet deze waarde nog kan overschrijven.
+    if (game2Id && game.started) {
+      if (dx < 0 && activePlayer !== 2) {
+        switchToPlayer(2);
+        if (hasSubtabs && game.holes.length === 18) selectNine(0);
+        return;
+      }
+      if (dx > 0 && activePlayer !== 1) {
+        switchToPlayer(1);
+        if (hasSubtabs && game.holes.length === 18) selectNine(1);
+        return;
+      }
+    }
+    // 3) Anders gewoon van hoofdtab wisselen, hieronder samen met de andere schermen
   }
 
   if (dx < 0 && idx < TAB_ORDER.length - 1) nav(TAB_ORDER[idx + 1]);
