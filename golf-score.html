@@ -847,7 +847,7 @@
     <div id="exportFolderUnsupported" class="hidden" style="font-size:15px;color:var(--muted);margin-bottom:8px">Mapkeuze wordt niet ondersteund op dit toestel/deze browser — exports gaan naar Downloads.</div>
     <div class="export-folder-success hidden" style="font-size:17px;font-weight:700;color:var(--green-light);text-align:right;margin-bottom:8px"></div>
     <button id="pickExportFolderBtn" class="btn-secondary" style="width:100%;padding:8px 14px;font-size:17px" onclick="pickExportFolder()">Map kiezen…</button>
-    <button id="clearExportFolderBtn" class="btn-secondary hidden" style="width:100%;padding:8px 14px;font-size:17px;margin-top:12px" onclick="clearExportFolder()">Terug naar standaard</button>
+    <button id="clearExportFolderBtn" class="btn-secondary hidden" style="width:100%;padding:8px 14px;font-size:17px;margin-top:12px" onclick="clearExportFolder()">Terug naar standaard map</button>
     <div class="export-clubs-success hidden" style="font-size:17px;font-weight:700;color:var(--green-light);text-align:right;margin-top:12px"></div>
     <button class="btn-secondary" style="width:100%;padding:8px 14px;font-size:17px;margin-top:12px" onclick="exportAllClubs()">Exporteer <b>clubs</b></button>
     <div class="export-rounds-success hidden" style="font-size:17px;font-weight:700;color:var(--green-light);text-align:right;margin-top:12px"></div>
@@ -6932,15 +6932,15 @@ async function updateExportFolderUI() {
     if (unsupportedEl) unsupportedEl.classList.remove('hidden');
     if (pickBtn) pickBtn.classList.add('hidden');
     if (clearBtn) clearBtn.classList.add('hidden');
-    if (nameEl) nameEl.textContent = 'Downloads (standaard)';
+    if (nameEl) { nameEl.textContent = 'Downloads (standaard)'; nameEl.style.color = ''; }
     return;
   }
   const handle = await getStoredExportFolderHandle();
   if (handle) {
-    if (nameEl) nameEl.textContent = handle.name;
+    if (nameEl) { nameEl.textContent = handle.name; nameEl.style.color = 'var(--green-light)'; }
     if (clearBtn) clearBtn.classList.remove('hidden');
   } else {
-    if (nameEl) nameEl.textContent = 'Downloads (standaard)';
+    if (nameEl) { nameEl.textContent = 'Downloads (standaard)'; nameEl.style.color = ''; }
     if (clearBtn) clearBtn.classList.add('hidden');
   }
 }
