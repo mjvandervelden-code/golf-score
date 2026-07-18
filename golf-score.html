@@ -515,7 +515,7 @@
   <div class="card" id="playerCard">
     <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px">
       <h2 style="margin:0" id="player1Heading">Speler</h2>
-      <button class="btn-secondary" id="addPlayer2Btn" onclick="togglePlayer2()" style="padding:8px 14px;font-size:20px" title="Speler 2 toevoegen"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:middle"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="16"/><line x1="8" y1="12" x2="16" y2="12"/></svg></button>
+      <button class="btn-secondary" id="addPlayer2Btn" onclick="togglePlayer2()" style="padding:8px 14px;font-size:20px" title="Speler 2 toevoegen"><svg id="addPlayer2IconPlus" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:middle"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="16"/><line x1="8" y1="12" x2="16" y2="12"/></svg><svg id="addPlayer2IconMinus" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:middle" class="hidden"><circle cx="12" cy="12" r="10"/><line x1="8" y1="12" x2="16" y2="12"/></svg></button>
     </div>
     <div class="fg">
       <label>Naam</label>
@@ -536,14 +536,12 @@
 
   <div class="card hidden" id="player2Card">
     <div style="display:flex;flex-direction:column;margin-bottom:12px">
-      <div id="player2CloseMsg" class="hidden orange-msg" style="font-size:20px;font-weight:700;color:var(--orange);margin-bottom:6px;text-align:right">Tik nogmaals om te bevestigen</div>
       <div id="player2FavMsg" class="hidden" style="font-size:20px;font-weight:700;color:var(--green-light);margin-bottom:6px;text-align:right"></div>
       <div style="display:flex;align-items:center;justify-content:space-between">
         <h2 style="margin:0">Speler 2</h2>
         <div style="display:flex;gap:6px;align-items:center">
           <button class="btn-secondary" id="favPlayer2Btn" onclick="fillPlayer2('fav')" style="padding:8px 14px" title="Favoriete speler 2 invullen"><svg id="favPlayer2Icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:middle"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg></button>
           <button class="btn-secondary" id="defaultPlayer2Btn" onclick="fillPlayer2('default')" style="padding:8px 14px" title="Standaard speler 2 invullen"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:middle"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/><polyline points="16 11 18 13 22 9"/></svg></button>
-          <button class="btn-secondary" onclick="confirmTogglePlayer2(this)" style="padding:8px 14px" title="Speler 2 verwijderen"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:middle"><circle cx="12" cy="12" r="10"/><line x1="8" y1="12" x2="16" y2="12"/></svg></button>
         </div>
       </div>
     </div>
@@ -680,7 +678,7 @@
 <div id="screen-archive" class="screen">
   <div id="backupReminder" class="hidden orange-msg" style="display:flex;align-items:center;justify-content:space-between;gap:10px;font-size:20px;font-weight:700;color:var(--orange);margin-bottom:10px"></div>
   <div id="exportRoundsMsg" class="hidden orange-msg" style="font-size:20px;font-weight:700;color:var(--orange);text-align:right;margin-bottom:4px">Tik nogmaals om te bevestigen</div>
-  <div id="exportRoundsSuccess" class="hidden" style="font-size:20px;font-weight:700;color:var(--green-light);text-align:right;margin-bottom:4px"></div>
+  <div id="exportRoundsSuccess" class="export-rounds-success hidden" style="font-size:20px;font-weight:700;color:var(--green-light);text-align:right;margin-bottom:4px"></div>
   <div style="display:flex;gap:8px;align-items:center;margin-bottom:8px;justify-content:flex-end">
     <button id="archiveExportBtn" class="btn-secondary" style="padding:8px 14px" onclick="confirmExportAll(this, 'rounds')" title="Exporteer alle rondes"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:middle"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg></button>
     <button class="btn-secondary" style="padding:8px 14px" onclick="document.getElementById('importRoundFile').click()" title="Importeer ronde"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:middle"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg></button>
@@ -707,7 +705,7 @@
   </div>
   <div id="clubImportStatus" style="margin-bottom:10px;font-size:20px;font-weight:700;color:var(--green-light);display:none"></div>
   <div id="exportClubsMsg" class="hidden orange-msg" style="font-size:20px;font-weight:700;color:var(--orange);text-align:right;margin-bottom:4px">Tik nogmaals om te bevestigen</div>
-  <div id="exportClubsSuccess" class="hidden" style="font-size:20px;font-weight:700;color:var(--green-light);text-align:right;margin-bottom:4px"></div>
+  <div id="exportClubsSuccess" class="export-clubs-success hidden" style="font-size:20px;font-weight:700;color:var(--green-light);text-align:right;margin-bottom:4px"></div>
   <div style="display:flex;gap:8px;align-items:center;margin-bottom:8px">
     <div style="flex:1"></div>
     <button id="clubExportBtn" class="btn-secondary" style="padding:8px 14px" onclick="confirmExportAll(this, 'clubs')" title="Exporteer alle clubs"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg></button>
@@ -843,6 +841,18 @@
   </div>
 
   <div style="font-size:20px;font-weight:800;color:var(--gold);text-transform:uppercase;letter-spacing:.7px;padding:16px 0 8px;margin-bottom:4px">Data &amp; app</div>
+  <div class="card">
+    <div style="font-size:20px;font-weight:700;color:var(--white)">Standaard exportmap</div>
+    <div style="font-size:17px;color:var(--muted);margin-bottom:8px">Huidige map: <span id="exportFolderName" style="color:var(--white);font-weight:700">Downloads (standaard)</span></div>
+    <div id="exportFolderUnsupported" class="hidden" style="font-size:15px;color:var(--muted);margin-bottom:8px">Mapkeuze wordt niet ondersteund op dit toestel/deze browser — exports gaan naar Downloads.</div>
+    <div class="export-folder-success hidden" style="font-size:17px;font-weight:700;color:var(--green-light);text-align:right;margin-bottom:8px"></div>
+    <button id="pickExportFolderBtn" class="btn-secondary" style="width:100%;padding:8px 14px;font-size:17px" onclick="pickExportFolder()">Map kiezen…</button>
+    <button id="clearExportFolderBtn" class="btn-secondary hidden" style="width:100%;padding:8px 14px;font-size:17px;margin-top:12px" onclick="clearExportFolder()">Terug naar standaard</button>
+    <div class="export-clubs-success hidden" style="font-size:17px;font-weight:700;color:var(--green-light);text-align:right;margin-top:12px"></div>
+    <button class="btn-secondary" style="width:100%;padding:8px 14px;font-size:17px;margin-top:12px" onclick="exportAllClubs()">Exporteer <b>clubs</b></button>
+    <div class="export-rounds-success hidden" style="font-size:17px;font-weight:700;color:var(--green-light);text-align:right;margin-top:12px"></div>
+    <button class="btn-secondary" style="width:100%;padding:8px 14px;font-size:17px;margin-top:12px" onclick="exportAllRounds()">Exporteer <b>rondes</b></button>
+  </div>
   <div style="text-align:center;padding-bottom:8px">
     <div id="resetAllMsg" class="hidden error-msg" style="font-size:15px;font-weight:700;color:var(--red);margin-bottom:8px">Tik nogmaals om te bevestigen</div>
     <button id="resetAllBtn" class="btn-secondary" style="padding:6px 12px;font-size:15px;color:var(--muted)" onclick="confirmResetAll(this)">Alles wissen</button>
@@ -1552,29 +1562,6 @@ function buildTeeButtons2() {
   }
 }
 
-function confirmTogglePlayer2(btn) {
-  const msg = document.getElementById('player2CloseMsg');
-  if (btn.dataset.confirm !== '1') {
-    btn.dataset.confirm = '1';
-    btn.style.background = 'var(--orange)';
-    btn.style.borderColor = 'var(--orange)';
-    msg?.classList.remove('hidden');
-    clearTimeout(btn._confirmTimeout);
-    btn._confirmTimeout = setTimeout(() => {
-      btn.dataset.confirm = '0';
-      btn.style.background = '';
-      btn.style.borderColor = '';
-      msg?.classList.add('hidden');
-    }, 2000);
-    return;
-  }
-  btn.dataset.confirm = '0';
-  btn.style.background = '';
-  btn.style.borderColor = '';
-  msg?.classList.add('hidden');
-  togglePlayer2();
-}
-
 // Werkt alleen de zichtbaarheid van de speler-2-kaarten bij, op basis van
 // club-selectie (hasCourses) en player2Visible — zonder de volledige tracklijst te herbouwen.
 function updatePlayer2CardVisibility() {
@@ -1586,6 +1573,17 @@ function updatePlayer2CardVisibility() {
   if (chcp2Card) chcp2Card.style.display = (hasCourses && player2Visible) ? '' : 'none';
 }
 
+// Wisselt het + / − icoon en de titel van de speler-2-toggleknop, op basis van
+// player2Visible.
+function updateAddPlayer2Btn() {
+  const btn = document.getElementById('addPlayer2Btn');
+  const plus = document.getElementById('addPlayer2IconPlus');
+  const minus = document.getElementById('addPlayer2IconMinus');
+  if (btn) btn.title = player2Visible ? 'Speler 2 verwijderen' : 'Speler 2 toevoegen';
+  plus?.classList.toggle('hidden', player2Visible);
+  minus?.classList.toggle('hidden', !player2Visible);
+}
+
 function togglePlayer2() {
   player2Visible = !player2Visible;
   storage.setItem('golf_player2_visible', player2Visible ? '1' : '0');
@@ -1595,6 +1593,7 @@ function togglePlayer2() {
   document.getElementById('player1Heading').textContent = player2Visible ? 'Speler 1' : 'Speler';
   updatePlayer2Titles();
   updatePlayer2CardVisibility();
+  updateAddPlayer2Btn();
   if (player2Visible) {
     const name2 = document.getElementById('iName2');
     if (name2 && !name2.value) name2.value = 'Speler 2';
@@ -1633,6 +1632,7 @@ function restorePlayer2Visibility() {
     updatePlayer2Titles();
   }
   updatePlayer2CardVisibility();
+  updateAddPlayer2Btn();
 }
 
 function adjustChcp2(d) {
@@ -2961,8 +2961,11 @@ function renderScoreTable() {
     ? game.holes.map((h, i) => ({ h, i })).filter(({ i }) => currentNine === 0 ? i < 9 : i >= 9)
     : game.holes.map((h, i) => ({ h, i }));
 
-  // Bereken maximaal aantal bolletjes dynamisch
-  const maxDots = Math.max(1, ...holeSubset.map(({ h }) => Math.abs(h.phcp || 0)));
+  // Bereken maximaal aantal bolletjes dynamisch, op basis van ALLE holes van de ronde
+  // (dus bij 18 holes over beide negens heen) — niet alleen de nu zichtbare 9. Zo blijft
+  // de kolombreedte gelijk als je tussen heen/terug wisselt, en verspringt de uitlijning
+  // niet meer. Bij een 9-holesronde is dit vanzelf hetzelfde als voorheen.
+  const maxDots = Math.max(1, ...game.holes.map(h => Math.abs(h.phcp || 0)));
 
   // Alle scorecellen krijgen dezelfde (1 of 2 tekens brede) vaste breedte, zodat de
   // uitlijning niet verspringt zodra ergens een score van 10+ in beeld komt.
@@ -3059,27 +3062,12 @@ function renderPlayerStats() {
 
   const all = loadSavedRounds();
   const isDone = r => (r.playedCount ?? r.holes.filter(h => h.score !== null).length) >= (r.holesCount ?? r.holes.length);
-  const showAll = window._statsShowAll === true;
   const rounds = all
-    .filter(r => r.player === player && isDone(r) && (showAll || r.qualifying))
+    .filter(r => r.player === player && isDone(r) && r.qualifying)
     .sort((a, b) => new Date(`${a.date||'1970-01-01'}T${a.time||'00:00'}`) - new Date(`${b.date||'1970-01-01'}T${b.time||'00:00'}`));
 
-  // Beschikbaarheid van rondetypes voor het (de)activeren van de toggle-knoppen
-  const doneRounds = all.filter(r => r.player === player && isDone(r));
-  const hasQ = doneRounds.some(r => r.qualifying);
-  const hasNonQ = doneRounds.some(r => !r.qualifying);
-  const qDisabled = !hasQ;
-  const allDisabled = !hasNonQ;
-  const btnStyle = (active, disabled) => `flex:1;padding:10px;font-size:17px`
-    + (active && !disabled ? ';background:var(--gold);color:var(--green-deep)' : '')
-    + (disabled ? ';opacity:.4;pointer-events:none' : '');
-  const toggleBar = `<div style="display:flex;gap:8px;margin-bottom:12px">`
-    + `<button class="btn-secondary" style="${btnStyle(!showAll, qDisabled)}" ${qDisabled ? 'disabled' : ''} onclick="window._statsShowAll=false;renderPlayerStats()">Alleen qualifying</button>`
-    + `<button class="btn-secondary" style="${btnStyle(showAll, allDisabled)}" ${allDisabled ? 'disabled' : ''} onclick="window._statsShowAll=true;renderPlayerStats()">Alle rondes</button>`
-    + `</div>`;
-
   if (!rounds.length) {
-    el.innerHTML = `<div class="card"><h2>${escapeHtml(player)}</h2><div style="font-size:20px;color:var(--muted)">${showAll ? 'Geen <b>afgeronde</b> rondes.' : 'Geen <b>afgeronde</b> qualifying rondes.'}</div><div style="font-size:15px;color:var(--muted);margin-top:8px">Statistieken tonen alleen <b>afgeronde</b> rondes${showAll ? '' : ' (qualifying)'} van de speler die is ingevuld bij Start (<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:-2px"><circle cx="12" cy="5" r="2"/><path d="M12 7v6l-3 7"/><path d="M12 13l4 6"/><path d="M9 11l6-1"/></svg>). Klopt de naam niet, pas die dan aan.</div></div>`;
+    el.innerHTML = `<div class="card"><h2>${escapeHtml(player)}</h2><div style="font-size:20px;color:var(--muted)">Geen <b>afgeronde</b> qualifying rondes.</div><div style="font-size:15px;color:var(--muted);margin-top:8px">Statistieken tonen alleen <b>afgeronde</b> rondes (qualifying) van de speler die is ingevuld bij Start (<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:-2px"><circle cx="12" cy="5" r="2"/><path d="M12 7v6l-3 7"/><path d="M12 13l4 6"/><path d="M9 11l6-1"/></svg>). Klopt de naam niet, pas die dan aan.</div></div>`;
     return;
   }
 
@@ -3129,9 +3117,7 @@ function renderPlayerStats() {
   });
 
   // Kerngetallen
-  const last20 = showAll
-    ? [...rounds].reverse().slice(0, 20)
-    : last20Qualifying(player, all, storage.getItem('golf_active_id'), game2Id);
+  const last20 = last20Qualifying(player, all, storage.getItem('golf_active_id'), game2Id);
 
   // Periodekeuze voor de grafiek: 'l20' | 'jaar' | 'alles' (standaard laatste 20).
   // De reeksen worden volledig berekend en pas bij het tekenen afgesneden,
@@ -3223,9 +3209,9 @@ function renderPlayerStats() {
   const t1Avg = three(0), t2Avg = three(1), t3Avg = three(2);
 
   const kpi = (label, val, opts = {}) => `<div style="flex:1;min-width:90px;text-align:center"><div style="font-size:26px;font-weight:800;color:${opts.color || 'var(--green-light)'}">${val}${opts.suffix || ''}</div><div style="font-size:15px;color:var(--muted);text-transform:uppercase;letter-spacing:.5px">${label}</div></div>`;
-  // Verwachte hcp: grijs bij 'alle rondes'; oranje driehoekje bij 'alleen q' met onbevestigde meetellende SD
-  const hcpColor = showAll ? 'var(--muted)' : 'var(--green-light)';
-  const hcpTriangle = (!showAll && whs && whs.usedIds && whs.usedIds.size
+  // Verwachte hcp: oranje driehoekje bij onbevestigde meetellende SD
+  const hcpColor = 'var(--green-light)';
+  const hcpTriangle = (whs && whs.usedIds && whs.usedIds.size
     && last20.some(r => whs.usedIds.has(r.id) && !(r.sdFinal != null && r.sdFinal !== '' && isFinite(parseFloat(r.sdFinal)))))
     ? ' <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="var(--orange)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:middle"><path d="M10.29 3.86 1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>'
     : '';
@@ -3509,7 +3495,7 @@ function renderPlayerStats() {
   const formBody = trendRow + spreadRow + threeRow + nineRow;
   const formCard = formBody ? `<div class="card"><h2>Vorm &amp; consistentie</h2>${formBody}</div>` : '';
 
-  el.innerHTML = toggleBar + kpiRow + `<div class="card" id="sdChartCard"><h2>Dagresultaat en handicapverloop</h2>${periodBar}<div id="sdChart"></div><div style="display:flex;gap:16px;margin-top:8px;font-size:15px;color:var(--muted);flex-wrap:wrap"><span style="display:flex;align-items:center;gap:6px"><span style="width:14px;height:3px;background:var(--green-light);display:inline-block;border-radius:2px"></span>Dagresultaat</span><span style="display:flex;align-items:center;gap:6px"><span style="width:14px;height:3px;background:var(--gold);display:inline-block;border-radius:2px"></span>Handicap</span><span style="display:flex;align-items:center;gap:6px"><span style="width:14px;height:0;border-top:2px dashed var(--gold);display:inline-block"></span>Officieel (met cap)</span></div></div>` + distCard + hdCard + formCard + teeCard + parCard + trackCard;
+  el.innerHTML = kpiRow + `<div class="card" id="sdChartCard"><h2>Dagresultaat en handicapverloop</h2>${periodBar}<div id="sdChart"></div><div style="display:flex;gap:16px;margin-top:8px;font-size:15px;color:var(--muted);flex-wrap:wrap"><span style="display:flex;align-items:center;gap:6px"><span style="width:14px;height:3px;background:var(--green-light);display:inline-block;border-radius:2px"></span>Dagresultaat</span><span style="display:flex;align-items:center;gap:6px"><span style="width:14px;height:3px;background:var(--gold);display:inline-block;border-radius:2px"></span>Handicap</span><span style="display:flex;align-items:center;gap:6px"><span style="width:14px;height:0;border-top:2px dashed var(--gold);display:inline-block"></span>Officieel (met cap)</span></div></div>` + distCard + hdCard + formCard + teeCard + parCard + trackCard;
 
   // Grafiek tekenen (na invoegen in DOM)
   renderSdChart(sdView, hiView, capView);
@@ -6660,7 +6646,7 @@ function confirmResetAll(btn) {
   );
 }
 
-function doResetAll() {
+async function doResetAll() {
   ['golf_rounds','golf_clubs','golf_active_id','golf_game2_id','golf_default_club',
    'golf_fav_clubs','golf_player2_visible','golf_profile_name','golf_profile_hcp',
    'golf_gender','golf_profile_name2','golf_profile_hcp2','golf_fav_player2_name',
@@ -6679,6 +6665,8 @@ function doResetAll() {
       .filter(k => k.startsWith('golf_seen_low_hi_'))
       .forEach(k => localStorage.removeItem(k));
   } catch (e) { /* geen localStorage beschikbaar: niets te doen */ }
+  // Opgeslagen exportmap-handle staat in IndexedDB, niet in localStorage.
+  try { await setStoredExportFolderHandle(null); } catch (e) { /* niets te doen */ }
   location.reload();
 }
 
@@ -6868,7 +6856,118 @@ function confirmExportAll(btn, type) {
 }
 
 
-function exportAllRounds() {
+// ══ STANDAARD EXPORTMAP (optioneel, valt terug op Downloads) ═══════════
+// Een website kan Chrome's eigen downloadmap niet instellen — dat is een browser-
+// instelling. Dit is de enige manier om er toch iets als een 'standaardmap' voor te
+// bouwen: de File System Access API, waarbij de gebruiker zelf één keer een map
+// aanwijst en de app daar (via een handle) toestemming voor bewaart. Ondersteuning
+// hiervoor is wisselvallig op Android — als het niet werkt, gaat alles gewoon naar
+// Downloads, zoals voorheen.
+function exportFolderSupported() {
+  return 'showDirectoryPicker' in window;
+}
+
+// Kleine IndexedDB-opslag, want een FileSystemDirectoryHandle kan niet in
+// localStorage (die accepteert alleen strings).
+function exportFolderDB() {
+  return new Promise((resolve, reject) => {
+    const req = indexedDB.open('golf_export_folder_db', 1);
+    req.onupgradeneeded = () => req.result.createObjectStore('handles');
+    req.onsuccess = () => resolve(req.result);
+    req.onerror = () => reject(req.error);
+  });
+}
+async function getStoredExportFolderHandle() {
+  try {
+    const db = await exportFolderDB();
+    return await new Promise((resolve, reject) => {
+      const tx = db.transaction('handles', 'readonly');
+      const req = tx.objectStore('handles').get('folder');
+      req.onsuccess = () => resolve(req.result || null);
+      req.onerror = () => reject(req.error);
+    });
+  } catch { return null; }
+}
+async function setStoredExportFolderHandle(handle) {
+  const db = await exportFolderDB();
+  await new Promise((resolve, reject) => {
+    const tx = db.transaction('handles', 'readwrite');
+    if (handle) tx.objectStore('handles').put(handle, 'folder');
+    else tx.objectStore('handles').delete('folder');
+    tx.oncomplete = resolve;
+    tx.onerror = () => reject(tx.error);
+  });
+}
+
+async function pickExportFolder() {
+  if (!exportFolderSupported()) return;
+  try {
+    const handle = await window.showDirectoryPicker();
+    await setStoredExportFolderHandle(handle);
+    updateExportFolderUI();
+    showExportFolderMsg(`Map "${handle.name}" ingesteld`);
+  } catch (e) {
+    // Gebruiker annuleerde de kiezer — geen actie nodig
+  }
+}
+async function clearExportFolder() {
+  await setStoredExportFolderHandle(null);
+  updateExportFolderUI();
+  showExportFolderMsg('Teruggezet naar Downloads');
+}
+function showExportFolderMsg(text) {
+  document.querySelectorAll('.export-folder-success').forEach(el => {
+    el.textContent = text;
+    el.classList.remove('hidden');
+    clearTimeout(el._hideTimer);
+    el._hideTimer = setTimeout(() => el.classList.add('hidden'), 2000);
+  });
+}
+async function updateExportFolderUI() {
+  const nameEl = document.getElementById('exportFolderName');
+  const unsupportedEl = document.getElementById('exportFolderUnsupported');
+  const pickBtn = document.getElementById('pickExportFolderBtn');
+  const clearBtn = document.getElementById('clearExportFolderBtn');
+  if (!exportFolderSupported()) {
+    if (unsupportedEl) unsupportedEl.classList.remove('hidden');
+    if (pickBtn) pickBtn.classList.add('hidden');
+    if (clearBtn) clearBtn.classList.add('hidden');
+    if (nameEl) nameEl.textContent = 'Downloads (standaard)';
+    return;
+  }
+  const handle = await getStoredExportFolderHandle();
+  if (handle) {
+    if (nameEl) nameEl.textContent = handle.name;
+    if (clearBtn) clearBtn.classList.remove('hidden');
+  } else {
+    if (nameEl) nameEl.textContent = 'Downloads (standaard)';
+    if (clearBtn) clearBtn.classList.add('hidden');
+  }
+}
+
+// Probeert een bestand rechtstreeks in de gekozen map te schrijven. Geeft true terug
+// bij succes, false als er geen (bruikbare) map is ingesteld — de aanroeper valt dan
+// terug op de gewone download-methode (die naar Downloads gaat).
+async function tryWriteToExportFolder(filename, content) {
+  if (!exportFolderSupported()) return false;
+  const handle = await getStoredExportFolderHandle();
+  if (!handle) return false;
+  try {
+    if ((await handle.queryPermission({ mode: 'readwrite' })) !== 'granted') {
+      if ((await handle.requestPermission({ mode: 'readwrite' })) !== 'granted') return false;
+    }
+    const fileHandle = await handle.getFileHandle(filename, { create: true });
+    const writable = await fileHandle.createWritable();
+    await writable.write(content);
+    await writable.close();
+    return true;
+  } catch (e) {
+    console.error('Schrijven naar exportmap mislukt, terugvallen op Downloads:', e);
+    return false;
+  }
+}
+
+async function exportAllRounds() {
   const activeId = storage.getItem('golf_active_id');
   const all = loadSavedRounds();
   const saved = all.filter(r => {
@@ -6894,17 +6993,21 @@ function exportAllRounds() {
     return { ...clean, holes: r.holes.map(({ _initScore, ...h }) => h) };
   });
   const ts = new Date().toISOString().slice(0, 10).replace(/-/g, '');
+  const filename = `rondes_backup_${ts}.json`;
+  const json = JSON.stringify(data, null, 2);
   try {
-    const a = document.createElement('a');
-    a.href = 'data:application/json;charset=utf-8,' + encodeURIComponent(JSON.stringify(data, null, 2));
-    a.download = `rondes_backup_${ts}.json`;
-    a.click();
-    const successMsg = document.getElementById('exportRoundsSuccess');
-    if (successMsg) {
+    if (!(await tryWriteToExportFolder(filename, json))) {
+      const a = document.createElement('a');
+      a.href = 'data:application/json;charset=utf-8,' + encodeURIComponent(json);
+      a.download = filename;
+      a.click();
+    }
+    document.querySelectorAll('.export-rounds-success').forEach(successMsg => {
       successMsg.textContent = `${saved.length} ronde${saved.length !== 1 ? 's' : ''} geëxporteerd`;
       successMsg.classList.remove('hidden');
-      setTimeout(() => successMsg.classList.add('hidden'), 2000);
-    }
+      clearTimeout(successMsg._hideTimer);
+      successMsg._hideTimer = setTimeout(() => successMsg.classList.add('hidden'), 2000);
+    });
     // Back-upstatus vastleggen en herinnering verbergen
     storage.setItem('golf_last_backup_date', todayISO());
     storage.setItem('golf_last_backup_count', String(loadSavedRounds().length));
@@ -6949,7 +7052,7 @@ function updateBackupReminder() {
   }
 }
 
-function exportAllClubs() {
+async function exportAllClubs() {
   const clubs = Object.values(CLUBS);
   if (!clubs.length) {
     const msg = document.getElementById('exportClubsMsg');
@@ -6963,20 +7066,21 @@ function exportAllClubs() {
     return;
   }
   const ts = new Date().toISOString().slice(0, 10).replace(/-/g, '');
+  const filename = `clubs_backup_${ts}.json`;
+  const json = JSON.stringify(clubs, null, 2);
   try {
-    const a = document.createElement('a');
-    a.href = 'data:application/json;charset=utf-8,' + encodeURIComponent(JSON.stringify(clubs, null, 2));
-    a.download = `clubs_backup_${ts}.json`;
-    a.click();
-    const msg = document.getElementById('exportClubsMsg');
-    if (msg) {
-      const successMsg = document.getElementById('exportClubsSuccess');
-      if (successMsg) {
-        successMsg.textContent = `${clubs.length} club${clubs.length !== 1 ? 's' : ''} geëxporteerd`;
-        successMsg.classList.remove('hidden');
-        setTimeout(() => successMsg.classList.add('hidden'), 2000);
-      }
+    if (!(await tryWriteToExportFolder(filename, json))) {
+      const a = document.createElement('a');
+      a.href = 'data:application/json;charset=utf-8,' + encodeURIComponent(json);
+      a.download = filename;
+      a.click();
     }
+    document.querySelectorAll('.export-clubs-success').forEach(successMsg => {
+      successMsg.textContent = `${clubs.length} club${clubs.length !== 1 ? 's' : ''} geëxporteerd`;
+      successMsg.classList.remove('hidden');
+      clearTimeout(successMsg._hideTimer);
+      successMsg._hideTimer = setTimeout(() => successMsg.classList.add('hidden'), 2000);
+    });
   } catch(e) { console.error('Backup clubs mislukt:', e); }
 }
 
@@ -7294,6 +7398,7 @@ function nav(id) {
   if (id === 'settings') {
     updateThemeIcon();
     updateScorecardSymbolsToggle();
+    updateExportFolderUI();
     updateProgressToggleBtn();
     updateBadWeatherToggle();
     updateQuickGroupingToggle();
