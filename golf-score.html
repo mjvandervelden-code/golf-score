@@ -6317,6 +6317,23 @@ function openRoundInfoModal(idx) {
   doOpenRoundInfoModal(idx);
 }
 
+// Zelfde invoerfilter en klem/afrond-validatie als het hcp-veld bij Start (iHcp/iHcp2),
+// maar puur voor dit veld — geen WHS-herberekeningen, dit is enkel voor het rechtzetten
+// van administratiefoutjes achteraf.
+function onEditHcpInput(input) {
+  let v = input.value.replace(',', '.');
+  const m = v.match(/^-?\d*(\.\d?)?/);
+  if (m) input.value = m[0];
+}
+function onEditHcpBlur(input) {
+  if (input.value === '' || input.value === '-') return;
+  let num = parseFloat(input.value);
+  if (isNaN(num)) { input.value = ''; return; }
+  num = Math.min(54, Math.max(-10, num));
+  num = Math.round(num * 10) / 10;
+  input.value = String(num).replace('.', ',');
+}
+
 function doOpenRoundInfoModal(idx) {
   const saved = loadSavedRounds();
   const round = saved[idx];
@@ -6326,6 +6343,7 @@ function doOpenRoundInfoModal(idx) {
   document.getElementById('editDateInput').value = round.date || '';
   document.getElementById('editTimeInput').value = round.time || '';
   document.getElementById('editPlayerInput').value = round.player || '';
+  document.getElementById('editHcpInput').value = round.hcp != null && round.hcp !== '' ? String(round.hcp).replace('.', ',') : '';
   const activeId = storage.getItem('golf_active_id');
   const isActive = activeId && String(round.id) === activeId;
   _editChcpVal = isActive ? (game.chcp ?? round.chcp ?? 0) : (round.chcp ?? 0);
@@ -6513,10 +6531,13 @@ function applyRoundInfo(saved, round, date, time) {
   }
   const player = document.getElementById('editPlayerInput').value.trim() || _roundInfoOrig.player || round.player;
   const chcpVal = _editChcpVal;
+  const hcpRaw = document.getElementById('editHcpInput').value.trim().replace(',', '.');
+  const hcpVal = hcpRaw === '' ? null : parseFloat(hcpRaw);
   round.date = date;
   round.time = time;
   round.player = player;
   round.qualifying = document.getElementById('editQualifyToggle').checked;
+  if (hcpVal !== null && !isNaN(hcpVal)) round.hcp = hcpVal;
   const activeId = storage.getItem('golf_active_id');
   storage.setItem('golf_rounds', JSON.stringify(saved));
   if (activeId && String(round.id) === activeId) {
@@ -6524,6 +6545,7 @@ function applyRoundInfo(saved, round, date, time) {
     game.time = time;
     game.player = player;
     game.qualifying = round.qualifying;
+    if (hcpVal !== null && !isNaN(hcpVal)) game.hcp = hcpVal;
     if (chcpVal !== null && !isNaN(chcpVal)) {
       game.chcp = chcpVal;
       round.chcp = chcpVal;
@@ -8082,6 +8104,10 @@ document.addEventListener('focusin', (e) => {
           <input id="editTimeInput" type="time" onchange="if(!this.value && _roundInfoOrig) this.value=_roundInfoOrig.time||''">
         </div>
       </div>
+    </div>
+    <div class="fg" style="margin-bottom:14px">
+      <label>Hcp</label>
+      <input id="editHcpInput" class="field-input" type="text" inputmode="decimal" placeholder="—" style="text-align:left" oninput="onEditHcpInput(this)" onblur="onEditHcpBlur(this)">
     </div>
     <div class="fg" style="margin-bottom:20px">
       <label>Baanhandicap</label>
