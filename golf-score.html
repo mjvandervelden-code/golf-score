@@ -4789,12 +4789,18 @@ function loadSaved() {
         const oldStr = (oldVal != null && isFinite(oldVal)) ? fmt1(oldVal) : '—';
         let hcpFrag = '';
         if (isMainPlayer && t && t.newHcp != null) {
-          let arrowColor = 'currentColor';
+          let arrowColor = 'var(--muted)';
+          let arrowPath = '<line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/>'; // gelijk: rechts
           if (t.oldHcp != null) {
-            if (t.newHcp > t.oldHcp) arrowColor = 'var(--red)';
-            else if (t.newHcp < t.oldHcp) arrowColor = 'var(--green-light)';
+            if (t.newHcp > t.oldHcp) {
+              arrowColor = 'var(--red)';
+              arrowPath = '<line x1="12" y1="19" x2="12" y2="5"/><polyline points="5 12 12 5 19 12"/>'; // hoger: omhoog
+            } else if (t.newHcp < t.oldHcp) {
+              arrowColor = 'var(--green-light)';
+              arrowPath = '<line x1="12" y1="5" x2="12" y2="19"/><polyline points="5 12 12 19 19 12"/>'; // lager: omlaag
+            }
           }
-          const arrow = `<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="${arrowColor}" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:-1px;margin:0 2px"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>`;
+          const arrow = `<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="${arrowColor}" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:-1px;margin:0 2px">${arrowPath}</svg>`;
           hcpFrag = ` · ${oldStr}${arrow}${fmt1(t.newHcp)}`;
         } else if (oldStr !== '—') {
           hcpFrag = ` · ${oldStr}`;
