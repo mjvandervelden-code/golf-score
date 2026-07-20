@@ -4754,8 +4754,8 @@ function loadSaved() {
           ${(isCurrentPlayer ? (game.qualifying ?? r.qualifying) : r.qualifying) ? '<span class="tee-badge badge-q">Q</span>' : ''}
         </span>
       </div>
-      ${compact && showPlayerName ? `<div class="saved-meta">${playerSafe}${r.hcp != null ? ` · Hcp ${fmt1(r.hcp).replace('.', ',')}` : ''}</div>` : ''}
-      ${compact ? '' : `<div class="saved-meta" style="${isActive ? 'color:var(--gold)' : ''}">${playerSafe}${r.hcp != null ? ` · Hcp ${fmt1(r.hcp).replace('.', ',')}` : ''}${playerNumLabel}</div>`}
+      ${compact && showPlayerName ? `<div class="saved-meta">${playerSafe}${r.hcp != null ? ` · Hcp ${fmt1(r.hcp)}` : ''}</div>` : ''}
+      ${compact ? '' : `<div class="saved-meta" style="${isActive ? 'color:var(--gold)' : ''}">${playerSafe}${r.hcp != null ? ` · Hcp ${fmt1(r.hcp)}` : ''}${playerNumLabel}</div>`}
       ${compact ? '' : `<div class="saved-meta">${club}</div>`}
       ${compact ? '' : `<div class="saved-meta">${trackSafe}${par != null ? ` · Par ${par}` : ''} · ${holesCount} holes</div>`}
       ${compact ? '' : `<div class="saved-meta">${(r.gender || '').charAt(0)} · ${r.tee || '—'} · Chcp ${chcp ?? '—'}${totalStb != null ? ` · Stb ${totalStb}` : ''}</div>`}
@@ -6331,7 +6331,7 @@ function onEditHcpBlur(input) {
   if (isNaN(num)) { input.value = ''; return; }
   num = Math.min(54, Math.max(-10, num));
   num = Math.round(num * 10) / 10;
-  input.value = String(num).replace('.', ',');
+  input.value = String(num);
 }
 
 function doOpenRoundInfoModal(idx) {
@@ -6343,7 +6343,7 @@ function doOpenRoundInfoModal(idx) {
   document.getElementById('editDateInput').value = round.date || '';
   document.getElementById('editTimeInput').value = round.time || '';
   document.getElementById('editPlayerInput').value = round.player || '';
-  document.getElementById('editHcpInput').value = round.hcp != null && round.hcp !== '' ? String(round.hcp).replace('.', ',') : '';
+  document.getElementById('editHcpInput').value = round.hcp != null && round.hcp !== '' ? String(round.hcp) : '';
   const activeId = storage.getItem('golf_active_id');
   const isActive = activeId && String(round.id) === activeId;
   _editChcpVal = isActive ? (game.chcp ?? round.chcp ?? 0) : (round.chcp ?? 0);
