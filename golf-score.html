@@ -4705,6 +4705,31 @@ function loadSaved() {
     return;
   }
 
+  // Hcp-oud->nieuw per ronde, voor alle spelers (niet alleen speler 1), zodat elke
+  // kaart dit op de spelernaam-regel kan tonen. Zelfde sliding-window-methode (WHS-
+  // staffel, geen ESR/caps) als het handicapverloop in Statistieken.
+  const hcpTrendMap = {};
+  {
+    const isDoneForTrend = r => (r.playedCount ?? r.holes.filter(h => h.score !== null).length) >= (r.holesCount ?? r.holes.length);
+    const byPlayerForTrend = {};
+    saved.forEach(r => { (byPlayerForTrend[r.player] = byPlayerForTrend[r.player] || []).push(r); });
+    Object.keys(byPlayerForTrend).forEach(player => {
+      const qualAll = byPlayerForTrend[player]
+        .filter(r => r.qualifying && isDoneForTrend(r))
+        .sort((a, b) => new Date(`${a.date||'1970-01-01'}T${a.time||'00:00'}`) - new Date(`${b.date||'1970-01-01'}T${b.time||'00:00'}`));
+      qualAll.forEach((r, idx) => {
+        const window20 = qualAll.slice(0, idx + 1).slice(-20);
+        const sds = window20.map(x => { const e = effectiveSD(x); return e ? e.value : null; }).filter(v => v != null);
+        const staffel = whsStaffel(sds.length);
+        if (!staffel) return;
+        const avg = [...sds].sort((a, b) => a - b).slice(0, staffel.count).reduce((s, x) => s + x, 0) / staffel.count;
+        const newHcp = whsIndexRound(avg + staffel.adj);
+        const oldHcpVal = parseFloat(r.hcp);
+        hcpTrendMap[r.id] = { oldHcp: isFinite(oldHcpVal) ? oldHcpVal : null, newHcp };
+      });
+    });
+  }
+
   const makeCard = (r, i, compact = false, hcpInfo = null, showPlayerName = false) => {
     const club = escapeHtml(r.club || 'Onbekende club');
     const playerSafe = escapeHtml(r.player || '—');
@@ -4754,8 +4779,29 @@ function loadSaved() {
           ${(isCurrentPlayer ? (game.qualifying ?? r.qualifying) : r.qualifying) ? '<span class="tee-badge badge-q">Q</span>' : ''}
         </span>
       </div>
-      ${compact && showPlayerName ? `<div class="saved-meta">${playerSafe}${r.hcp != null ? ` · Hcp ${fmt1(r.hcp)}` : ''}</div>` : ''}
-      ${compact ? '' : `<div class="saved-meta" style="${isActive ? 'color:var(--gold)' : ''}">${playerSafe}${r.hcp != null ? ` · Hcp ${fmt1(r.hcp)}` : ''}${playerNumLabel}</div>`}
+      ${(() => {
+        // Pijltje + berekende nieuwe hcp alleen voor de hoofdspeler (dezelfde speler als
+        // in de Statistieken-samenvatting, dus die bij Start is ingevuld). Andere spelers
+        // krijgen altijd een streepje voor de nieuwe hcp, geen berekening.
+        const isMainPlayer = r.player === startPlayerName();
+        const t = hcpTrendMap[r.id];
+        const oldVal = r.hcp != null && r.hcp !== '' ? parseFloat(r.hcp) : null;
+        const oldStr = (oldVal != null && isFinite(oldVal)) ? fmt1(oldVal) : '—';
+        let hcpFrag = '';
+        if (isMainPlayer && t && t.newHcp != null) {
+          let arrowColor = 'currentColor';
+          if (t.oldHcp != null) {
+            if (t.newHcp > t.oldHcp) arrowColor = 'var(--red)';
+            else if (t.newHcp < t.oldHcp) arrowColor = 'var(--green-light)';
+          }
+          const arrow = `<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="${arrowColor}" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:-1px;margin:0 2px"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>`;
+          hcpFrag = ` · ${oldStr}${arrow}${fmt1(t.newHcp)}`;
+        } else if (oldStr !== '—') {
+          hcpFrag = ` · ${oldStr}`;
+        }
+        return `${compact && showPlayerName ? `<div class="saved-meta">${playerSafe}${hcpFrag}</div>` : ''}`
+          + `${compact ? '' : `<div class="saved-meta" style="${isActive ? 'color:var(--gold)' : ''}">${playerSafe}${hcpFrag}${playerNumLabel}</div>`}`;
+      })()}
       ${compact ? '' : `<div class="saved-meta">${club}</div>`}
       ${compact ? '' : `<div class="saved-meta">${trackSafe}${par != null ? ` · Par ${par}` : ''} · ${holesCount} holes</div>`}
       ${compact ? '' : `<div class="saved-meta">${(r.gender || '').charAt(0)} · ${r.tee || '—'} · Chcp ${chcp ?? '—'}${totalStb != null ? ` · Stb ${totalStb}` : ''}</div>`}
