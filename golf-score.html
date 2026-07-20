@@ -4754,8 +4754,8 @@ function loadSaved() {
           ${(isCurrentPlayer ? (game.qualifying ?? r.qualifying) : r.qualifying) ? '<span class="tee-badge badge-q">Q</span>' : ''}
         </span>
       </div>
-      ${compact && showPlayerName ? `<div class="saved-meta">${playerSafe}</div>` : ''}
-      ${compact ? '' : `<div class="saved-meta" style="${isActive ? 'color:var(--gold)' : ''}">${playerSafe}${playerNumLabel}</div>`}
+      ${compact && showPlayerName ? `<div class="saved-meta">${playerSafe}${r.hcp != null ? ` · Hcp ${fmt1(r.hcp).replace('.', ',')}` : ''}</div>` : ''}
+      ${compact ? '' : `<div class="saved-meta" style="${isActive ? 'color:var(--gold)' : ''}">${playerSafe}${r.hcp != null ? ` · Hcp ${fmt1(r.hcp).replace('.', ',')}` : ''}${playerNumLabel}</div>`}
       ${compact ? '' : `<div class="saved-meta">${club}</div>`}
       ${compact ? '' : `<div class="saved-meta">${trackSafe}${par != null ? ` · Par ${par}` : ''} · ${holesCount} holes</div>`}
       ${compact ? '' : `<div class="saved-meta">${(r.gender || '').charAt(0)} · ${r.tee || '—'} · Chcp ${chcp ?? '—'}${totalStb != null ? ` · Stb ${totalStb}` : ''}</div>`}
