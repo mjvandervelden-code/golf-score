@@ -7423,6 +7423,7 @@ function nav(id) {
       document.getElementById('iTime').value = initTime;
       sel.date = initDate;
       sel.time = initTime;
+      sel.dateTimeEdited = true;
       _setupDateInitDay = today;
       storage.setItem('golf_setup_date_day', today);
       storage.setItem('golf_setup_date', initDate);
@@ -7928,6 +7929,7 @@ document.addEventListener('focusin', (e) => {
     document.getElementById('iDateTime').value = savedDate + 'T' + savedTime;
     sel.date = savedDate;
     sel.time = savedTime;
+    sel.dateTimeEdited = true;
     _setupDateInitDay = today;
   } else {
     // Nieuwe dag of eerste gebruik: op nu zetten
@@ -7938,6 +7940,7 @@ document.addEventListener('focusin', (e) => {
     document.getElementById('iDateTime').value = dt;
     sel.date = initDate;
     sel.time = initTime;
+    sel.dateTimeEdited = true;
     _setupDateInitDay = today;
     storage.setItem('golf_setup_date_day', today);
     storage.setItem('golf_setup_date', initDate);
