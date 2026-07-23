@@ -317,7 +317,6 @@
     #screen-score:has(#nineTabBar:not(.hidden)) { padding-top: 0; }
     @keyframes pop { 0% { transform: scale(1.4); } 100% { transform: scale(1); } }
     .pop { animation: pop .22s ease; }
-    .ppar-plus    { grid-area: ppar; display: flex; align-items: center; align-self: center; justify-self: center; gap: 5px; }
     .ppar-dot     { width: 8px; height: 8px; border-radius: 50%; background: var(--green-light); flex-shrink: 0; }
     .ppar-dot-red { width: 8px; height: 8px; border-radius: 50%; background: transparent; border: 1px solid transparent; box-sizing: border-box; flex-shrink: 0; }
     .ppar-dot-neg { width: 8px; height: 8px; border-radius: 50%; background: transparent; border: 1.5px solid var(--green-light); box-sizing: border-box; flex-shrink: 0; }
@@ -677,11 +676,8 @@
 <!-- ARCHIEF -->
 <div id="screen-archive" class="screen">
   <div id="backupReminder" class="hidden orange-msg" style="display:flex;align-items:center;justify-content:space-between;gap:10px;font-size:20px;font-weight:700;color:var(--orange);margin-bottom:10px"></div>
-  <div id="exportRoundsMsg" class="hidden orange-msg" style="font-size:20px;font-weight:700;color:var(--orange);text-align:right;margin-bottom:4px">Tik nogmaals om te bevestigen</div>
-  <div id="exportRoundsSuccess" class="export-rounds-success hidden" style="font-size:20px;font-weight:700;color:var(--green-light);text-align:right;margin-bottom:4px"></div>
+  <div id="exportRoundsMsg" class="export-rounds-error hidden orange-msg" style="font-size:20px;font-weight:700;color:var(--orange);text-align:right;margin-bottom:4px"></div>
   <div style="display:flex;gap:8px;align-items:center;margin-bottom:8px;justify-content:flex-end">
-    <button id="archiveExportBtn" class="btn-secondary" style="padding:8px 14px" onclick="confirmExportAll(this, 'rounds')" title="Exporteer alle rondes"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:middle"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg></button>
-    <button class="btn-secondary" style="padding:8px 14px" onclick="document.getElementById('importRoundFile').click()" title="Importeer ronde"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:middle"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg></button>
     <button id="groupByTrackBtn" class="btn-secondary" style="padding:8px 14px" onclick="toggleGroupByTrack()" title="Groepeer op club"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:middle"><path d="M3 12h18"/><path d="M3 6l9-3 9 3"/><path d="M3 18l9 3 9-3"/></svg></button>
     <button class="btn-secondary" id="groupByPlayerBtn" style="padding:8px 14px" 
       onclick="toggleGroupByPlayer()"
@@ -694,7 +690,6 @@
   </div>
   <input type="file" id="importRoundFile" accept=".json" style="display:none" onchange="importRound(this)">
   <div id="archiveEmptyMsg" class="info-msg hidden" style="font-size:20px;color:var(--info-grey);font-weight:700;margin-bottom:8px">Geen rondes</div>
-  <div id="importRoundStatus" class="hidden" style="font-size:20px;font-weight:700;color:var(--green-light);margin-bottom:8px"></div>
   <div id="savedList"></div>
 </div>
 
@@ -703,16 +698,10 @@
   <div id="storageWarning" class="hidden" style="margin-bottom:14px;padding:12px 14px;background:rgba(192,57,43,.18);border-radius:var(--radius);border:2px solid var(--red);font-size:20px;font-weight:700;color:var(--red)">
     ⚠️ Wijzigingen blijven niet bewaard na het sluiten van de app (geen permanente opslag beschikbaar op dit toestel/deze browser).
   </div>
-  <div id="clubImportStatus" style="margin-bottom:10px;font-size:20px;font-weight:700;color:var(--green-light);display:none"></div>
-  <div id="exportClubsMsg" class="hidden orange-msg" style="font-size:20px;font-weight:700;color:var(--orange);text-align:right;margin-bottom:4px">Tik nogmaals om te bevestigen</div>
-  <div id="exportClubsSuccess" class="export-clubs-success hidden" style="font-size:20px;font-weight:700;color:var(--green-light);text-align:right;margin-bottom:4px"></div>
+  <div id="exportClubsMsg" class="export-clubs-error hidden orange-msg" style="font-size:20px;font-weight:700;color:var(--orange);text-align:right;margin-bottom:4px"></div>
   <div style="display:flex;gap:8px;align-items:center;margin-bottom:8px">
     <div style="flex:1"></div>
-    <button id="clubExportBtn" class="btn-secondary" style="padding:8px 14px" onclick="confirmExportAll(this, 'clubs')" title="Exporteer alle clubs"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg></button>
-    <label class="btn-secondary" style="padding:8px 14px;cursor:pointer" title="Importeer club">
-      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:middle"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
-      <input type="file" accept=".json" onchange="importCourseData(this)" style="display:none">
-    </label>
+    <input type="file" id="importClubFile" accept=".json" onchange="importCourseData(this)" style="display:none">
     <button class="btn-secondary" style="padding:8px 14px" onclick="createNewClub()" title="Nieuwe club"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:middle"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="16"/><line x1="8" y1="12" x2="16" y2="12"/></svg></button>
     <button id="clubGroupByCategoryBtn" class="btn-secondary" style="padding:8px 14px" onclick="toggleClubGroupByCategory()" title="Groepeer op categorie"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:middle"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/></svg></button>
     <button id="clubSearchBtn" class="btn-secondary" style="padding:8px 14px" onclick="var w=document.getElementById('clubSearchWrap');w.classList.toggle('hidden');this.style.background=w.classList.contains('hidden')?'':'var(--gold)';this.style.color=w.classList.contains('hidden')?'':'var(--green-deep)';if(!w.classList.contains('hidden'))document.getElementById('clubSearch').focus();else{document.getElementById('clubSearch').value='';buildClubList();}" title="Zoeken"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:middle"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg></button>
@@ -807,6 +796,16 @@
 
   <div style="font-size:20px;font-weight:800;color:var(--gold);text-transform:uppercase;letter-spacing:.7px;padding:16px 0 8px;margin-bottom:4px;display:flex;align-items:center;gap:8px">Handicap <span style="text-transform:none;font-weight:400">(<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:-3px"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg>)</span></div>
   <div class="card">
+    <div style="display:flex;align-items:flex-start;gap:10px">
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="var(--gold)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink:0;margin-top:2px"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg>
+      <div>
+        <div style="font-size:17px;color:var(--muted)">Net begonnen met de app? De hcp-berekening klopt pas volledig na <b>20 qualifying rondes</b>.</div>
+        <div class="more-toggle" onclick="toggleMoreInfo(this)">Meer uitleg<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="9 6 15 12 9 18"/></svg></div>
+        <div class="more-full">Het World Handicap System berekent je handicap altijd uit je laatste (maximaal) 20 échte qualifying-scores. Heb je nog geen 20 rondes in de app staan, dan rekent de app met wat er wél is — dat is op zich correct volgens de WHS-regels, maar kan afwijken van je officiële, elders opgebouwde handicap. Een los in te vullen 'beginhandicap' kan dit niet oplossen: de berekening heeft de losse dagresultaten nodig, niet alleen een eindgetal. Zodra je 20 rondes hebt ingevoerd, is het verschil vanzelf verdwenen.</div>
+      </div>
+    </div>
+  </div>
+  <div class="card">
     <div style="margin-bottom:8px">
       <div style="font-size:20px;font-weight:700;color:var(--white)">Low HI (365 dagen)</div>
       <div style="font-size:17px;color:var(--muted)">Begrenst hoe snel je handicap mag stijgen (WHS-caps). Leeg = automatisch afgeleid.</div>
@@ -847,11 +846,23 @@
     <div id="exportFolderUnsupported" class="hidden" style="font-size:15px;color:var(--muted);margin-bottom:8px">Mapkeuze wordt niet ondersteund op dit toestel/deze browser — exports gaan naar Downloads.</div>
     <div class="export-folder-success hidden" style="font-size:17px;font-weight:700;color:var(--green-light);text-align:right;margin-bottom:8px"></div>
     <button id="pickExportFolderBtn" class="btn-secondary" style="width:100%;padding:8px 14px;font-size:17px" onclick="pickExportFolder()">Map kiezen…</button>
-    <button id="clearExportFolderBtn" class="btn-secondary hidden" style="width:100%;padding:8px 14px;font-size:17px;margin-top:12px" onclick="clearExportFolder()">Terug naar standaard map</button>
-    <div class="export-clubs-success hidden" style="font-size:17px;font-weight:700;color:var(--green-light);text-align:right;margin-top:12px"></div>
-    <button class="btn-secondary" style="width:100%;padding:8px 14px;font-size:17px;margin-top:12px" onclick="exportAllClubs()">Exporteer <b>clubs</b></button>
+    <button id="clearExportFolderBtn" class="btn-secondary hidden" style="width:100%;padding:8px 14px;font-size:17px;margin-top:12px" onclick="clearExportFolder()">Standaard map</button>
+  </div>
+  <div class="card">
+    <div style="font-size:20px;font-weight:700;color:var(--white);margin-bottom:8px">Exporteren</div>
+    <div class="export-clubs-error hidden" style="font-size:17px;font-weight:700;color:var(--red);text-align:right;margin-bottom:8px"></div>
+    <div class="export-clubs-success hidden" style="font-size:17px;font-weight:700;color:var(--green-light);text-align:right;margin-bottom:8px"></div>
+    <button class="btn-secondary" style="width:100%;padding:8px 14px;font-size:17px" onclick="exportAllClubs()">Exporteer <b>clubs</b></button>
+    <div class="export-rounds-error hidden" style="font-size:17px;font-weight:700;color:var(--red);text-align:right;margin-top:12px"></div>
     <div class="export-rounds-success hidden" style="font-size:17px;font-weight:700;color:var(--green-light);text-align:right;margin-top:12px"></div>
     <button class="btn-secondary" style="width:100%;padding:8px 14px;font-size:17px;margin-top:12px" onclick="exportAllRounds()">Exporteer <b>rondes</b></button>
+  </div>
+  <div class="card">
+    <div style="font-size:20px;font-weight:700;color:var(--white);margin-bottom:8px">Importeren</div>
+    <div class="club-import-status" style="font-size:17px;font-weight:700;color:var(--green-light);margin-bottom:8px;display:none"></div>
+    <button class="btn-secondary" style="width:100%;padding:8px 14px;font-size:17px" onclick="document.getElementById('importClubFile').click()">Importeer <b>clubs</b></button>
+    <div class="import-round-status hidden" style="font-size:17px;font-weight:700;color:var(--green-light);margin-top:12px"></div>
+    <button class="btn-secondary" style="width:100%;padding:8px 14px;font-size:17px;margin-top:12px" onclick="document.getElementById('importRoundFile').click()">Importeer <b>rondes</b></button>
   </div>
   <div style="text-align:center;padding-bottom:8px">
     <div id="resetAllMsg" class="hidden error-msg" style="font-size:15px;font-weight:700;color:var(--red);margin-bottom:8px">Tik nogmaals om te bevestigen</div>
@@ -2826,7 +2837,7 @@ function renderScoreInfo(played, total, totalAgs, totalStb, rawFmt, rparPlayed, 
       ['ClubKort', clubShort],
       ['Baan',     game.track],
       ['Holes',    game.holes.length],
-      ['Par',      game.holes.reduce((s, h) => s + h.par, 0)],
+      ['PAR',      game.holes.reduce((s, h) => s + h.par, 0)],
       ['Geslacht', game.gender],
       ['Tee',      game.tee],
       ['Course Rating (CR)', game.CR ?? '—'],
@@ -2836,18 +2847,19 @@ function renderScoreInfo(played, total, totalAgs, totalStb, rawFmt, rparPlayed, 
       ['Holes',    played.length + ' / ' + game.holes.length + ' gespeeld'],
       ['Baanhandicap (Chcp)', game.chcp],
       ['Stableford (STB)',    played.length ? totalStb : '—'],
-      ['Bruto Score',         total + ' (' + rawFmt(dRaw) + ' vs par)'],
-      ['Netto Score',         netto + ' (' + rawFmt(dNetto) + ' vs ppar)'],
-      ['Aangepaste score (ABS)', played.length ? totalAgs : '—'],
+      ['Score', null],
+      ['Bruto (STR)',         total + ' (' + rawFmt(dRaw) + ' vs par)'],
+      ['Netto',               netto + ' (' + rawFmt(dNetto) + ' vs ppar)'],
+      ['Aangepast (AGS)',     played.length ? totalAgs : '—'],
+      ['PCC & Dagresultaat', null],
       ['Spelcondities (PCC)',    formatPcc(game.pcc ?? 0)],
-      ['Dagresultaat', null],
-      ['Voorlopig (Sd<span style="font-weight:900;margin:0 3px">≈</span>)', (() => {
+      ['Voorlopig (SD<span style="font-weight:900;margin:0 3px">≈</span>)', (() => {
         const done = game.holes.length > 0 && played.length === game.holes.length;
         if (!done) return '—';
         const c = computeSD({ holes: game.holes, CR: game.CR, SR: game.SR, hcp: game.hcp, pcc: game.pcc });
         return c ? `${fmt1(c.value)}` : '—';
       })()],
-      ['Vastgesteld (Sd<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="4" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:middle;margin:0 3px"><polyline points="20 6 9 17 4 12"/></svg>)', (game.sdFinal != null && game.sdFinal !== '' && isFinite(parseFloat(game.sdFinal))) ? fmt1(parseFloat(game.sdFinal)) : '—'],
+      ['Vastgesteld (SD<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="4" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:middle;margin:0 3px"><polyline points="20 6 9 17 4 12"/></svg>)', (game.sdFinal != null && game.sdFinal !== '' && isFinite(parseFloat(game.sdFinal))) ? fmt1(parseFloat(game.sdFinal)) : '—'],
     ]],
   ];
 
@@ -2858,7 +2870,7 @@ function renderScoreInfo(played, total, totalAgs, totalStb, rawFmt, rparPlayed, 
     rows.map(([label, value]) => {
       // value === null → groen subkopje binnen de sectie
       if (value === null) {
-        return `<div style="font-size:15px;font-weight:800;color:var(--green-light);text-transform:uppercase;letter-spacing:.6px;margin:10px 0 4px">${label}</div>`;
+        return `<div style="font-size:18px;font-weight:800;color:var(--green-light);text-transform:uppercase;letter-spacing:.6px;margin:10px 0 4px">${label}</div>`;
       }
       const cls = (alt++ % 2 === 1) ? ' alt' : '';
       return `<div class="sum-info-row${cls}">` +
@@ -3271,7 +3283,9 @@ function renderPlayerStats() {
     return `<div style="display:flex;align-items:center;gap:8px;margin-bottom:4px">`
       + `<span style="width:88px;flex:none;font-size:17px;color:var(--muted);white-space:nowrap">${label}</span>`
       + `<div style="flex:1;min-width:0;background:var(--overlay-soft);border-radius:6px;overflow:hidden;height:18px"><div style="width:${pct}%;height:100%;background:${color}"></div></div>`
-      + `<span style="width:88px;flex:none;text-align:right;font-size:17px;font-weight:700;white-space:nowrap">${n} · ${pct}%</span></div>`;
+      + `<span style="width:34px;flex:none;text-align:right;font-size:17px;font-weight:700;white-space:nowrap">${n}</span>`
+      + `<span style="width:10px;flex:none;text-align:center;font-size:17px;font-weight:700;color:var(--muted)">·</span>`
+      + `<span style="width:38px;flex:none;text-align:right;font-size:17px;font-weight:700;white-space:nowrap">${pct}%</span></div>`;
   };
   // Scoreverdeling-kleuren via CSS-vars (licht/donker). Par gebruikt het app-grijs --res-par.
   const distCard = `<div class="card"><h2>Scoreverdeling</h2>`
@@ -3383,7 +3397,9 @@ function renderPlayerStats() {
     return `<div style="display:flex;align-items:center;gap:8px;margin-bottom:4px">`
       + `<span style="width:88px;flex:none;font-size:17px;color:var(--muted);white-space:nowrap">${label}</span>`
       + `<div style="flex:1;min-width:0;background:var(--overlay-soft);border-radius:6px;overflow:hidden;height:18px"><div style="width:${pct}%;height:100%;background:var(--green-light)"></div></div>`
-      + `<span style="width:88px;flex:none;text-align:right;font-size:17px;font-weight:700;white-space:nowrap">${n} · ${pct}%</span></div>`;
+      + `<span style="width:34px;flex:none;text-align:right;font-size:17px;font-weight:700;white-space:nowrap">${n}</span>`
+      + `<span style="width:10px;flex:none;text-align:center;font-size:17px;font-weight:700;color:var(--muted)">·</span>`
+      + `<span style="width:38px;flex:none;text-align:right;font-size:17px;font-weight:700;white-space:nowrap">${pct}%</span></div>`;
   };
   const hdCard = distTot
     ? `<div class="card"><h2>Verdeling rond je handicap</h2>`
@@ -3622,12 +3638,12 @@ function buildScoreText(round) {
   lines.push('Holes: ' + round.holes.length);
   lines.push('Geslacht: ' + round.gender);
   lines.push('Tee: ' + round.tee);
-  lines.push('Qualifying: ' + (round.qualifying ? 'ja' : 'nee'));
   lines.push('');
   lines.push('Chcp: ' + (round.chcp ?? '—'));
+  lines.push('Qualifying: ' + (round.qualifying ? 'ja' : 'nee'));
   lines.push('STB: ' + (played.length ? totalStb : '—'));
   lines.push('Score: ' + (played.length ? total : '—'));
-  lines.push('Aangepaste score (ABS): ' + (played.length ? totalAgs : '—'));
+  lines.push('Aangepast (AGS): ' + (played.length ? totalAgs : '—'));
   lines.push('Spelcondities (PCC): ' + formatPcc(round.pcc ?? 0));
   { const c = computeSD({ holes: round.holes, CR: round.CR, SR: round.SR, hcp: round.hcp, pcc: round.pcc }); lines.push('Voorlopig dagresultaat: ' + (c ? (c.approx ? '~' : '') + c.value.toFixed(1) : '—')); }
   lines.push('Vastgesteld dagresultaat: ' + ((round.sdFinal != null && round.sdFinal !== '' && isFinite(parseFloat(round.sdFinal))) ? parseFloat(round.sdFinal).toFixed(1) : '—'));
@@ -3663,35 +3679,6 @@ function unlockSiblingButtons(btn) {
   });
 }
 
-
-async function shareSavedRound(idx, btn) {
-  const round = getSavedRound(idx);
-  if (!round) return;
-  const msg = document.querySelector(`[data-round-txt-msg="${CSS.escape(String(round.id))}"]`);
-  if (btn.dataset.confirm !== '1') {
-    btn.dataset.confirm = '1';
-    btn.style.background = 'var(--green-mid)';
-    btn.style.borderColor = 'var(--green-light)';
-    msg?.classList.remove('hidden');
-    lockSiblingButtons(btn);
-    clearTimeout(btn._confirmTimeout);
-    btn._confirmTimeout = setTimeout(() => {
-      btn.dataset.confirm = '0';
-      btn.style.background = '';
-      btn.style.borderColor = '';
-      msg?.classList.add('hidden');
-      unlockSiblingButtons(btn);
-    }, 3000);
-    return;
-  }
-  btn.dataset.confirm = '0';
-  btn.style.background = '';
-  btn.style.borderColor = '';
-  msg?.classList.add('hidden');
-  clearTimeout(btn._confirmTimeout);
-  const txtMsg = document.querySelector(`[data-round-txt-msg="${CSS.escape(String(round.id))}"]`);
-  await shareScore(btn, round, txtMsg);
-}
 
 async function shareScore(btn, round, msgEl) {
   if (shareScore._busy) return;
@@ -3850,13 +3837,15 @@ function importRound(input) {
   input.value = '';
 
   const showStatus = (msg, isError) => {
-    const el = document.getElementById('importRoundStatus');
-    el.textContent = msg;
-    el.style.color = '';
-    if (isError) el.classList.add('error-msg'); else el.classList.remove('error-msg');
-    el.style.color = isError ? 'var(--red)' : 'var(--green-light)';
-    el.classList.remove('hidden');
-    setTimeout(() => el.classList.add('hidden'), isError ? 5000 : 3000);
+    document.querySelectorAll('.import-round-status').forEach(el => {
+      el.textContent = msg;
+      el.style.color = '';
+      if (isError) el.classList.add('error-msg'); else el.classList.remove('error-msg');
+      el.style.color = isError ? 'var(--red)' : 'var(--green-light)';
+      el.classList.remove('hidden');
+      clearTimeout(el._hideTimer);
+      el._hideTimer = setTimeout(() => el.classList.add('hidden'), isError ? 5000 : 3000);
+    });
   };
 
   const reader = new FileReader();
@@ -4106,8 +4095,9 @@ function exportBackup(idx, btn) {
             pcc: _pcc, sdFinal: _sdFinal, qualifying: _qual,
             ...rest } = round;
     const clean = {
+      date, time, player, hcp,
       club, clubShort, track,
-      date, time, player, hcp, gender, tee, CR, SR, PAR, chcp,
+      gender, tee, CR, SR, PAR, chcp,
       pcc: _pcc ?? 0,
       sdFinal: _sdFinal ?? null,
       qualifying: _qual === true,
@@ -4155,15 +4145,15 @@ function exportJson(round) {
     holes:    round.holes.length,
     geslacht: round.gender,
     tee:      round.tee,
-    qualifying: round.qualifying === true,
     CR:       round.CR ?? '—',
     SR:       round.SR ?? '—',
     chcp:     round.chcp,
+    qualifying: round.qualifying === true,
     STB:      totalStb,
     bruto:    { score: total, verschil: rawFmt(total - rpar) + ' vs par' },
     netto:    { score: netto, verschil: rawFmt(netto - rpar) + ' vs ppar' },
     score:    total,
-    ABS:      totalAgs,
+    AGS:      totalAgs,
     PCC:      round.pcc ?? 0,
     SD_voorlopig: (() => { const c = computeSD({ holes: round.holes, CR: round.CR, SR: round.SR, hcp: round.hcp, pcc: round.pcc }); return c ? { waarde: c.value, benadering: c.approx } : null; })(),
     SD_vastgesteld: (round.sdFinal != null && round.sdFinal !== '' && isFinite(parseFloat(round.sdFinal))) ? parseFloat(round.sdFinal) : null,
@@ -4217,15 +4207,15 @@ function exportCsv(round, btn) {
   lines.push(['Holes', round.holes.length].map(esc).join(','));
   lines.push(['Geslacht', round.gender].map(esc).join(','));
   lines.push(['Tee', round.tee].map(esc).join(','));
-  lines.push(['Qualifying', round.qualifying ? 'ja' : 'nee'].map(esc).join(','));
   lines.push([esc('CR'), esc(round.CR ?? '—')].join(','));
   lines.push([esc('SR'), esc(round.SR ?? '—')].join(','));
   lines.push(['Chcp', round.chcp].map(esc).join(','));
   lines.push([]);
+  lines.push(['Qualifying', round.qualifying ? 'ja' : 'nee'].map(esc).join(','));
   lines.push(['STB', totalStb].map(esc).join(','));
   lines.push(['Bruto', total, rawFmt(total - rpar) + ' vs par'].map(esc).join(','));
   lines.push(['Netto', netto, rawFmt(netto - rpar) + ' vs ppar'].map(esc).join(','));
-  lines.push(['Score', total, 'ABS', totalAgs].map(esc).join(','));
+  lines.push(['Score', total, 'AGS', totalAgs].map(esc).join(','));
   lines.push((() => {
     const c = computeSD({ holes: round.holes, CR: round.CR, SR: round.SR, hcp: round.hcp, pcc: round.pcc });
     const man = (round.sdFinal != null && round.sdFinal !== '' && isFinite(parseFloat(round.sdFinal))) ? parseFloat(round.sdFinal).toFixed(1) : '—';
@@ -4233,7 +4223,7 @@ function exportCsv(round, btn) {
   })());
   lines.push([]);
   // Header
-  lines.push(['Hole','Si','Par','PPar','Score','Stb','Abs','Resultaat'].map(esc).join(','));
+  lines.push(['Hole','Si','Par','PPar','Score','Stb','Ags','Resultaat'].map(esc).join(','));
   round.holes.forEach((h, i) => {
     const s = h.score;
     const d = s !== null ? s - h.par : null;
@@ -4532,7 +4522,8 @@ function openQuickLast20() {
   const key = player1.replace(/\W/g, '_');
   window._pgCollapsed['pg_' + key] = false;    // spelergroep speler 1 open
   window._pgSubCollapsed['pgq_' + key] = false; // laatste 20 open
-  window._pgSubCollapsed['pga_' + key] = true;  // alle rondes dicht
+  window._pgSubCollapsed['pgy_' + key + '_last12'] = true; // laatste 12 maanden dicht
+  window._pgSubCollapsed['pgy_' + key + '_overig'] = true; // overig dicht
   loadSaved();
   setTimeout(() => {
     // Scroll naar de eerste (nieuwste) kaart in de laatste 20: eerste compacte kaart
@@ -4603,23 +4594,23 @@ function jumpToFullRound(roundId) {
   const saved = loadSavedRounds();
   const r = saved.find(x => x.id === roundId);
   if (!r) return;
-  const year = (r.date || '').slice(0, 4) || 'Onbekend';
+  const cutoff12 = Date.now() - 365 * 24 * 60 * 60 * 1000;
+  const t = new Date(`${r.date || '1970-01-01'}T${r.time || '00:00'}`).getTime();
+  const bucket = (isFinite(t) && t >= cutoff12) ? 'last12' : 'overig';
 
   if (window._groupByCategory) {
-    // Categorie: 'Afgerond' + het jaar-subblok
+    // Categorie: 'Afgerond' + het last12/overig-subblok
     window._catCollapsed = window._catCollapsed || {};
     window._catCollapsed['afgerond'] = false;
     window._finYearCollapsed = window._finYearCollapsed || {};
-    window._finYearCollapsed['fin_' + year] = false;
+    window._finYearCollapsed['fin_' + bucket] = false;
   } else {
-    // Speler: spelergroep + 'Alle rondes' + het jaar-subblok
+    // Speler: spelergroep + het last12/overig-subblok
     const key = (r.player || '').replace(/\W/g, '_');
     window._pgCollapsed = window._pgCollapsed || {};
     window._pgCollapsed['pg_' + key] = false;
-    window._pgSubCollapsed = window._pgSubCollapsed || {};
-    window._pgSubCollapsed['pga_' + key] = false;
     window._pgYearCollapsed = window._pgYearCollapsed || {};
-    window._pgYearCollapsed['pgy_' + key + '_' + year] = false;
+    window._pgYearCollapsed['pgy_' + key + '_' + bucket] = false;
   }
   loadSaved();
   setTimeout(() => {
@@ -4673,16 +4664,14 @@ function loadSaved() {
     if (btn) { btn.disabled = disabled; btn.style.opacity = disabled ? '.3' : ''; }
   };
   // Eén gedeelde bron voor de knoppen die precies hetzelfde aan/uit-gedrag volgen
-  // (alleen actief zodra er rondes zijn). archiveExportBtn staat hier bewust niet
-  // bij: die heeft een striktere, aparte voorwaarde (alleen bij afgeronde rondes,
-  // zie verderop in deze functie).
+  // (alleen actief zodra er rondes zijn).
   const groupSearchBtns = ['groupByPlayerBtn', 'groupByCategoryBtn', 'groupByTrackBtn', 'archiveSearchBtn'];
 
   if (!saved.length) {
     el.innerHTML = '';
     if (searchInput) searchInput.disabled = true;
     if (emptyMsg)   emptyMsg.classList.remove('hidden');
-    groupSearchBtns.concat('archiveExportBtn').forEach(id => setBtn(id, true));
+    groupSearchBtns.forEach(id => setBtn(id, true));
     return;
   }
   if (searchInput) searchInput.disabled = false;
@@ -4741,6 +4730,7 @@ function loadSaved() {
     const isPlayer2Active = game2Id && r.id === game2Id;
     const total    = r.total ?? r.holes.filter(h=>h.score!==null).reduce((s,h)=>s+h.score,0);
     const totalStb = r.totalStb;
+    const totalAgs = r.holes.reduce((s, h) => s + agsFor(h), 0);
     const par = r.PAR ?? (r.holes?.length ? r.holes.reduce((s,h)=>s+h.par,0) : null);
     const chcp = r.chcp;
     const bezigLabel = !done ? ` · <span style="color:var(--gold)">bezig</span>` : '';
@@ -4765,8 +4755,8 @@ function loadSaved() {
       }
     }
     const statusLine = done
-      ? `${!done ? `${playedCount}/${holesCount} · ` : ''}Score ${total}${totalStb != null ? ` · Stb ${totalStb}` : ''}`
-      : `${playedCount}/${holesCount} · ${(r.gender || '').charAt(0)} · ${r.tee || '—'} · Chcp ${chcp ?? '—'} · Score ${total}${totalStb != null ? ` · Stb ${totalStb}` : ''}`;
+      ? `${!done ? `${playedCount}/${holesCount} · ` : ''}Str ${total}${totalStb != null ? ` · Stb ${totalStb}` : ''}`
+      : `${playedCount}/${holesCount} · ${(r.gender || '').charAt(0)} · ${r.tee || '—'} · Chcp ${chcp ?? '—'} · Str ${total}${totalStb != null ? ` · Stb ${totalStb}` : ''}`;
     return `
     <div class="saved-item"${compact ? '' : ` id="round-full-${r.id}"`}${isActive ? ' style="border-left:3px solid var(--gold);padding-left:10px;border-right:3px solid var(--gold);padding-right:10px"' : ''}${!compact && !actionsAlwaysVisible() ? ' onclick="toggleRoundActions(event, this)"' : ''}>
       ${compact ? `<div onclick="jumpToFullRound(${r.id})" style="cursor:pointer">` : ''}
@@ -4800,13 +4790,14 @@ function loadSaved() {
               arrowPath = '<line x1="12" y1="5" x2="12" y2="19"/><polyline points="5 12 12 19 19 12"/>'; // lager: omlaag
             }
           }
-          const arrow = `<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="${arrowColor}" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:-1px;margin:0 2px">${arrowPath}</svg>`;
+          const arrow = `<svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="${arrowColor}" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:-3px;margin:0 2px">${arrowPath}</svg>`;
           hcpFrag = ` · ${oldStr}${arrow}${fmt1(t.newHcp)}`;
         } else if (oldStr !== '—') {
           hcpFrag = ` · ${oldStr}`;
         }
-        return `${compact && showPlayerName ? `<div class="saved-meta">${playerSafe}${hcpFrag}</div>` : ''}`
-          + `${compact ? '' : `<div class="saved-meta" style="${isActive ? 'color:var(--gold)' : ''}">${playerSafe}${hcpFrag}${playerNumLabel}</div>`}`;
+        const nameSpan = `<span style="${isActive ? 'color:var(--gold)' : ''}">${playerSafe}</span>`;
+        return `${compact && showPlayerName ? `<div class="saved-meta">${nameSpan}${hcpFrag}</div>` : ''}`
+          + `${compact ? '' : `<div class="saved-meta">${nameSpan}${hcpFrag}${playerNumLabel}</div>`}`;
       })()}
       ${compact ? '' : `<div class="saved-meta">${club}</div>`}
       ${compact ? '' : `<div class="saved-meta">${trackSafe}${par != null ? ` · Par ${par}` : ''} · ${holesCount} holes</div>`}
@@ -4824,7 +4815,7 @@ function loadSaved() {
         }
         return `<div class="saved-meta">Hcp ${oldHcp != null ? fmt1(oldHcp) : '—'}${arrow}${fmt1(newHcp)}${diffFrag}</div>`;
       })() : ''}
-      ${compact ? '' : `<div class="saved-meta">${done ? '' : `${playedCount}/${holesCount} · `}Score ${total}${sdFrag}</div>`}
+      ${compact ? '' : `<div class="saved-meta">${done ? '' : `${playedCount}/${holesCount} · `}Str ${total}${(done && totalAgs !== total) ? `/${totalAgs}` : ''}${sdFrag}</div>`}
       ${compact ? '' : `<div style="margin-top:8px">${flatChartHtml(r.holes)}</div>`}
       <div class="error-msg hidden" data-round-delete-msg="${r.id}" style="color:var(--red);font-size:20px;font-weight:700;text-align:right;margin-top:6px">Tik nogmaals om te bevestigen</div>
       <div class="hidden orange-msg" data-round-save-msg="${r.id}" style="color:var(--orange);font-size:20px;font-weight:700;text-align:right;margin-top:6px">Tik nogmaals om te bevestigen</div>
@@ -4870,8 +4861,6 @@ function loadSaved() {
   const planned    = filtered.filter(r => !isDone(r) && isFuture(r) && !r._justImported && !actives.includes(r)).sort(sortDesc);
   const inProgress = filtered.filter(r => !isDone(r) && !isFuture(r) && !r._justImported && !actives.includes(r)).sort(sortDesc);
   const finished   = filtered.filter(r => isDone(r)  && !r._justImported && !actives.includes(r)).sort(sortDesc);
-  // Export alleen actief bij afgeronde rondes
-  setBtn('archiveExportBtn', !finished.length);
   const sortedActives = actives.sort((a,b) => { const aIsCurrent = (activePlayer===2 && game2Id && a.id===game2Id) || (activePlayer===1 && activeId && String(a.id)===activeId); const bIsCurrent = (activePlayer===2 && game2Id && b.id===game2Id) || (activePlayer===1 && activeId && String(b.id)===activeId); return aIsCurrent ? -1 : bIsCurrent ? 1 : 0; });
 
   const collapsibleHeader = (title, count, key, stateObj) => {
@@ -4892,27 +4881,24 @@ function loadSaved() {
     if (inProgress.length) html += collapsibleHeader('Opgeslagen', inProgress.length, 'opgeslagen', '_catCollapsed') + inProgress.map(r => makeCard(r)).join('') + '</div>';
     if (finished.length) {
       html += collapsibleHeader('Afgerond', finished.length, 'afgerond', '_catCollapsed');
-      // Subcategorie 'Laatste 12 maanden' bovenaan, daarna per jaar (nieuwste eerst)
+      // 'Laatste 12 maanden' en 'Overig' i.p.v. per jaar
       const cutoff12 = Date.now() - 365 * 24 * 60 * 60 * 1000;
-      const last12 = finished.filter(r => {
+      const last12 = [];
+      const rest = [];
+      finished.forEach(r => {
         const t = new Date(`${r.date || '1970-01-01'}T${r.time || '00:00'}`).getTime();
-        return isFinite(t) && t >= cutoff12;
+        (isFinite(t) && t >= cutoff12 ? last12 : rest).push(r);
       });
       if (last12.length) {
         html += `<div style="padding-left:12px">`
           + collapsibleHeader('Laatste 12 maanden', last12.length, 'fin_last12', '_finYearCollapsed').replace('color:var(--gold)', 'color:var(--green-light)')
-          + last12.map(r => makeCard(r, null, true, null, true)).join('') + '</div></div>';
+          + last12.map(r => makeCard(r)).join('') + '</div></div>';
       }
-      const byYear = {};
-      finished.forEach(r => {
-        const y = (r.date || '').slice(0, 4) || 'Onbekend';
-        (byYear[y] = byYear[y] || []).push(r);
-      });
-      Object.keys(byYear).sort((a, b) => b.localeCompare(a)).forEach(year => {
+      if (rest.length) {
         html += `<div style="padding-left:12px">`
-          + collapsibleHeader(year, byYear[year].length, 'fin_' + year, '_finYearCollapsed').replace('color:var(--gold)', 'color:var(--green-light)')
-          + byYear[year].map(r => makeCard(r)).join('') + '</div></div>';
-      });
+          + collapsibleHeader('Overig', rest.length, 'fin_overig', '_finYearCollapsed').replace('color:var(--gold)', 'color:var(--green-light)')
+          + rest.map(r => makeCard(r)).join('') + '</div></div>';
+      }
       html += '</div>';
     }
   } else if (window._groupByTrack) {
@@ -4999,38 +4985,50 @@ function loadSaved() {
         if (anyUnfixed) qh = qh.replace('</span><span style="opacity:.8">', warnTriangle + '</span><span style="opacity:.8">');
         html += `<div style="padding-left:12px">` + qh
           + qualifying.map(r => makeCard(r, null, true, hcpMap[r.id])).join('') + '</div></div>';
-        // 'Laatste 12 maanden' op hetzelfde niveau als 'Laatste 20 qualifying' en 'Alle rondes'
         {
           const cutoff12 = Date.now() - 365 * 24 * 60 * 60 * 1000;
-          const last12 = [...rounds].sort(sortDesc).filter(r => {
+          const last12 = [];
+          const rest = [];
+          rounds.forEach(r => {
             const t = new Date(`${r.date || '1970-01-01'}T${r.time || '00:00'}`).getTime();
-            return isFinite(t) && t >= cutoff12;
+            (isFinite(t) && t >= cutoff12 ? last12 : rest).push(r);
           });
           if (last12.length) {
             html += `<div style="padding-left:12px">`
               + collapsibleHeader('Laatste 12 maanden', last12.length, 'pgy_' + key + '_last12', '_pgYearCollapsed').replace('color:var(--gold)', 'color:var(--green-light)')
-              + last12.map(r => makeCard(r, null, true, hcpMap[r.id])).join('') + '</div></div>';
+              + [...last12].sort(sortDesc).map(r => makeCard(r)).join('') + '</div></div>';
+          }
+          if (rest.length) {
+            html += `<div style="padding-left:12px">`
+              + collapsibleHeader('Overig', rest.length, 'pgy_' + key + '_overig', '_pgYearCollapsed').replace('color:var(--gold)', 'color:var(--green-light)')
+              + rest.map(r => makeCard(r)).join('') + '</div></div>';
           }
         }
-        html += `<div style="padding-left:12px">`
-          + collapsibleHeader('Alle rondes', rounds.length, 'pga_' + key, '_pgSubCollapsed').replace('color:var(--gold)', 'color:var(--green-light)');
-        // Per jaar (nieuwste eerst)
-        {
-          const byYear = {};
-          rounds.forEach(r => {
-            const y = (r.date || '').slice(0, 4) || 'Onbekend';
-            (byYear[y] = byYear[y] || []).push(r);
-          });
-          Object.keys(byYear).sort((a, b) => b.localeCompare(a)).forEach(year => {
-            html += `<div style="padding-left:12px">`
-              + collapsibleHeader(year, byYear[year].length, 'pgy_' + key + '_' + year, '_pgYearCollapsed').replace('color:var(--gold)', 'color:var(--muted)')
-              + byYear[year].map(r => makeCard(r)).join('') + '</div></div>';
-          });
-        }
-        html += '</div></div>';
         html += '</div>';
       } else {
-        html += playerGroupHeader(player, byPlayer[player].length) + byPlayer[player].map(r => makeCard(r)).join('') + '</div>';
+        const rounds = byPlayer[player];
+        const key = player.replace(/\W/g,'_');
+        html += playerGroupHeader(player, rounds.length);
+        {
+          const cutoff12 = Date.now() - 365 * 24 * 60 * 60 * 1000;
+          const last12 = [];
+          const rest = [];
+          rounds.forEach(r => {
+            const t = new Date(`${r.date || '1970-01-01'}T${r.time || '00:00'}`).getTime();
+            (isFinite(t) && t >= cutoff12 ? last12 : rest).push(r);
+          });
+          if (last12.length) {
+            html += `<div style="padding-left:12px">`
+              + collapsibleHeader('Laatste 12 maanden', last12.length, 'pgy_' + key + '_last12', '_pgYearCollapsed').replace('color:var(--gold)', 'color:var(--green-light)')
+              + [...last12].sort(sortDesc).map(r => makeCard(r)).join('') + '</div></div>';
+          }
+          if (rest.length) {
+            html += `<div style="padding-left:12px">`
+              + collapsibleHeader('Overig', rest.length, 'pgy_' + key + '_overig', '_pgYearCollapsed').replace('color:var(--gold)', 'color:var(--green-light)')
+              + rest.map(r => makeCard(r)).join('') + '</div></div>';
+          }
+        }
+        html += '</div>';
       }
     });
   } else {
@@ -5373,7 +5371,6 @@ function resetHeader() {
   const wrap = document.querySelector('.header-score-wrap');
   wrap.classList.remove('hidden');
   wrap.style.visibility = 'hidden';
-  document.getElementById('holeList')?.remove();
   setTimeout(() => { adjustThirdHeaderRow(); updateHeaderHeight(); }, 0);
 }
 
@@ -6803,7 +6800,7 @@ function buildClubList() {
   const emptyMsgEl = document.getElementById('clubListEmptyMsg');
   const cardEl = null;
   const setClubBtns = (disabled) => {
-    ['clubExportBtn', 'clubSearchBtn', 'clubGroupByCategoryBtn'].forEach(id => {
+    ['clubSearchBtn', 'clubGroupByCategoryBtn'].forEach(id => {
       const btn = document.getElementById(id);
       if (btn) { btn.disabled = disabled; btn.style.opacity = disabled ? '.3' : ''; }
     });
@@ -6903,32 +6900,6 @@ function toggleFavClub(club, btn) {
   storage.setItem('golf_fav_clubs', JSON.stringify(favs));
   buildClubList();
 }
-
-function confirmExportAll(btn, type) {
-  const msgId = type === 'rounds' ? 'exportRoundsMsg' : 'exportClubsMsg';
-  const msg = document.getElementById(msgId);
-  if (btn.dataset.confirm !== '1') {
-    btn.dataset.confirm = '1';
-    btn.style.background = 'var(--orange)';
-    btn.style.borderColor = 'var(--orange)';
-    msg?.classList.remove('hidden');
-    clearTimeout(btn._confirmTimeout);
-    btn._confirmTimeout = setTimeout(() => {
-      btn.dataset.confirm = '0';
-      btn.style.background = '';
-      btn.style.borderColor = '';
-      msg?.classList.add('hidden');
-    }, 2000);
-    return;
-  }
-  btn.dataset.confirm = '0';
-  btn.style.background = '';
-  btn.style.borderColor = '';
-  msg?.classList.add('hidden');
-  if (type === 'rounds') exportAllRounds();
-  else exportAllClubs();
-}
-
 
 // ══ STANDAARD EXPORTMAP (optioneel, valt terug op Downloads) ═══════════
 // Een website kan Chrome's eigen downloadmap niet instellen — dat is een browser-
@@ -7052,19 +7023,27 @@ async function exportAllRounds() {
     return played >= total && total > 0;
   });
   if (!saved.length) {
-    const msg = document.getElementById('exportRoundsMsg');
-    if (msg) {
+    document.querySelectorAll('.export-rounds-error').forEach(msg => {
       msg.textContent = 'Geen afgeronde rondes om te exporteren';
       msg.style.color = 'var(--red)';
       msg.classList.add('error-msg');
       msg.classList.remove('hidden');
-      setTimeout(() => { msg.classList.add('hidden'); msg.classList.remove('error-msg'); msg.style.color = ''; }, 3000);
-    }
+      clearTimeout(msg._hideTimer);
+      msg._hideTimer = setTimeout(() => { msg.classList.add('hidden'); msg.classList.remove('error-msg'); msg.style.color = ''; }, 3000);
+    });
     return;
   }
   const data = saved.map(r => {
-    const { id, total, totalStb, playedCount, holesCount, currentHole, started, _justImported, sd: _oldSd, ...clean } = r;
-    return { ...clean, holes: r.holes.map(({ _initScore, ...h }) => h) };
+    const { id, total, totalStb, playedCount, holesCount, currentHole, started, _justImported, sd: _oldSd,
+            date, time, player, hcp, club, clubShort, gender, track, tee, CR, SR, PAR, chcp,
+            ...rest } = r;
+    return {
+      date, time, player, hcp,
+      club, clubShort,
+      gender, track, tee, CR, SR, PAR, chcp,
+      ...rest,
+      holes: r.holes.map(({ _initScore, ...h }) => h),
+    };
   });
   const ts = new Date().toISOString().slice(0, 10).replace(/-/g, '');
   const filename = `rondes_backup_${ts}.json`;
@@ -7129,14 +7108,14 @@ function updateBackupReminder() {
 async function exportAllClubs() {
   const clubs = Object.values(CLUBS);
   if (!clubs.length) {
-    const msg = document.getElementById('exportClubsMsg');
-    if (msg) {
+    document.querySelectorAll('.export-clubs-error').forEach(msg => {
       msg.textContent = 'Geen clubs om te exporteren';
       msg.style.color = 'var(--red)';
       msg.classList.add('error-msg');
       msg.classList.remove('hidden');
-      setTimeout(() => { msg.classList.add('hidden'); msg.classList.remove('error-msg'); msg.style.color = ''; }, 3000);
-    }
+      clearTimeout(msg._hideTimer);
+      msg._hideTimer = setTimeout(() => { msg.classList.add('hidden'); msg.classList.remove('error-msg'); msg.style.color = ''; }, 3000);
+    });
     return;
   }
   const ts = new Date().toISOString().slice(0, 10).replace(/-/g, '');
@@ -7296,12 +7275,32 @@ function validateImportedClubData(data) {
   return null; // geldig
 }
 
+// Bootst hetzelfde element-interface (style.display/color, classList, textContent) na,
+// maar werkt tegelijk ALLE elementen met deze klasse bij — zodat de importstatus
+// zichtbaar is ongeacht vanuit welk tabblad de import werd gestart.
+function statusProxy(selector) {
+  const els = () => [...document.querySelectorAll(selector)];
+  return {
+    get style() {
+      return {
+        set display(v) { els().forEach(el => el.style.display = v); },
+        set color(v) { els().forEach(el => el.style.color = v); },
+      };
+    },
+    classList: {
+      add: c => els().forEach(el => el.classList.add(c)),
+      remove: c => els().forEach(el => el.classList.remove(c)),
+    },
+    set textContent(v) { els().forEach(el => el.textContent = v); },
+  };
+}
+
 function importCourseData(input) {
   const file = input.files[0];
   if (!file) return;
   const reader = new FileReader();
   reader.onload = e => {
-    const status = document.getElementById('clubImportStatus');
+    const status = statusProxy('.club-import-status');
     try {
       const raw = (e.target.result || '').trim();
       if (!raw) {
@@ -7395,7 +7394,7 @@ function importCourseData(input) {
     input.value = '';
   };
   reader.onerror = () => {
-    const status = document.getElementById('clubImportStatus');
+    const status = statusProxy('.club-import-status');
     status.style.display = 'block';
     status.style.color = 'var(--red)'; status.classList.add('error-msg');
     status.textContent = 'Kon het bestand niet lezen';
