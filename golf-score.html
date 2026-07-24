@@ -4790,8 +4790,10 @@ function loadSaved() {
       </div>
       ${(() => {
         const nameSpan = `<span style="${isActive ? 'color:var(--gold)' : ''}">${playerSafe}</span>`;
-        return `${compact && showPlayerName ? `<div class="saved-meta">${nameSpan}</div>` : ''}`
-          + `${compact ? '' : `<div class="saved-meta">${nameSpan}${playerNumLabel}</div>`}`;
+        const oldVal = r.hcp != null && r.hcp !== '' ? parseFloat(r.hcp) : null;
+        const hcpFrag = (oldVal != null && isFinite(oldVal)) ? ` · Hcp ${fmt1(oldVal)}` : '';
+        return `${compact && showPlayerName ? `<div class="saved-meta">${nameSpan}${hcpFrag}</div>` : ''}`
+          + `${compact ? '' : `<div class="saved-meta">${nameSpan}${hcpFrag}${playerNumLabel}</div>`}`;
       })()}
       ${compact ? '' : `<div class="saved-meta">${club}</div>`}
       ${compact ? '' : `<div class="saved-meta">${trackSafe}${par != null ? ` · Par ${par}` : ''} · ${holesCount} holes</div>`}
