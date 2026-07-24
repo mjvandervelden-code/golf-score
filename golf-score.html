@@ -77,7 +77,7 @@
     html.light-mode .chcp-adjust,
     html.light-mode .chcp-box { background: rgba(0,0,0,.04); border-color: rgba(0,0,0,.14); color: var(--text); }
     html.light-mode .fg input::placeholder { color: rgba(0,0,0,.4); }
-    html.light-mode #editPccBtn { background: rgba(0,0,0,.04); border-color: rgba(0,0,0,.14); color: var(--text); }
+    html.light-mode .field-like { background: rgba(0,0,0,.04); border-color: rgba(0,0,0,.14); color: var(--text); }
     .field-like.compact { padding: 8px 10px; font-size: 20px; }
     input.field-input { width: 100%; padding: 8px 10px; background: rgba(0,0,0,.25); border: 1px solid rgba(255,255,255,.15); border-radius: 8px; color: var(--white); font-size: 20px; -webkit-appearance: none; text-align: right; box-sizing: border-box; }
     html.light-mode input.field-input { background: rgba(0,0,0,.04); border-color: rgba(0,0,0,.14); color: var(--text); }
@@ -578,7 +578,7 @@
     <h2>Club & baan</h2>
     <label style="font-size:17px;color:var(--green-light);text-transform:uppercase;letter-spacing:.5px;font-weight:700;display:block;margin-bottom:6px">Club (kort)</label>
     <div id="setupClubTip" class="hidden" style="font-size:20px;font-weight:700;color:var(--muted);margin-bottom:6px">Selecteer een club via <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--muted)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:middle"><path d="M5 3v18"/><path d="M5 4h11l-2 4 2 4H5"/></svg> <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--muted)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:middle"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg> <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--muted)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:middle"><path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"/></svg></div>
-    <div id="setupClubShortName" onclick="showClubTip()" style="font-size:20px;font-weight:700;margin-bottom:12px;overflow-wrap:break-word;padding:10px 14px;border-radius:10px;border:1.5px solid rgba(255,255,255,.15);background:rgba(255,255,255,.05);cursor:pointer;color:var(--muted)"></div>
+    <div id="setupClubShortName" class="field-like" onclick="showClubTip()" style="font-size:20px;margin-bottom:12px;overflow-wrap:break-word;color:var(--info-grey)"></div>
     <label style="font-size:17px;color:var(--green-light);text-transform:uppercase;letter-spacing:.5px;font-weight:700;display:block;margin-bottom:6px">Holes</label>
     <div class="gender-btns" id="catBtns" style="margin-bottom:12px">
       <button class="gender-btn" id="cat-9"    onclick="selectHoleCount('9')">9 holes</button>
@@ -864,9 +864,10 @@
     <div class="import-round-status hidden" style="font-size:17px;font-weight:700;color:var(--green-light);margin-top:12px"></div>
     <button class="btn-secondary" style="width:100%;padding:8px 14px;font-size:17px;margin-top:12px" onclick="document.getElementById('importRoundFile').click()">Importeer <b>rondes</b></button>
   </div>
-  <div style="text-align:center;padding-bottom:8px">
+  <div class="card">
+    <div style="font-size:20px;font-weight:700;color:var(--red);margin-bottom:8px">Alles wissen</div>
     <div id="resetAllMsg" class="hidden error-msg" style="font-size:15px;font-weight:700;color:var(--red);margin-bottom:8px">Tik nogmaals om te bevestigen</div>
-    <button id="resetAllBtn" class="btn-secondary" style="padding:6px 12px;font-size:15px;color:var(--muted)" onclick="confirmResetAll(this)">Alles wissen</button>
+    <button id="resetAllBtn" class="btn-secondary" style="width:100%;padding:8px 14px;font-size:17px" onclick="confirmResetAll(this)">Wis clubs, rondes en instellingen</button>
   </div>
 </div>
 
@@ -1799,7 +1800,7 @@ function buildTrackList() {
   const shortEl = document.getElementById('setupClubShortName');
   if (shortEl) {
     shortEl.textContent = defaultClub ? (CLUBS[defaultClub]?.shortName || defaultClub) : 'Geen club geselecteerd';
-    shortEl.style.color = defaultClub ? 'var(--white)' : 'var(--muted)';
+    shortEl.style.color = defaultClub ? 'var(--white)' : 'var(--info-grey)';
   }
 
   const clubBaanCard = document.getElementById('catBtns')?.closest('.card');
@@ -4694,6 +4695,24 @@ function loadSaved() {
     return;
   }
 
+  // Gedeelde pijltje-SVG voor hcp-oud->nieuw-weergaves: grijs/rechts bij gelijk,
+  // rood/omhoog bij stijging, groen/omlaag bij daling. Gebruikt op zowel de
+  // spelernaam-regel als de losse Hcp-regel, zodat ze altijd hetzelfde pijltje tonen.
+  const hcpArrowSvg = (oldHcp, newHcp, size = 17) => {
+    let arrowColor = 'var(--muted)';
+    let arrowPath = '<line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/>'; // gelijk: rechts
+    if (oldHcp != null) {
+      if (newHcp > oldHcp) {
+        arrowColor = 'var(--red)';
+        arrowPath = '<line x1="12" y1="19" x2="12" y2="5"/><polyline points="5 12 12 5 19 12"/>'; // hoger: omhoog
+      } else if (newHcp < oldHcp) {
+        arrowColor = 'var(--green-light)';
+        arrowPath = '<line x1="12" y1="5" x2="12" y2="19"/><polyline points="5 12 12 19 19 12"/>'; // lager: omlaag
+      }
+    }
+    return `<svg width="${size}" height="${size}" viewBox="0 0 24 24" fill="none" stroke="${arrowColor}" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:middle;margin:0 2px">${arrowPath}</svg>`;
+  };
+
   // Hcp-oud->nieuw per ronde, voor alle spelers (niet alleen speler 1), zodat elke
   // kaart dit op de spelernaam-regel kan tonen. Zelfde sliding-window-methode (WHS-
   // staffel, geen ESR/caps) als het handicapverloop in Statistieken.
@@ -4770,52 +4789,51 @@ function loadSaved() {
         </span>
       </div>
       ${(() => {
-        // Pijltje + berekende nieuwe hcp alleen voor de hoofdspeler (dezelfde speler als
-        // in de Statistieken-samenvatting, dus die bij Start is ingevuld). Andere spelers
-        // krijgen altijd een streepje voor de nieuwe hcp, geen berekening.
-        const isMainPlayer = r.player === startPlayerName();
-        const t = hcpTrendMap[r.id];
-        const oldVal = r.hcp != null && r.hcp !== '' ? parseFloat(r.hcp) : null;
-        const oldStr = (oldVal != null && isFinite(oldVal)) ? fmt1(oldVal) : '—';
-        let hcpFrag = '';
-        if (isMainPlayer && t && t.newHcp != null) {
-          let arrowColor = 'var(--muted)';
-          let arrowPath = '<line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/>'; // gelijk: rechts
-          if (t.oldHcp != null) {
-            if (t.newHcp > t.oldHcp) {
-              arrowColor = 'var(--red)';
-              arrowPath = '<line x1="12" y1="19" x2="12" y2="5"/><polyline points="5 12 12 5 19 12"/>'; // hoger: omhoog
-            } else if (t.newHcp < t.oldHcp) {
-              arrowColor = 'var(--green-light)';
-              arrowPath = '<line x1="12" y1="5" x2="12" y2="19"/><polyline points="5 12 12 19 19 12"/>'; // lager: omlaag
-            }
-          }
-          const arrow = `<svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="${arrowColor}" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:-3px;margin:0 2px">${arrowPath}</svg>`;
-          hcpFrag = ` · ${oldStr}${arrow}${fmt1(t.newHcp)}`;
-        } else if (oldStr !== '—') {
-          hcpFrag = ` · ${oldStr}`;
-        }
         const nameSpan = `<span style="${isActive ? 'color:var(--gold)' : ''}">${playerSafe}</span>`;
-        return `${compact && showPlayerName ? `<div class="saved-meta">${nameSpan}${hcpFrag}</div>` : ''}`
-          + `${compact ? '' : `<div class="saved-meta">${nameSpan}${hcpFrag}${playerNumLabel}</div>`}`;
+        return `${compact && showPlayerName ? `<div class="saved-meta">${nameSpan}</div>` : ''}`
+          + `${compact ? '' : `<div class="saved-meta">${nameSpan}${playerNumLabel}</div>`}`;
       })()}
       ${compact ? '' : `<div class="saved-meta">${club}</div>`}
       ${compact ? '' : `<div class="saved-meta">${trackSafe}${par != null ? ` · Par ${par}` : ''} · ${holesCount} holes</div>`}
-      ${compact ? '' : `<div class="saved-meta">${(r.gender || '').charAt(0)} · ${r.tee || '—'} · Chcp ${chcp ?? '—'}${totalStb != null ? ` · Stb ${totalStb}` : ''}</div>`}
-      ${compact ? `<div class="saved-meta">${(`${totalStb != null ? `Stb ${totalStb}` : ''}${sdFrag}`).replace(/^ · /, '')}</div>` : ''}
-      ${compact && hcpInfo ? (() => {
-        const arrow = '<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:-1px;margin:0 3px"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>';
-        const { oldHcp, newHcp } = hcpInfo;
-        if (newHcp == null) return '';
-        const diff = (oldHcp != null) ? Math.round((newHcp - oldHcp) * 10) / 10 : null;
-        let diffFrag = '';
-        if (diff != null && diff !== 0) {
-          const color = diff > 0 ? 'var(--red)' : 'var(--green-light)';
-          diffFrag = ` <span style="color:${color}">(${diff > 0 ? '+' : ''}${diff.toFixed(1)})</span>`;
+      ${compact ? '' : `<div class="saved-meta">${(r.gender || '').charAt(0)} · ${r.tee || '—'} · Chcp ${chcp ?? '—'}</div>`}
+      ${compact ? (() => {
+        const stbPart = totalStb != null ? `Stb ${totalStb}` : '';
+        let hcpPart = '';
+        if (hcpInfo) {
+          const { oldHcp, newHcp } = hcpInfo;
+          if (newHcp != null) {
+            const diff = (oldHcp != null) ? Math.round((newHcp - oldHcp) * 10) / 10 : null;
+            let diffFrag = '';
+            if (diff != null && diff !== 0) {
+              const color = diff > 0 ? 'var(--red)' : 'var(--green-light)';
+              diffFrag = ` <span style="color:${color}">(${diff > 0 ? '+' : ''}${diff.toFixed(1)})</span>`;
+            }
+            hcpPart = `Hcp ${oldHcp != null ? fmt1(oldHcp) : '—'}${hcpArrowSvg(oldHcp, newHcp, 13)}${fmt1(newHcp)}${diffFrag}`;
+          }
         }
-        return `<div class="saved-meta">Hcp ${oldHcp != null ? fmt1(oldHcp) : '—'}${arrow}${fmt1(newHcp)}${diffFrag}</div>`;
+        const line1 = [stbPart, hcpPart].filter(Boolean).join(' · ');
+        const strAgsPart = (done && totalAgs !== total) ? `Str ${total}${hcpArrowSvg(0, 0, 13)}${totalAgs}` : '';
+        const line2 = `${strAgsPart}${sdFrag}`.replace(/^ · /, '');
+        return `${line2 ? `<div class="saved-meta">${line2}</div>` : ''}${line1 ? `<div class="saved-meta">${line1}</div>` : ''}`;
       })() : ''}
-      ${compact ? '' : `<div class="saved-meta">${done ? '' : `${playedCount}/${holesCount} · `}Str ${total}${(done && totalAgs !== total) ? `/${totalAgs}` : ''}${sdFrag}</div>`}
+      ${compact ? '' : `<div class="saved-meta">${done ? '' : `${playedCount}/${holesCount} · `}Str ${total}${(done && totalAgs !== total) ? `${hcpArrowSvg(0, 0, 13)}${totalAgs}` : ''}${sdFrag}</div>`}
+      ${!compact ? (() => {
+        // Stb + Hcp samen als aparte, laatste regel, direct boven de par-grafiek.
+        const t = hcpTrendMap[r.id];
+        let hcpPart = '';
+        if (t && t.newHcp != null && r.player === startPlayerName()) {
+          const diff = (t.oldHcp != null) ? Math.round((t.newHcp - t.oldHcp) * 10) / 10 : null;
+          let diffFrag = '';
+          if (diff != null && diff !== 0) {
+            const color = diff > 0 ? 'var(--red)' : 'var(--green-light)';
+            diffFrag = ` <span style="color:${color}">(${diff > 0 ? '+' : ''}${diff.toFixed(1)})</span>`;
+          }
+          hcpPart = `Hcp ${t.oldHcp != null ? fmt1(t.oldHcp) : '—'}${hcpArrowSvg(t.oldHcp, t.newHcp, 13)}${fmt1(t.newHcp)}${diffFrag}`;
+        }
+        const stbPart = totalStb != null ? `Stb ${totalStb}` : '';
+        const line = [stbPart, hcpPart].filter(Boolean).join(' · ');
+        return line ? `<div class="saved-meta">${line}</div>` : '';
+      })() : ''}
       ${compact ? '' : `<div style="margin-top:8px">${flatChartHtml(r.holes)}</div>`}
       <div class="error-msg hidden" data-round-delete-msg="${r.id}" style="color:var(--red);font-size:20px;font-weight:700;text-align:right;margin-top:6px">Tik nogmaals om te bevestigen</div>
       <div class="hidden orange-msg" data-round-save-msg="${r.id}" style="color:var(--orange);font-size:20px;font-weight:700;text-align:right;margin-top:6px">Tik nogmaals om te bevestigen</div>
@@ -4867,18 +4885,28 @@ function loadSaved() {
     const collapsed = window[stateObj]?.[key] !== false;
     return `<div style="font-size:20px;font-weight:800;color:var(--gold);text-transform:uppercase;letter-spacing:.7px;padding:16px 0 8px;margin-bottom:4px;cursor:pointer;display:flex;align-items:center;gap:10px;line-height:1" onclick="window['${stateObj}']=window['${stateObj}']||{};window['${stateObj}']['${key}']=window['${stateObj}']['${key}']===false?true:false;loadSaved()"><span style="flex:1">${escapeHtml(title)}</span><span style="opacity:.8">${count}</span><span style="display:inline-block;align-self:center;margin-top:0;transform:rotate(${collapsed?0:90}deg)">▶</span></div><div${collapsed?' class="hidden"':''}>`;
   };
+  // Bouwt de kaarten van een sectie alleen op als die sectie daadwerkelijk is
+  // uitgeklapt (zelfde key/stateObj als de bijbehorende collapsibleHeader). Bij een
+  // ingeklapte sectie kost dit dus geen zware HTML-opbouw meer — belangrijk zodra het
+  // archief over jaren heen groeit. Uitklappen triggert toch al een volledige
+  // loadSaved()-herrender, dus er gaat niets aan functionaliteit verloren.
+  const cardsIfExpanded = (rounds, key, stateObj, mapper) => {
+    const collapsed = window[stateObj]?.[key] !== false;
+    if (collapsed) return '';
+    return rounds.map(mapper || (r => makeCard(r))).join('');
+  };
 
   let html = '';
   if (window._groupByCategory) {
-    if (actives.length)    html += collapsibleHeader(actives.length > 1 ? 'Actieve rondes' : 'Actieve ronde', actives.length, 'actief', '_catCollapsed') + sortedActives.map(r => makeCard(r)).join('') + '</div>';
-    if (imported.length)   html += collapsibleHeader('Geïmporteerd', imported.length, 'import', '_catCollapsed') + imported.map(r => makeCard(r)).join('') + '</div>';
+    if (actives.length)    html += collapsibleHeader(actives.length > 1 ? 'Actieve rondes' : 'Actieve ronde', actives.length, 'actief', '_catCollapsed') + cardsIfExpanded(sortedActives, 'actief', '_catCollapsed') + '</div>';
+    if (imported.length)   html += collapsibleHeader('Geïmporteerd', imported.length, 'import', '_catCollapsed') + cardsIfExpanded(imported, 'import', '_catCollapsed') + '</div>';
     if (planned.length) {
-      html += collapsibleHeader('Gepland', planned.length, 'gepland', '_catCollapsed') + planned.map(r => makeCard(r)).join('') + '</div>';
+      html += collapsibleHeader('Gepland', planned.length, 'gepland', '_catCollapsed') + cardsIfExpanded(planned, 'gepland', '_catCollapsed') + '</div>';
     } else if (window._forceShowPlanned) {
       html += collapsibleHeader('Gepland', 0, 'gepland', '_catCollapsed')
         + `<div class="saved-item" style="font-size:20px;color:var(--info-grey);font-weight:700">Er zijn geen geplande rondes</div></div>`;
     }
-    if (inProgress.length) html += collapsibleHeader('Opgeslagen', inProgress.length, 'opgeslagen', '_catCollapsed') + inProgress.map(r => makeCard(r)).join('') + '</div>';
+    if (inProgress.length) html += collapsibleHeader('Opgeslagen', inProgress.length, 'opgeslagen', '_catCollapsed') + cardsIfExpanded(inProgress, 'opgeslagen', '_catCollapsed') + '</div>';
     if (finished.length) {
       html += collapsibleHeader('Afgerond', finished.length, 'afgerond', '_catCollapsed');
       // 'Laatste 12 maanden' en 'Overig' i.p.v. per jaar
@@ -4892,12 +4920,12 @@ function loadSaved() {
       if (last12.length) {
         html += `<div style="padding-left:12px">`
           + collapsibleHeader('Laatste 12 maanden', last12.length, 'fin_last12', '_finYearCollapsed').replace('color:var(--gold)', 'color:var(--green-light)')
-          + last12.map(r => makeCard(r)).join('') + '</div></div>';
+          + cardsIfExpanded(last12, 'fin_last12', '_finYearCollapsed') + '</div></div>';
       }
       if (rest.length) {
         html += `<div style="padding-left:12px">`
           + collapsibleHeader('Overig', rest.length, 'fin_overig', '_finYearCollapsed').replace('color:var(--gold)', 'color:var(--green-light)')
-          + rest.map(r => makeCard(r)).join('') + '</div></div>';
+          + cardsIfExpanded(rest, 'fin_overig', '_finYearCollapsed') + '</div></div>';
       }
       html += '</div>';
     }
@@ -4923,7 +4951,8 @@ function loadSaved() {
       html += collapsibleHeader(club, clubTotal, 'club_' + club.replace(/\W/g,'_'), '_clubTrkCollapsed');
       Object.keys(byClub[club]).sort().forEach(track => {
         const tCount = byClub[club][track].length;
-        html += `<div style="padding-left:12px">` + collapsibleHeader(track, tCount, 'trk_' + club.replace(/\W/g,'_') + '_' + track.replace(/\W/g,'_'), '_clubTrkCollapsed').replace('color:var(--gold)', 'color:var(--green-light)') + byClub[club][track].map(r => makeCard(r)).join('') + '</div></div>';
+        const trkKey = 'trk_' + club.replace(/\W/g,'_') + '_' + track.replace(/\W/g,'_');
+        html += `<div style="padding-left:12px">` + collapsibleHeader(track, tCount, trkKey, '_clubTrkCollapsed').replace('color:var(--gold)', 'color:var(--green-light)') + cardsIfExpanded(byClub[club][track], trkKey, '_clubTrkCollapsed') + '</div></div>';
       });
       html += '</div>';
     });
@@ -4984,7 +5013,7 @@ function loadSaved() {
         let qh = collapsibleHeader('Laatste 20 qualifying', qualifying.length, 'pgq_' + key, '_pgSubCollapsed').replace('color:var(--gold)', 'color:var(--green-light)');
         if (anyUnfixed) qh = qh.replace('</span><span style="opacity:.8">', warnTriangle + '</span><span style="opacity:.8">');
         html += `<div style="padding-left:12px">` + qh
-          + qualifying.map(r => makeCard(r, null, true, hcpMap[r.id])).join('') + '</div></div>';
+          + cardsIfExpanded(qualifying, 'pgq_' + key, '_pgSubCollapsed', r => makeCard(r, null, true, hcpMap[r.id])) + '</div></div>';
         {
           const cutoff12 = Date.now() - 365 * 24 * 60 * 60 * 1000;
           const last12 = [];
@@ -4993,15 +5022,16 @@ function loadSaved() {
             const t = new Date(`${r.date || '1970-01-01'}T${r.time || '00:00'}`).getTime();
             (isFinite(t) && t >= cutoff12 ? last12 : rest).push(r);
           });
+          last12.sort(sortDesc);
           if (last12.length) {
             html += `<div style="padding-left:12px">`
               + collapsibleHeader('Laatste 12 maanden', last12.length, 'pgy_' + key + '_last12', '_pgYearCollapsed').replace('color:var(--gold)', 'color:var(--green-light)')
-              + [...last12].sort(sortDesc).map(r => makeCard(r)).join('') + '</div></div>';
+              + cardsIfExpanded(last12, 'pgy_' + key + '_last12', '_pgYearCollapsed') + '</div></div>';
           }
           if (rest.length) {
             html += `<div style="padding-left:12px">`
               + collapsibleHeader('Overig', rest.length, 'pgy_' + key + '_overig', '_pgYearCollapsed').replace('color:var(--gold)', 'color:var(--green-light)')
-              + rest.map(r => makeCard(r)).join('') + '</div></div>';
+              + cardsIfExpanded(rest, 'pgy_' + key + '_overig', '_pgYearCollapsed') + '</div></div>';
           }
         }
         html += '</div>';
@@ -5017,15 +5047,16 @@ function loadSaved() {
             const t = new Date(`${r.date || '1970-01-01'}T${r.time || '00:00'}`).getTime();
             (isFinite(t) && t >= cutoff12 ? last12 : rest).push(r);
           });
+          last12.sort(sortDesc);
           if (last12.length) {
             html += `<div style="padding-left:12px">`
               + collapsibleHeader('Laatste 12 maanden', last12.length, 'pgy_' + key + '_last12', '_pgYearCollapsed').replace('color:var(--gold)', 'color:var(--green-light)')
-              + [...last12].sort(sortDesc).map(r => makeCard(r)).join('') + '</div></div>';
+              + cardsIfExpanded(last12, 'pgy_' + key + '_last12', '_pgYearCollapsed') + '</div></div>';
           }
           if (rest.length) {
             html += `<div style="padding-left:12px">`
               + collapsibleHeader('Overig', rest.length, 'pgy_' + key + '_overig', '_pgYearCollapsed').replace('color:var(--gold)', 'color:var(--green-light)')
-              + rest.map(r => makeCard(r)).join('') + '</div></div>';
+              + cardsIfExpanded(rest, 'pgy_' + key + '_overig', '_pgYearCollapsed') + '</div></div>';
           }
         }
         html += '</div>';
@@ -6711,7 +6742,7 @@ function confirmResetAll(btn) {
   msg?.classList.add('hidden');
   showDangerModal(
     'Alles wissen',
-    'Alle rondes, clubs en instellingen worden definitief verwijderd. Dit kan niet ongedaan worden gemaakt.',
+    'Alle clubs, rondes en instellingen worden definitief verwijderd. Dit kan niet ongedaan worden gemaakt.',
     'Wissen',
     doResetAll
   );
@@ -8047,7 +8078,7 @@ document.addEventListener('focusin', (e) => {
 <div id="resetAllModal" class="hidden" style="position:fixed;inset:0;background:rgba(0,0,0,.75);z-index:600;display:flex;align-items:center;justify-content:center;padding:20px">
   <div style="background:var(--green-deep);border:2px solid var(--gold);border-radius:16px;padding:20px;width:100%;max-width:320px">
     <div class="error-msg" id="dangerModalTitle" style="font-size:20px;color:var(--red);font-weight:800;text-transform:uppercase;letter-spacing:.7px;margin-bottom:16px;text-align:center">Alles wissen</div>
-    <div id="dangerModalMessage" style="font-size:20px;color:var(--white);text-align:center;margin-bottom:16px;line-height:1.5">Alle rondes, clubs en instellingen worden definitief verwijderd. Dit kan niet ongedaan worden gemaakt.</div>
+    <div id="dangerModalMessage" style="font-size:20px;color:var(--white);text-align:center;margin-bottom:16px;line-height:1.5">Alle clubs, rondes en instellingen worden definitief verwijderd. Dit kan niet ongedaan worden gemaakt.</div>
     <div style="display:flex;gap:8px">
       <button class="btn-secondary" id="dangerModalCancelBtn" style="flex:1;padding:12px;font-size:20px" onclick="document.getElementById('resetAllModal').classList.add('hidden')">Annuleren</button>
       <button class="btn-secondary confirm-armed" id="dangerModalConfirmBtn" style="flex:1;padding:12px;font-size:20px;background:var(--red);border-color:var(--red);color:#fff">Wissen</button>
