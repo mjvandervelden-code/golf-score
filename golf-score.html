@@ -4672,7 +4672,7 @@ function loadSaved() {
   };
   // Eén gedeelde bron voor de knoppen die precies hetzelfde aan/uit-gedrag volgen
   // (alleen actief zodra er rondes zijn).
-  const groupSearchBtns = ['groupByPlayerBtn', 'groupByCategoryBtn', 'groupByTrackBtn', 'archiveSearchBtn'];
+  const groupSearchBtns = ['groupByPlayerBtn', 'groupByCategoryBtn', 'groupByTrackBtn', 'groupByWhsBtn', 'archiveSearchBtn'];
 
   if (!saved.length) {
     el.innerHTML = '';
@@ -4901,7 +4901,7 @@ function loadSaved() {
     const player1 = startPlayerName();
     if (player1) {
       const isDoneForWhs = r => (r.playedCount ?? r.holes.filter(h => h.score !== null).length) >= (r.holesCount ?? r.holes.length);
-      const last20 = saved
+      const last20 = filtered
         .filter(r => r.player === player1 && r.qualifying && isDoneForWhs(r))
         .sort(sortDesc)
         .slice(0, 20);
