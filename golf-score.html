@@ -807,6 +807,26 @@
     </div>
   </div>
   <div class="card">
+    <div style="display:flex;align-items:flex-start;gap:10px">
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="var(--orange)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink:0;margin-top:2px"><line x1="5" y1="6" x2="19" y2="6"/><line x1="12" y1="19" x2="12" y2="10"/><polyline points="8 14 12 10 16 14"/></svg>
+      <div>
+        <div style="font-size:17px;color:var(--muted)">Softcap: stijgt je index meer dan <b>3,0 boven je Low HI</b>? Dan telt het deel daarboven maar voor de helft mee.</div>
+        <div class="more-toggle" onclick="toggleMoreInfo(this)">Meer uitleg<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="9 6 15 12 9 18"/></svg></div>
+        <div class="more-full">Low HI is je laagste index van de afgelopen 365 dagen. Een enkele slechte ronde mag je handicap niet in één klap flink laten stijgen — daarom telt WHS alles boven de 3,0-grens maar voor de helft mee. Speel je bijvoorbeeld 4,0 boven je Low HI, dan wordt dat 3,0 + (1,0 × 0,5) = 3,5. Let op: de cap vergelijkt de ruwe berekening met je Low HI, niet met je oude hcp — je hcp kan dus best dalen (groen pijltje) terwijl er tóch een cap actief was.</div>
+      </div>
+    </div>
+  </div>
+  <div class="card">
+    <div style="display:flex;align-items:flex-start;gap:10px">
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="var(--red)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink:0;margin-top:2px"><line x1="5" y1="4" x2="19" y2="4"/><line x1="5" y1="8" x2="19" y2="8"/><line x1="12" y1="19" x2="12" y2="12"/><polyline points="8 16 12 12 16 16"/></svg>
+      <div>
+        <div style="font-size:17px;color:var(--muted)">Hardcap: je index kan nooit meer dan <b>5,0 boven je Low HI</b> uitkomen.</div>
+        <div class="more-toggle" onclick="toggleMoreInfo(this)">Meer uitleg<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="9 6 15 12 9 18"/></svg></div>
+        <div class="more-full">Ook mét de softcap kan je index maar tot een bepaalde grens stijgen: nooit meer dan 5,0 boven je Low HI. Dit is de absolute bovengrens die WHS hanteert, ongeacht hoe slecht je gespeeld hebt. Let op: de cap vergelijkt de ruwe berekening met je Low HI, niet met je oude hcp — je hcp kan dus best dalen (groen pijltje) terwijl er tóch een cap actief was.</div>
+      </div>
+    </div>
+  </div>
+  <div class="card">
     <div style="margin-bottom:8px">
       <div style="font-size:20px;font-weight:700;color:var(--white)">Low HI (365 dagen)</div>
       <div style="font-size:17px;color:var(--muted)">Begrenst hoe snel je handicap mag stijgen (WHS-caps). Leeg = automatisch afgeleid.</div>
@@ -1102,14 +1122,16 @@ function whsStaffel(n) {
 // Soft cap (+3.0 halveert) en hard cap (+5.0 max) t.o.v. de laagste index (Low HI).
 // Caps werken alleen omhoog; dalen is onbeperkt.
 function applyHandicapCaps(rawValue, lowHi) {
-  if (lowHi == null || !isFinite(lowHi)) return rawValue;
+  if (lowHi == null || !isFinite(lowHi)) return { value: rawValue, type: null };
   const increase = rawValue - lowHi;
-  if (increase <= 3.0) return rawValue;
+  if (increase <= 3.0) return { value: rawValue, type: null };
   // Soft cap: deel boven 3.0 telt half
   let capped = lowHi + 3.0 + (increase - 3.0) * 0.5;
   // Hard cap: nooit meer dan 5.0 boven low HI
-  capped = Math.min(capped, lowHi + 5.0);
-  return whsIndexRound(capped);
+  const hardLimit = lowHi + 5.0;
+  const type = capped > hardLimit ? 'hard' : 'soft';
+  capped = Math.min(capped, hardLimit);
+  return { value: whsIndexRound(capped), type };
 }
 
 // Bepaalt WHS-handicap uit een set qualifying rondes.
@@ -1167,8 +1189,9 @@ function whsHandicap(rounds, mode, lowHi = null, priorHi = null) {
     else if (diff >= 7.0) esr = 1.0;
   }
   rawValue = Math.round((rawValue - esr) * 10) / 10;
-  const value = applyHandicapCaps(rawValue, lowHi);
-  return { value, rawValue, esr, capped: value !== rawValue, usedIds: new Set(used.map(x => x.id)) };
+  const capResult = applyHandicapCaps(rawValue, lowHi);
+  const value = capResult.value;
+  return { value, rawValue, esr, capped: value !== rawValue, capType: capResult.type, usedIds: new Set(used.map(x => x.id)) };
 }
 
 // Verzamelt de laatste 20 afgeronde qualifying rondes van een speler (nieuwste eerst).
@@ -2831,7 +2854,13 @@ function renderScoreInfo(played, total, totalAgs, totalStb, rawFmt, rparPlayed, 
         const mode = sdFixed ? 'fixed' : 'effective';
         const whs = whsHandicap(pool, mode, effectiveLowHi(game.player, all, mode), priorHiFor(pool, mode));
         const label = sdFixed ? 'Nieuwe WHS-hcp' : 'Verwachte WHS-hcp';
-        return [[label, whs ? fmt1(whs.value) : '—']];
+        const capLabel = !whs || !whs.capped
+          ? 'Cap'
+          : `${whs.capType === 'hard' ? 'Hardcap' : 'Softcap'} (anders ${fmt1(whs.rawValue)})`;
+        return [
+          [label, whs ? fmt1(whs.value) : '—'],
+          [capLabel, (whs && whs.capped) ? 'Ja' : 'Nee'],
+        ];
       })(),
     ]],
     ['Club & Baan', [
@@ -3127,7 +3156,7 @@ function renderPlayerStats() {
       }
     }
     const rawAfterEsr = Math.round((hiSeries[idx] - esr) * 10) / 10;
-    capSeries.push(applyHandicapCaps(rawAfterEsr, lowHi));
+    capSeries.push(applyHandicapCaps(rawAfterEsr, lowHi).value);
   });
 
   // Kerngetallen
@@ -4691,8 +4720,9 @@ function loadSaved() {
   };
 
   // Hcp-oud->nieuw per ronde, voor alle spelers (niet alleen speler 1), zodat elke
-  // kaart dit op de spelernaam-regel kan tonen. Zelfde sliding-window-methode (WHS-
-  // staffel, geen ESR/caps) als het handicapverloop in Statistieken.
+  // kaart dit op de spelernaam-regel kan tonen. Zelfde officiële berekening
+  // (whsHandicap: staffel, ESR, soft-/hardcap) als de samenvattingstabel, i.p.v. een
+  // losse, lichtere benadering — zo kunnen de twee plekken nooit meer verschillen.
   const hcpTrendMap = {};
   {
     const isDoneForTrend = r => (r.playedCount ?? r.holes.filter(h => h.score !== null).length) >= (r.holesCount ?? r.holes.length);
@@ -4701,16 +4731,20 @@ function loadSaved() {
     Object.keys(byPlayerForTrend).forEach(player => {
       const qualAll = byPlayerForTrend[player]
         .filter(r => r.qualifying && isDoneForTrend(r))
-        .sort((a, b) => new Date(`${a.date||'1970-01-01'}T${a.time||'00:00'}`) - new Date(`${b.date||'1970-01-01'}T${b.time||'00:00'}`));
+        .sort((a, b) => new Date(`${a.date||'1970-01-01'}T${a.time||'00:00'}`) - new Date(`${b.date||'1970-01-01'}T${b.time||'00:00'}`)); // oudste eerst
       qualAll.forEach((r, idx) => {
-        const window20 = qualAll.slice(0, idx + 1).slice(-20);
-        const sds = window20.map(x => { const e = effectiveSD(x); return e ? e.value : null; }).filter(v => v != null);
-        const staffel = whsStaffel(sds.length);
-        if (!staffel) return;
-        const avg = [...sds].sort((a, b) => a - b).slice(0, staffel.count).reduce((s, x) => s + x, 0) / staffel.count;
-        const newHcp = whsIndexRound(avg + staffel.adj);
+        // Laatste 20 t/m deze ronde, nieuwste eerst — zoals whsHandicap/priorHiFor verwachten.
+        const pool = qualAll.slice(0, idx + 1).slice(-20).reverse();
+        const sdFixed = r.sdFinal != null && r.sdFinal !== '' && isFinite(parseFloat(r.sdFinal));
+        const mode = sdFixed ? 'fixed' : 'effective';
+        const lowHi = effectiveLowHi(player, saved, mode);
+        const whs = whsHandicap(pool, mode, lowHi, priorHiFor(pool, mode));
         const oldHcpVal = parseFloat(r.hcp);
-        hcpTrendMap[r.id] = { oldHcp: isFinite(oldHcpVal) ? oldHcpVal : null, newHcp };
+        hcpTrendMap[r.id] = {
+          oldHcp: isFinite(oldHcpVal) ? oldHcpVal : null,
+          newHcp: whs ? whs.value : null,
+          capType: whs ? whs.capType : null,
+        };
       });
     });
   }
@@ -4738,7 +4772,7 @@ function loadSaved() {
     let sdFrag = '';
     if (done) {
       const asterisk = '<span style="font-weight:900">≈</span>';
-      const check = '<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="var(--gold)" stroke-width="4" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:0px;margin-left:1px"><polyline points="20 6 9 17 4 12"/></svg>';
+      const check = '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--gold)" stroke-width="4" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:0px;margin-left:1px"><polyline points="20 6 9 17 4 12"/></svg>';
       const _fromGame = isCurrentPlayer;
       const _sdMan = _fromGame ? (game.sdFinal ?? r.sdFinal) : r.sdFinal;
       const _pcc = _fromGame ? (game.pcc ?? r.pcc) : r.pcc;
@@ -4770,7 +4804,7 @@ function loadSaved() {
       <div class="saved-meta">${club}</div>
       <div class="saved-meta">${trackSafe}${par != null ? ` · Par ${par}` : ''} · ${holesCount} holes</div>
       <div class="saved-meta">${(r.gender || '').charAt(0)} · ${r.tee || '—'} · Chcp ${chcp ?? '—'}</div>
-      <div class="saved-meta">${done ? '' : `${playedCount}/${holesCount} · `}Str ${total}${(done && totalAgs !== total) ? `${hcpArrowSvg(0, 0, 13)}${totalAgs}` : ''}${sdFrag}</div>
+      <div class="saved-meta">${done ? '' : `${playedCount}/${holesCount} · `}Str ${total}${(done && totalAgs !== total) ? `${hcpArrowSvg(0, 0, 16)}${totalAgs}` : ''}${sdFrag}</div>
       ${(() => {
         // Stb + Hcp samen als aparte, laatste regel, direct boven de par-grafiek.
         const t = hcpTrendMap[r.id];
@@ -4782,7 +4816,13 @@ function loadSaved() {
             const color = diff > 0 ? 'var(--red)' : 'var(--green-light)';
             diffFrag = ` <span style="color:${color}">(${diff > 0 ? '+' : ''}${diff.toFixed(1)})</span>`;
           }
-          hcpPart = `Hcp ${t.oldHcp != null ? fmt1(t.oldHcp) : '—'}${hcpArrowSvg(t.oldHcp, t.newHcp, 13)}${fmt1(t.newHcp)}${diffFrag}`;
+          let capFrag = '';
+          if (t.capType === 'soft') {
+            capFrag = ' <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="var(--orange)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:middle" title="Softcap toegepast"><line x1="5" y1="6" x2="19" y2="6"/><line x1="12" y1="19" x2="12" y2="10"/><polyline points="8 14 12 10 16 14"/></svg>';
+          } else if (t.capType === 'hard') {
+            capFrag = ' <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="var(--red)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:middle" title="Hardcap toegepast"><line x1="5" y1="4" x2="19" y2="4"/><line x1="5" y1="8" x2="19" y2="8"/><line x1="12" y1="19" x2="12" y2="12"/><polyline points="8 16 12 12 16 16"/></svg>';
+          }
+          hcpPart = `Hcp ${t.oldHcp != null ? fmt1(t.oldHcp) : '—'}${hcpArrowSvg(t.oldHcp, t.newHcp, 16)}${fmt1(t.newHcp)}${capFrag}${diffFrag}`;
         }
         const stbPart = totalStb != null ? `Stb ${totalStb}` : '';
         const line = [stbPart, hcpPart].filter(Boolean).join(' · ');
