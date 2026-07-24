@@ -4579,6 +4579,30 @@ function toggleGroupByWhs() {
   window._groupByPlayer = false;
   window._groupByCategory = false;
   window._groupByTrack = false;
+  window._whsShort = false;
+  const gb = document.getElementById('groupByWhsBtn');
+  if (gb) { gb.style.background = 'var(--gold)'; gb.style.color = 'var(--green-deep)'; }
+  ['groupByPlayerBtn', 'groupByCategoryBtn', 'groupByTrackBtn'].forEach(id => { const b = document.getElementById(id); if (b) { b.style.background = ''; b.style.color = ''; } });
+  loadSaved();
+}
+
+// Long-press op 'groepeer op WHS': kaarten inkorten tot alleen de datumregel en de
+// laatste twee regels (Str.../Stb...). Nogmaals lang indrukken zet 'm weer terug naar
+// volledige kaarten.
+function toggleWhsShort() {
+  window._whsShort = !window._whsShort;
+  loadSaved();
+}
+
+// Long-press op 'groepeer op WHS': gaat direct naar de verkorte kaarten (geen toggle) —
+// long-press betekent altijd 'verkort', ongeacht de huidige staat.
+function setWhsShort() {
+  window._forceShowPlanned = false;
+  window._groupByWhs = true;
+  window._groupByPlayer = false;
+  window._groupByCategory = false;
+  window._groupByTrack = false;
+  window._whsShort = true;
   const gb = document.getElementById('groupByWhsBtn');
   if (gb) { gb.style.background = 'var(--gold)'; gb.style.color = 'var(--green-deep)'; }
   ['groupByPlayerBtn', 'groupByCategoryBtn', 'groupByTrackBtn'].forEach(id => { const b = document.getElementById(id); if (b) { b.style.background = ''; b.style.color = ''; } });
@@ -4749,7 +4773,7 @@ function loadSaved() {
     });
   }
 
-  const makeCard = (r, i) => {
+  const makeCard = (r, i, short = false) => {
     const club = escapeHtml(r.club || 'Onbekende club');
     const playerSafe = escapeHtml(r.player || '—');
     const trackSafe = escapeHtml(r.track || '');
@@ -4784,8 +4808,7 @@ function loadSaved() {
         sdFrag = c ? ` · Pcc ${formatPcc(_pcc ?? 0)} · Sd${asterisk} ${fmt1(c.value)}` : '';
       }
     }
-    return `
-    <div class="saved-item" id="round-full-${r.id}"${isActive ? ' style="border-left:3px solid var(--gold);padding-left:10px;border-right:3px solid var(--gold);padding-right:10px"' : ''}${!actionsAlwaysVisible() ? ' onclick="toggleRoundActions(event, this)"' : ''}>
+    const dateLine = `
       ${importedLabel}
       <div class="saved-name" style="display:flex;align-items:center;justify-content:space-between;gap:8px">
         <span>${formatRoundDate(r.date)}${r.time ? ' · ' + r.time : ''}${bezigLabel}</span>
@@ -4794,7 +4817,44 @@ function loadSaved() {
           ${(isCurrentPlayer ? (game.qualifying ?? r.qualifying) : r.qualifying) && !(() => { const sd = isCurrentPlayer ? (game.sdFinal ?? r.sdFinal) : r.sdFinal; return sd != null && sd !== '' && isFinite(parseFloat(sd)); })() ? '<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="var(--orange)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M10.29 3.86 1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>' : ''}
           ${(isCurrentPlayer ? (game.qualifying ?? r.qualifying) : r.qualifying) ? '<span class="tee-badge badge-q">Q</span>' : ''}
         </span>
-      </div>
+      </div>`;
+    const strLine = `<div class="saved-meta">${done ? '' : `${playedCount}/${holesCount} · `}Str ${total}${(done && totalAgs !== total) ? `${hcpArrowSvg(0, 0, 16)}${totalAgs}` : ''}${sdFrag}</div>`;
+    const stbHcpLine = (() => {
+      // Stb + Hcp samen als aparte, laatste regel, direct boven de par-grafiek.
+      const t = hcpTrendMap[r.id];
+      let hcpPart = '';
+      if (t && t.newHcp != null && r.player === startPlayerName()) {
+        const diff = (t.oldHcp != null) ? Math.round((t.newHcp - t.oldHcp) * 10) / 10 : null;
+        let diffFrag = '';
+        if (diff != null && diff !== 0) {
+          const color = diff > 0 ? 'var(--red)' : 'var(--green-light)';
+          diffFrag = ` <span style="color:${color}">(${diff > 0 ? '+' : ''}${diff.toFixed(1)})</span>`;
+        }
+        let capFrag = '';
+        if (t.capType === 'soft') {
+          capFrag = ' <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="var(--orange)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:middle" title="Softcap toegepast"><line x1="5" y1="6" x2="19" y2="6"/><line x1="12" y1="19" x2="12" y2="10"/><polyline points="8 14 12 10 16 14"/></svg>';
+        } else if (t.capType === 'hard') {
+          capFrag = ' <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="var(--red)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:middle" title="Hardcap toegepast"><line x1="5" y1="4" x2="19" y2="4"/><line x1="5" y1="8" x2="19" y2="8"/><line x1="12" y1="19" x2="12" y2="12"/><polyline points="8 16 12 12 16 16"/></svg>';
+        }
+        hcpPart = `Hcp ${t.oldHcp != null ? fmt1(t.oldHcp) : '—'}${hcpArrowSvg(t.oldHcp, t.newHcp, 16)}${fmt1(t.newHcp)}${capFrag}${diffFrag}`;
+      }
+      const stbPart = totalStb != null ? `Stb ${totalStb}` : '';
+      const line = [stbPart, hcpPart].filter(Boolean).join(' · ');
+      return line ? `<div class="saved-meta">${line}</div>` : '';
+    })();
+    if (short) {
+      // Verkorte kaart (long-press op 'groepeer op WHS'): alleen de datumregel en de
+      // laatste twee regels (Str.../Stb...), geen clubnaam/baan/knoppen/grafiek.
+      return `
+    <div class="saved-item"${isActive ? ' style="border-left:3px solid var(--gold);padding-left:10px;border-right:3px solid var(--gold);padding-right:10px"' : ''}>
+      ${dateLine}
+      ${strLine}
+      ${stbHcpLine}
+    </div>`;
+    }
+    return `
+    <div class="saved-item" id="round-full-${r.id}"${isActive ? ' style="border-left:3px solid var(--gold);padding-left:10px;border-right:3px solid var(--gold);padding-right:10px"' : ''}${!actionsAlwaysVisible() ? ' onclick="toggleRoundActions(event, this)"' : ''}>
+      ${dateLine}
       ${(() => {
         const nameSpan = `<span style="${isActive ? 'color:var(--gold)' : ''}">${playerSafe}</span>`;
         const oldVal = r.hcp != null && r.hcp !== '' ? parseFloat(r.hcp) : null;
@@ -4804,30 +4864,8 @@ function loadSaved() {
       <div class="saved-meta">${club}</div>
       <div class="saved-meta">${trackSafe}${par != null ? ` · Par ${par}` : ''} · ${holesCount} holes</div>
       <div class="saved-meta">${(r.gender || '').charAt(0)} · ${r.tee || '—'} · Chcp ${chcp ?? '—'}</div>
-      <div class="saved-meta">${done ? '' : `${playedCount}/${holesCount} · `}Str ${total}${(done && totalAgs !== total) ? `${hcpArrowSvg(0, 0, 16)}${totalAgs}` : ''}${sdFrag}</div>
-      ${(() => {
-        // Stb + Hcp samen als aparte, laatste regel, direct boven de par-grafiek.
-        const t = hcpTrendMap[r.id];
-        let hcpPart = '';
-        if (t && t.newHcp != null && r.player === startPlayerName()) {
-          const diff = (t.oldHcp != null) ? Math.round((t.newHcp - t.oldHcp) * 10) / 10 : null;
-          let diffFrag = '';
-          if (diff != null && diff !== 0) {
-            const color = diff > 0 ? 'var(--red)' : 'var(--green-light)';
-            diffFrag = ` <span style="color:${color}">(${diff > 0 ? '+' : ''}${diff.toFixed(1)})</span>`;
-          }
-          let capFrag = '';
-          if (t.capType === 'soft') {
-            capFrag = ' <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="var(--orange)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:middle" title="Softcap toegepast"><line x1="5" y1="6" x2="19" y2="6"/><line x1="12" y1="19" x2="12" y2="10"/><polyline points="8 14 12 10 16 14"/></svg>';
-          } else if (t.capType === 'hard') {
-            capFrag = ' <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="var(--red)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:middle" title="Hardcap toegepast"><line x1="5" y1="4" x2="19" y2="4"/><line x1="5" y1="8" x2="19" y2="8"/><line x1="12" y1="19" x2="12" y2="12"/><polyline points="8 16 12 12 16 16"/></svg>';
-          }
-          hcpPart = `Hcp ${t.oldHcp != null ? fmt1(t.oldHcp) : '—'}${hcpArrowSvg(t.oldHcp, t.newHcp, 16)}${fmt1(t.newHcp)}${capFrag}${diffFrag}`;
-        }
-        const stbPart = totalStb != null ? `Stb ${totalStb}` : '';
-        const line = [stbPart, hcpPart].filter(Boolean).join(' · ');
-        return line ? `<div class="saved-meta">${line}</div>` : '';
-      })()}
+      ${strLine}
+      ${stbHcpLine}
       <div style="margin-top:8px">${flatChartHtml(r.holes)}</div>
       <div class="error-msg hidden" data-round-delete-msg="${r.id}" style="color:var(--red);font-size:20px;font-weight:700;text-align:right;margin-top:6px">Tik nogmaals om te bevestigen</div>
       <div class="hidden orange-msg" data-round-save-msg="${r.id}" style="color:var(--orange);font-size:20px;font-weight:700;text-align:right;margin-top:6px">Tik nogmaals om te bevestigen</div>
@@ -4888,10 +4926,13 @@ function loadSaved() {
     if (collapsed) return '';
     return rounds.map(mapper || (r => makeCard(r))).join('');
   };
-  // Niet-inklapbare koptekst: geen pijltje, geen onclick, altijd volledig zichtbaar.
-  // Gebruikt voor de WHS-groepering, die maar één vaste categorie heeft.
+  // Koptekst voor de WHS-groepering: de categorie zelf is nooit inklapbaar (maar één
+  // vaste categorie), maar het pijltje schakelt wel tussen verkorte en uitgebreide
+  // kaarten (long-press op de knop zelf gaat direct naar verkort, zie toggleWhsShort/
+  // setWhsShort).
   const staticHeader = (title, count) => {
-    return `<div style="font-size:20px;font-weight:800;color:var(--gold);text-transform:uppercase;letter-spacing:.7px;padding:16px 0 8px;margin-bottom:4px;display:flex;align-items:center;gap:10px;line-height:1"><span style="flex:1">${escapeHtml(title)}</span><span style="opacity:.8">${count}</span></div><div>`;
+    const short = !!window._whsShort;
+    return `<div style="font-size:20px;font-weight:800;color:var(--gold);text-transform:uppercase;letter-spacing:.7px;padding:16px 0 8px;margin-bottom:4px;cursor:pointer;display:flex;align-items:center;gap:10px;line-height:1" onclick="toggleWhsShort()"><span style="flex:1">${escapeHtml(title)}</span><span style="opacity:.8">${count}</span><span style="display:inline-block;align-self:center;margin-top:0;transform:rotate(${short?0:90}deg)">▶</span></div><div>`;
   };
 
   let html = '';
@@ -4905,7 +4946,7 @@ function loadSaved() {
         .filter(r => r.player === player1 && r.qualifying && isDoneForWhs(r))
         .sort(sortDesc)
         .slice(0, 20);
-      html += staticHeader(player1, last20.length) + last20.map(r => makeCard(r)).join('') + '</div>';
+      html += staticHeader(player1, last20.length) + last20.map(r => makeCard(r, null, !!window._whsShort)).join('') + '</div>';
     }
   } else if (window._groupByCategory) {
     if (actives.length)    html += collapsibleHeader(actives.length > 1 ? 'Actieve rondes' : 'Actieve ronde', actives.length, 'actief', '_catCollapsed') + cardsIfExpanded(sortedActives, 'actief', '_catCollapsed') + '</div>';
@@ -7880,6 +7921,26 @@ document.addEventListener('focusin', (e) => {
       if (!quickGroupingEnabled()) return;
       fired = false;
       timer = setTimeout(() => { fired = true; collapseAllClubs(); }, 550);
+    };
+    const cancel = () => { clearTimeout(timer); };
+    btn.addEventListener('pointerdown', start);
+    btn.addEventListener('pointerup', cancel);
+    btn.addEventListener('pointerleave', cancel);
+    btn.addEventListener('pointercancel', cancel);
+    btn.addEventListener('click', e => { if (fired) { e.stopImmediatePropagation(); e.preventDefault(); fired = false; } }, true);
+  })();
+
+  // Long-press op 'groepeer op WHS' (optioneel): gaat direct naar verkorte kaarten
+  // (datumregel + laatste twee regels). Het pijltje bij de naam schakelt terug naar
+  // uitgebreid (of weer verkort), zie staticHeader/toggleWhsShort.
+  (function bindQuickWhs() {
+    const btn = document.getElementById('groupByWhsBtn');
+    if (!btn) return;
+    let timer = null, fired = false;
+    const start = () => {
+      if (!quickGroupingEnabled()) return;
+      fired = false;
+      timer = setTimeout(() => { fired = true; setWhsShort(); }, 550);
     };
     const cancel = () => { clearTimeout(timer); };
     btn.addEventListener('pointerdown', start);
